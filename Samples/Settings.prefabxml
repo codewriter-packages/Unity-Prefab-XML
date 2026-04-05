@@ -1,0 +1,608 @@
+<UnityPrefab>
+    <GameObject name="Settings">
+        <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+        <Image m_Color="#00000099" />
+
+        <GameObject name="Panel">
+            <RectTransform m_AnchorMin="0.5, 0.5" m_AnchorMax="0.5, 0.5" m_SizeDelta="520, 480" />
+            <Image m_Color="#1E1E2E" />
+            <VerticalLayoutGroup m_Spacing="0"
+                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+
+            <!-- Header -->
+            <GameObject name="Header">
+                <RectTransform />
+                <Image m_Color="#2A2A3E" />
+                <LayoutElement m_MinHeight="52" />
+                <GameObject name="TitleText">
+                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                    <TMPro.TextMeshProUGUI m_text="Settings" m_fontSize="22" m_fontStyle="Bold"
+                        m_fontColor="#E0E0FF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                </GameObject>
+            </GameObject>
+
+            <!-- Separator -->
+            <GameObject name="HeaderSeparator">
+                <RectTransform />
+                <Image m_Color="#4A4A6A" />
+                <LayoutElement m_MinHeight="2" />
+            </GameObject>
+
+            <!-- Scrollable content -->
+            <GameObject name="ContentArea">
+                <RectTransform />
+                <LayoutElement m_FlexibleHeight="1" />
+                <ScrollRect m_Horizontal="false" m_Vertical="true"
+                    m_MovementType="Clamped"
+                    m_Content="#SettingsContent" m_Viewport="#SettingsViewport" />
+
+                <GameObject name="Viewport" id="SettingsViewport">
+                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                    <Image m_Color="#1E1E2E" />
+                    <Mask m_ShowMaskGraphic="false" />
+
+                <GameObject name="ScrollContent" id="SettingsContent">
+                    <RectTransform m_AnchorMin="0, 1" m_AnchorMax="1, 1"
+                        m_Pivot="0.5, 1" m_SizeDelta="-32, 0" />
+                    <VerticalLayoutGroup m_Spacing="6"
+                        m_ChildControlWidth="true" m_ChildControlHeight="true"
+                        m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+                    <ContentSizeFitter m_VerticalFit="PreferredSize" />
+
+                    <!-- === DISPLAY === -->
+                    <GameObject name="DisplayHeader">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="32" />
+                        <TMPro.TextMeshProUGUI m_text="DISPLAY" m_fontSize="13" m_fontStyle="Bold"
+                            m_fontColor="#8888AA" m_HorizontalAlignment="Left" m_VerticalAlignment="Bottom" />
+                    </GameObject>
+
+                    <!-- Resolution -->
+                    <GameObject name="ResolutionRow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <HorizontalLayoutGroup m_Spacing="8"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                        <GameObject name="Label">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="36" />
+                            <TMPro.TextMeshProUGUI m_text="Resolution" m_fontSize="15"
+                                m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                        </GameObject>
+                        <GameObject name="Dropdown">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="180" m_MinHeight="36" />
+                            <Image m_Color="#2A2A3E" />
+                            <TMPro.TMP_Dropdown m_Value="2"
+                                m_Template="#ResTemplate" m_CaptionText="#ResCaptionText" m_ItemText="#ResItemText">
+                                <Field name="m_Options.m_Options">
+                                    <Item m_Text="1280 x 720" />
+                                    <Item m_Text="1600 x 900" />
+                                    <Item m_Text="1920 x 1080" />
+                                    <Item m_Text="2560 x 1440" />
+                                    <Item m_Text="3840 x 2160" />
+                                </Field>
+                            </TMPro.TMP_Dropdown>
+                            <GameObject name="Caption" id="ResCaptionText">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-28, 0" m_AnchoredPosition="-6, 0" />
+                                <TMPro.TextMeshProUGUI m_text="1920 x 1080" m_fontSize="14"
+                                    m_fontColor="#AAAACC" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Arrow">
+                                <RectTransform m_AnchorMin="1, 0.5" m_AnchorMax="1, 0.5" m_Pivot="1, 0.5"
+                                    m_SizeDelta="16, 16" m_AnchoredPosition="-6, 0" />
+                                <Image m_Color="#8888AA" />
+                            </GameObject>
+                            <GameObject name="Template" id="ResTemplate" active="false">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 1" m_SizeDelta="0, 150" />
+                                <Image m_Color="#1E1E2E" />
+                                <ScrollRect m_Vertical="true" m_Horizontal="false" m_MovementType="Clamped"
+                                    m_Content="#ResContent" m_Viewport="#ResViewport" />
+                                <GameObject name="Viewport" id="ResViewport">
+                                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                    <Image m_Color="#1E1E2E" />
+                                    <Mask m_ShowMaskGraphic="false" />
+                                    <GameObject name="Content" id="ResContent">
+                                        <RectTransform m_AnchorMin="0, 1" m_AnchorMax="1, 1" m_Pivot="0.5, 1" m_SizeDelta="0, 28" />
+                                        <GameObject name="Item">
+                                            <RectTransform m_AnchorMin="0, 0.5" m_AnchorMax="1, 0.5" m_SizeDelta="0, 28" />
+                                            <Image m_Color="#1E1E2E" />
+                                            <Toggle m_IsOn="false" m_Transition="ColorTint"
+                                                m_Colors.m_NormalColor="#FFFFFF" m_Colors.m_HighlightedColor="#3A3A50" />
+                                            <GameObject name="Item Label" id="ResItemText">
+                                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-16, 0" m_AnchoredPosition="8, 0" />
+                                                <TMPro.TextMeshProUGUI m_text="Option" m_fontSize="13"
+                                                    m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                                            </GameObject>
+                                        </GameObject>
+                                    </GameObject>
+                                </GameObject>
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Display Mode -->
+                    <GameObject name="DisplayModeRow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <HorizontalLayoutGroup m_Spacing="8"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                        <GameObject name="Label">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="36" />
+                            <TMPro.TextMeshProUGUI m_text="Display Mode" m_fontSize="15"
+                                m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                        </GameObject>
+                        <GameObject name="Dropdown">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="180" m_MinHeight="36" />
+                            <Image m_Color="#2A2A3E" />
+                            <TMPro.TMP_Dropdown m_Value="0"
+                                m_Template="#ModeTemplate" m_CaptionText="#ModeCaptionText" m_ItemText="#ModeItemText">
+                                <Field name="m_Options.m_Options">
+                                    <Item m_Text="Fullscreen" />
+                                    <Item m_Text="Windowed" />
+                                    <Item m_Text="Borderless" />
+                                </Field>
+                            </TMPro.TMP_Dropdown>
+                            <GameObject name="Caption" id="ModeCaptionText">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-28, 0" m_AnchoredPosition="-6, 0" />
+                                <TMPro.TextMeshProUGUI m_text="Fullscreen" m_fontSize="14"
+                                    m_fontColor="#AAAACC" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Arrow">
+                                <RectTransform m_AnchorMin="1, 0.5" m_AnchorMax="1, 0.5" m_Pivot="1, 0.5"
+                                    m_SizeDelta="16, 16" m_AnchoredPosition="-6, 0" />
+                                <Image m_Color="#8888AA" />
+                            </GameObject>
+                            <GameObject name="Template" id="ModeTemplate" active="false">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 1" m_SizeDelta="0, 150" />
+                                <Image m_Color="#1E1E2E" />
+                                <ScrollRect m_Vertical="true" m_Horizontal="false" m_MovementType="Clamped"
+                                    m_Content="#ModeContent" m_Viewport="#ModeViewport" />
+                                <GameObject name="Viewport" id="ModeViewport">
+                                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                    <Image m_Color="#1E1E2E" />
+                                    <Mask m_ShowMaskGraphic="false" />
+                                    <GameObject name="Content" id="ModeContent">
+                                        <RectTransform m_AnchorMin="0, 1" m_AnchorMax="1, 1" m_Pivot="0.5, 1" m_SizeDelta="0, 28" />
+                                        <GameObject name="Item">
+                                            <RectTransform m_AnchorMin="0, 0.5" m_AnchorMax="1, 0.5" m_SizeDelta="0, 28" />
+                                            <Image m_Color="#1E1E2E" />
+                                            <Toggle m_IsOn="false" m_Transition="ColorTint"
+                                                m_Colors.m_NormalColor="#FFFFFF" m_Colors.m_HighlightedColor="#3A3A50" />
+                                            <GameObject name="Item Label" id="ModeItemText">
+                                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-16, 0" m_AnchoredPosition="8, 0" />
+                                                <TMPro.TextMeshProUGUI m_text="Option" m_fontSize="13"
+                                                    m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                                            </GameObject>
+                                        </GameObject>
+                                    </GameObject>
+                                </GameObject>
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- VSync -->
+                    <GameObject name="VSyncRow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <HorizontalLayoutGroup m_Spacing="8"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                        <GameObject name="Label">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="36" />
+                            <TMPro.TextMeshProUGUI m_text="VSync" m_fontSize="15"
+                                m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                        </GameObject>
+                        <GameObject name="Toggle">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="36" m_MinHeight="36" />
+                            <Image m_Color="#2A2A3E" />
+                            <Toggle m_IsOn="true" graphic="#VSyncCheck" />
+                            <GameObject name="Checkmark" id="VSyncCheck">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-6, -6" />
+                                <Image m_Color="#44D962" />
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- === GRAPHICS === -->
+                    <GameObject name="GraphicsHeader">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="40" />
+                        <TMPro.TextMeshProUGUI m_text="GRAPHICS" m_fontSize="13" m_fontStyle="Bold"
+                            m_fontColor="#8888AA" m_HorizontalAlignment="Left" m_VerticalAlignment="Bottom" />
+                    </GameObject>
+
+                    <!-- Quality -->
+                    <GameObject name="QualityRow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <HorizontalLayoutGroup m_Spacing="8"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                        <GameObject name="Label">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="36" />
+                            <TMPro.TextMeshProUGUI m_text="Quality" m_fontSize="15"
+                                m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                        </GameObject>
+                        <GameObject name="Dropdown">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="180" m_MinHeight="36" />
+                            <Image m_Color="#2A2A3E" />
+                            <TMPro.TMP_Dropdown m_Value="3"
+                                m_Template="#QualTemplate" m_CaptionText="#QualCaptionText" m_ItemText="#QualItemText">
+                                <Field name="m_Options.m_Options">
+                                    <Item m_Text="Low" />
+                                    <Item m_Text="Medium" />
+                                    <Item m_Text="High" />
+                                    <Item m_Text="Ultra" />
+                                </Field>
+                            </TMPro.TMP_Dropdown>
+                            <GameObject name="Caption" id="QualCaptionText">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-28, 0" m_AnchoredPosition="-6, 0" />
+                                <TMPro.TextMeshProUGUI m_text="Ultra" m_fontSize="14"
+                                    m_fontColor="#AAAACC" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Arrow">
+                                <RectTransform m_AnchorMin="1, 0.5" m_AnchorMax="1, 0.5" m_Pivot="1, 0.5"
+                                    m_SizeDelta="16, 16" m_AnchoredPosition="-6, 0" />
+                                <Image m_Color="#8888AA" />
+                            </GameObject>
+                            <GameObject name="Template" id="QualTemplate" active="false">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 1" m_SizeDelta="0, 150" />
+                                <Image m_Color="#1E1E2E" />
+                                <ScrollRect m_Vertical="true" m_Horizontal="false" m_MovementType="Clamped"
+                                    m_Content="#QualContent" m_Viewport="#QualViewport" />
+                                <GameObject name="Viewport" id="QualViewport">
+                                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                    <Image m_Color="#1E1E2E" />
+                                    <Mask m_ShowMaskGraphic="false" />
+                                    <GameObject name="Content" id="QualContent">
+                                        <RectTransform m_AnchorMin="0, 1" m_AnchorMax="1, 1" m_Pivot="0.5, 1" m_SizeDelta="0, 28" />
+                                        <GameObject name="Item">
+                                            <RectTransform m_AnchorMin="0, 0.5" m_AnchorMax="1, 0.5" m_SizeDelta="0, 28" />
+                                            <Image m_Color="#1E1E2E" />
+                                            <Toggle m_IsOn="false" m_Transition="ColorTint"
+                                                m_Colors.m_NormalColor="#FFFFFF" m_Colors.m_HighlightedColor="#3A3A50" />
+                                            <GameObject name="Item Label" id="QualItemText">
+                                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-16, 0" m_AnchoredPosition="8, 0" />
+                                                <TMPro.TextMeshProUGUI m_text="Option" m_fontSize="13"
+                                                    m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                                            </GameObject>
+                                        </GameObject>
+                                    </GameObject>
+                                </GameObject>
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Anti-Aliasing -->
+                    <GameObject name="AntiAliasingRow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <HorizontalLayoutGroup m_Spacing="8"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                        <GameObject name="Label">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="36" />
+                            <TMPro.TextMeshProUGUI m_text="Anti-Aliasing" m_fontSize="15"
+                                m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                        </GameObject>
+                        <GameObject name="Dropdown">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="180" m_MinHeight="36" />
+                            <Image m_Color="#2A2A3E" />
+                            <TMPro.TMP_Dropdown m_Value="2"
+                                m_Template="#AATemplate" m_CaptionText="#AACaptionText" m_ItemText="#AAItemText">
+                                <Field name="m_Options.m_Options">
+                                    <Item m_Text="Off" />
+                                    <Item m_Text="FXAA" />
+                                    <Item m_Text="TAA" />
+                                    <Item m_Text="MSAA x4" />
+                                </Field>
+                            </TMPro.TMP_Dropdown>
+                            <GameObject name="Caption" id="AACaptionText">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-28, 0" m_AnchoredPosition="-6, 0" />
+                                <TMPro.TextMeshProUGUI m_text="TAA" m_fontSize="14"
+                                    m_fontColor="#AAAACC" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Arrow">
+                                <RectTransform m_AnchorMin="1, 0.5" m_AnchorMax="1, 0.5" m_Pivot="1, 0.5"
+                                    m_SizeDelta="16, 16" m_AnchoredPosition="-6, 0" />
+                                <Image m_Color="#8888AA" />
+                            </GameObject>
+                            <GameObject name="Template" id="AATemplate" active="false">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 1" m_SizeDelta="0, 150" />
+                                <Image m_Color="#1E1E2E" />
+                                <ScrollRect m_Vertical="true" m_Horizontal="false" m_MovementType="Clamped"
+                                    m_Content="#AAContent" m_Viewport="#AAViewport" />
+                                <GameObject name="Viewport" id="AAViewport">
+                                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                    <Image m_Color="#1E1E2E" />
+                                    <Mask m_ShowMaskGraphic="false" />
+                                    <GameObject name="Content" id="AAContent">
+                                        <RectTransform m_AnchorMin="0, 1" m_AnchorMax="1, 1" m_Pivot="0.5, 1" m_SizeDelta="0, 28" />
+                                        <GameObject name="Item">
+                                            <RectTransform m_AnchorMin="0, 0.5" m_AnchorMax="1, 0.5" m_SizeDelta="0, 28" />
+                                            <Image m_Color="#1E1E2E" />
+                                            <Toggle m_IsOn="false" m_Transition="ColorTint"
+                                                m_Colors.m_NormalColor="#FFFFFF" m_Colors.m_HighlightedColor="#3A3A50" />
+                                            <GameObject name="Item Label" id="AAItemText">
+                                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-16, 0" m_AnchoredPosition="8, 0" />
+                                                <TMPro.TextMeshProUGUI m_text="Option" m_fontSize="13"
+                                                    m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                                            </GameObject>
+                                        </GameObject>
+                                    </GameObject>
+                                </GameObject>
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Shadows -->
+                    <GameObject name="ShadowsRow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <HorizontalLayoutGroup m_Spacing="8"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                        <GameObject name="Label">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="36" />
+                            <TMPro.TextMeshProUGUI m_text="Shadows" m_fontSize="15"
+                                m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                        </GameObject>
+                        <GameObject name="Toggle">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="36" m_MinHeight="36" />
+                            <Image m_Color="#2A2A3E" />
+                            <Toggle m_IsOn="true" graphic="#ShadowsCheck" />
+                            <GameObject name="Checkmark" id="ShadowsCheck">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-6, -6" />
+                                <Image m_Color="#44D962" />
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- === AUDIO === -->
+                    <GameObject name="AudioHeader">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="40" />
+                        <TMPro.TextMeshProUGUI m_text="AUDIO" m_fontSize="13" m_fontStyle="Bold"
+                            m_fontColor="#8888AA" m_HorizontalAlignment="Left" m_VerticalAlignment="Bottom" />
+                    </GameObject>
+
+                    <!-- Master Volume -->
+                    <GameObject name="MasterVolumeRow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <HorizontalLayoutGroup m_Spacing="8"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                        <GameObject name="Label">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="120" m_MinHeight="36" />
+                            <TMPro.TextMeshProUGUI m_text="Master" m_fontSize="15"
+                                m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                        </GameObject>
+                        <GameObject name="Slider">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="20" />
+                            <Image m_Color="#2A2A3E" />
+                            <Slider m_Value="0.8" m_FillRect="#MasterFill" m_HandleRect="#MasterHandle" />
+                            <GameObject name="FillArea">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <GameObject name="Fill" id="MasterFill">
+                                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="0.8, 1" m_SizeDelta="0, 0" />
+                                    <Image m_Color="#44D962" />
+                                </GameObject>
+                            </GameObject>
+                            <GameObject name="HandleArea">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <GameObject name="Handle" id="MasterHandle">
+                                    <RectTransform m_SizeDelta="16, 16" />
+                                    <Image m_Color="#FFFFFF" />
+                                </GameObject>
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Music Volume -->
+                    <GameObject name="MusicVolumeRow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <HorizontalLayoutGroup m_Spacing="8"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                        <GameObject name="Label">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="120" m_MinHeight="36" />
+                            <TMPro.TextMeshProUGUI m_text="Music" m_fontSize="15"
+                                m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                        </GameObject>
+                        <GameObject name="Slider">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="20" />
+                            <Image m_Color="#2A2A3E" />
+                            <Slider m_Value="0.6" m_FillRect="#MusicFill" m_HandleRect="#MusicHandle" />
+                            <GameObject name="FillArea">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <GameObject name="Fill" id="MusicFill">
+                                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="0.6, 1" m_SizeDelta="0, 0" />
+                                    <Image m_Color="#5B68E0" />
+                                </GameObject>
+                            </GameObject>
+                            <GameObject name="HandleArea">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <GameObject name="Handle" id="MusicHandle">
+                                    <RectTransform m_SizeDelta="16, 16" />
+                                    <Image m_Color="#FFFFFF" />
+                                </GameObject>
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- SFX Volume -->
+                    <GameObject name="SFXVolumeRow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <HorizontalLayoutGroup m_Spacing="8"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                        <GameObject name="Label">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="120" m_MinHeight="36" />
+                            <TMPro.TextMeshProUGUI m_text="SFX" m_fontSize="15"
+                                m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                        </GameObject>
+                        <GameObject name="Slider">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="20" />
+                            <Image m_Color="#2A2A3E" />
+                            <Slider m_Value="0.7" m_FillRect="#SFXFill" m_HandleRect="#SFXHandle" />
+                            <GameObject name="FillArea">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <GameObject name="Fill" id="SFXFill">
+                                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="0.7, 1" m_SizeDelta="0, 0" />
+                                    <Image m_Color="#5B68E0" />
+                                </GameObject>
+                            </GameObject>
+                            <GameObject name="HandleArea">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <GameObject name="Handle" id="SFXHandle">
+                                    <RectTransform m_SizeDelta="16, 16" />
+                                    <Image m_Color="#FFFFFF" />
+                                </GameObject>
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- === CONTROLS === -->
+                    <GameObject name="ControlsHeader">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="40" />
+                        <TMPro.TextMeshProUGUI m_text="CONTROLS" m_fontSize="13" m_fontStyle="Bold"
+                            m_fontColor="#8888AA" m_HorizontalAlignment="Left" m_VerticalAlignment="Bottom" />
+                    </GameObject>
+
+                    <!-- Mouse Sensitivity -->
+                    <GameObject name="SensitivityRow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <HorizontalLayoutGroup m_Spacing="8"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                        <GameObject name="Label">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="120" m_MinHeight="36" />
+                            <TMPro.TextMeshProUGUI m_text="Mouse Sensitivity" m_fontSize="15"
+                                m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                        </GameObject>
+                        <GameObject name="Slider">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="20" />
+                            <Image m_Color="#2A2A3E" />
+                            <Slider m_Value="0.5" m_FillRect="#SensFill" m_HandleRect="#SensHandle" />
+                            <GameObject name="FillArea">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <GameObject name="Fill" id="SensFill">
+                                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="0.5, 1" m_SizeDelta="0, 0" />
+                                    <Image m_Color="#5B68E0" />
+                                </GameObject>
+                            </GameObject>
+                            <GameObject name="HandleArea">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <GameObject name="Handle" id="SensHandle">
+                                    <RectTransform m_SizeDelta="16, 16" />
+                                    <Image m_Color="#FFFFFF" />
+                                </GameObject>
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Invert Y -->
+                    <GameObject name="InvertYRow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <HorizontalLayoutGroup m_Spacing="8"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                        <GameObject name="Label">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="36" />
+                            <TMPro.TextMeshProUGUI m_text="Invert Y Axis" m_fontSize="15"
+                                m_fontColor="#CCCCEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                        </GameObject>
+                        <GameObject name="Toggle">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="36" m_MinHeight="36" />
+                            <Image m_Color="#2A2A3E" />
+                            <Toggle m_IsOn="false" graphic="#InvertYCheck" />
+                            <GameObject name="Checkmark" id="InvertYCheck">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-6, -6" />
+                                <Image m_Color="#44D962" />
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Bottom spacer -->
+                    <GameObject name="Spacer">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="16" />
+                    </GameObject>
+
+                </GameObject>
+                </GameObject>
+            </GameObject>
+
+            <!-- Footer separator -->
+            <GameObject name="FooterSeparator">
+                <RectTransform />
+                <Image m_Color="#4A4A6A" />
+                <LayoutElement m_MinHeight="1" />
+            </GameObject>
+
+            <!-- Footer -->
+            <GameObject name="Footer">
+                <RectTransform />
+                <Image m_Color="#252538" />
+                <LayoutElement m_MinHeight="56" />
+                <HorizontalLayoutGroup m_Spacing="12" m_ChildAlignment="MiddleCenter"
+                    m_ChildControlWidth="false" m_ChildControlHeight="false"
+                    m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+
+                <GameObject name="ButtonDefaults">
+                    <RectTransform m_SizeDelta="130, 38" />
+                    <Image m_Color="#3A3A50" />
+                    <Button />
+                    <LayoutElement m_MinWidth="130" m_MinHeight="38" />
+                    <GameObject name="Label">
+                        <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                        <TMPro.TextMeshProUGUI m_text="Defaults" m_fontSize="15"
+                            m_fontColor="#B0B0CC" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                </GameObject>
+
+                <GameObject name="ButtonApply">
+                    <RectTransform m_SizeDelta="130, 38" />
+                    <Image m_Color="#5B68E0" />
+                    <Button />
+                    <LayoutElement m_MinWidth="130" m_MinHeight="38" />
+                    <GameObject name="Label">
+                        <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                        <TMPro.TextMeshProUGUI m_text="Apply" m_fontSize="15" m_fontStyle="Bold"
+                            m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</UnityPrefab>

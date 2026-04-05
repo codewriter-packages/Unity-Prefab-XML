@@ -1,0 +1,473 @@
+<UnityPrefab>
+    <GameObject name="Leaderboard">
+        <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+        <Image m_Color="#00000066" />
+
+        <GameObject name="Panel">
+            <RectTransform m_AnchorMin="0.5, 0.5" m_AnchorMax="0.5, 0.5" m_SizeDelta="380, 520" />
+            <Image m_Color="#FFF8F0" />
+            <VerticalLayoutGroup m_Spacing="0"
+                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+
+            <!-- ═══════════ HEADER ═══════════ -->
+            <GameObject name="Header">
+                <RectTransform />
+                <Image m_Color="#FF6B8A" />
+                <LayoutElement m_MinHeight="80" />
+
+                <GameObject name="HeaderContent">
+                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-32, 0" />
+                    <VerticalLayoutGroup m_Spacing="2"
+                        m_ChildControlWidth="true" m_ChildControlHeight="true"
+                        m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+
+                    <GameObject name="EventTag">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="18" />
+                        <TMPro.TextMeshProUGUI m_text="WEEKEND EVENT" m_fontSize="10" m_fontStyle="Bold"
+                            m_fontColor="#FFD4DE" m_HorizontalAlignment="Center" m_VerticalAlignment="Bottom"
+                            m_characterSpacing="4" />
+                    </GameObject>
+                    <GameObject name="Title">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="32" />
+                        <TMPro.TextMeshProUGUI m_text="Star Collectors" m_fontSize="24" m_fontStyle="Bold"
+                            m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                    <GameObject name="Timer">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="20" />
+                        <TMPro.TextMeshProUGUI m_text="Ends in 1d 14h 22m" m_fontSize="12"
+                            m_fontColor="#FFD4DE" m_HorizontalAlignment="Center" m_VerticalAlignment="Top" />
+                    </GameObject>
+                </GameObject>
+
+                <!-- Close button -->
+                <GameObject name="CloseButton">
+                    <RectTransform m_AnchorMin="1, 1" m_AnchorMax="1, 1" m_Pivot="1, 1"
+                        m_SizeDelta="36, 36" m_AnchoredPosition="-8, -8" />
+                    <Image m_Color="#FF4D7040" />
+                    <Button m_Transition="ColorTint"
+                        m_Colors.m_NormalColor="#FFFFFF"
+                        m_Colors.m_HighlightedColor="#FFDDDD"
+                        m_Colors.m_PressedColor="#FFBBBB" />
+                    <GameObject name="X">
+                        <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                        <TMPro.TextMeshProUGUI m_text="x" m_fontSize="18" m_fontStyle="Bold"
+                            m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                </GameObject>
+            </GameObject>
+
+            <!-- ═══════════ TOP 3 PODIUM ═══════════ -->
+            <GameObject name="Podium">
+                <RectTransform />
+                <Image m_Color="#FFF2E8" />
+                <LayoutElement m_MinHeight="110" />
+                <HorizontalLayoutGroup m_Spacing="0"
+                    m_ChildControlWidth="true" m_ChildControlHeight="true"
+                    m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+
+                <!-- 2nd place -->
+                <GameObject name="Place2">
+                    <RectTransform />
+                    <LayoutElement m_MinHeight="110" />
+                    <VerticalLayoutGroup m_Spacing="3" m_ChildAlignment="UpperCenter"
+                        m_ChildControlWidth="true" m_ChildControlHeight="true"
+                        m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                    <GameObject name="Pad">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="18" />
+                    </GameObject>
+                    <GameObject name="Avatar">
+                        <RectTransform />
+                        <LayoutElement m_MinWidth="44" m_MinHeight="44" />
+                        <Image m_Color="#C0C0C0" />
+                    </GameObject>
+                    <GameObject name="Name">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="16" />
+                        <TMPro.TextMeshProUGUI m_text="Emily" m_fontSize="12" m_fontStyle="Bold"
+                            m_fontColor="#6B5E50" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                    <GameObject name="Score">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="16" />
+                        <TMPro.TextMeshProUGUI m_text="8,240" m_fontSize="13" m_fontStyle="Bold"
+                            m_fontColor="#FF6B8A" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                </GameObject>
+
+                <!-- 1st place -->
+                <GameObject name="Place1">
+                    <RectTransform />
+                    <LayoutElement m_MinHeight="110" />
+                    <VerticalLayoutGroup m_Spacing="3" m_ChildAlignment="UpperCenter"
+                        m_ChildControlWidth="true" m_ChildControlHeight="true"
+                        m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                    <GameObject name="Pad">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="4" />
+                    </GameObject>
+                    <GameObject name="Crown">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="16" />
+                        <TMPro.TextMeshProUGUI m_text="1" m_fontSize="14" m_fontStyle="Bold"
+                            m_fontColor="#FFB020" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                    <GameObject name="Avatar">
+                        <RectTransform />
+                        <LayoutElement m_MinWidth="52" m_MinHeight="52" />
+                        <Image m_Color="#FFB020" />
+                    </GameObject>
+                    <GameObject name="Name">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="16" />
+                        <TMPro.TextMeshProUGUI m_text="Sophie" m_fontSize="13" m_fontStyle="Bold"
+                            m_fontColor="#6B5E50" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                    <GameObject name="Score">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="16" />
+                        <TMPro.TextMeshProUGUI m_text="12,580" m_fontSize="14" m_fontStyle="Bold"
+                            m_fontColor="#FF6B8A" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                </GameObject>
+
+                <!-- 3rd place -->
+                <GameObject name="Place3">
+                    <RectTransform />
+                    <LayoutElement m_MinHeight="110" />
+                    <VerticalLayoutGroup m_Spacing="3" m_ChildAlignment="UpperCenter"
+                        m_ChildControlWidth="true" m_ChildControlHeight="true"
+                        m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                    <GameObject name="Pad">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="26" />
+                    </GameObject>
+                    <GameObject name="Avatar">
+                        <RectTransform />
+                        <LayoutElement m_MinWidth="40" m_MinHeight="40" />
+                        <Image m_Color="#CD8844" />
+                    </GameObject>
+                    <GameObject name="Name">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="16" />
+                        <TMPro.TextMeshProUGUI m_text="Alex" m_fontSize="12" m_fontStyle="Bold"
+                            m_fontColor="#6B5E50" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                    <GameObject name="Score">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="16" />
+                        <TMPro.TextMeshProUGUI m_text="6,105" m_fontSize="13" m_fontStyle="Bold"
+                            m_fontColor="#FF6B8A" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                </GameObject>
+            </GameObject>
+
+            <!-- Divider -->
+            <GameObject name="Divider">
+                <RectTransform />
+                <Image m_Color="#F0E0D4" />
+                <LayoutElement m_MinHeight="1" />
+            </GameObject>
+
+            <!-- ═══════════ LIST ═══════════ -->
+            <GameObject name="ListArea">
+                <RectTransform />
+                <LayoutElement m_FlexibleHeight="1" />
+                <ScrollRect m_Horizontal="false" m_Vertical="true"
+                    m_MovementType="Elastic" m_Elasticity="0.1"
+                    m_Content="#LBContent" m_Viewport="#LBViewport" />
+
+                <GameObject name="Viewport" id="LBViewport">
+                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                    <Image m_Color="#FFF8F0" />
+                    <Mask m_ShowMaskGraphic="false" />
+
+                    <GameObject name="Content" id="LBContent">
+                        <RectTransform m_AnchorMin="0, 1" m_AnchorMax="1, 1"
+                            m_Pivot="0.5, 1" m_SizeDelta="0, 0" />
+                        <VerticalLayoutGroup m_Spacing="0"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+                        <ContentSizeFitter m_VerticalFit="PreferredSize" />
+
+                        <!-- Row 4 -->
+                        <GameObject name="Row4">
+                            <RectTransform />
+                            <LayoutElement m_MinHeight="56" />
+                            <Image m_Color="#FFF8F0" />
+                            <HorizontalLayoutGroup m_Spacing="0"
+                                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                                m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                            <GameObject name="Pad">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="16" />
+                            </GameObject>
+                            <GameObject name="Rank">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="32" m_MinHeight="56" />
+                                <TMPro.TextMeshProUGUI m_text="4" m_fontSize="16" m_fontStyle="Bold"
+                                    m_fontColor="#B0A090" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Avatar">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="36" m_MinHeight="36" />
+                                <Image m_Color="#E8D8CC" />
+                            </GameObject>
+                            <GameObject name="Gap">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="12" />
+                            </GameObject>
+                            <GameObject name="Name">
+                                <RectTransform />
+                                <LayoutElement m_FlexibleWidth="1" m_MinHeight="56" />
+                                <TMPro.TextMeshProUGUI m_text="Jordan" m_fontSize="15"
+                                    m_fontColor="#5A4E42" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Score">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="70" m_MinHeight="56" />
+                                <TMPro.TextMeshProUGUI m_text="5,430" m_fontSize="15" m_fontStyle="Bold"
+                                    m_fontColor="#FF6B8A" m_HorizontalAlignment="Right" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="PadR">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="16" />
+                            </GameObject>
+                        </GameObject>
+
+                        <!-- Separator -->
+                        <GameObject name="Sep4">
+                            <RectTransform />
+                            <Image m_Color="#F0E0D4" />
+                            <LayoutElement m_MinHeight="1" />
+                        </GameObject>
+
+                        <!-- Row 5 -->
+                        <GameObject name="Row5">
+                            <RectTransform />
+                            <LayoutElement m_MinHeight="56" />
+                            <Image m_Color="#FFF8F0" />
+                            <HorizontalLayoutGroup m_Spacing="0"
+                                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                                m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                            <GameObject name="Pad">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="16" />
+                            </GameObject>
+                            <GameObject name="Rank">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="32" m_MinHeight="56" />
+                                <TMPro.TextMeshProUGUI m_text="5" m_fontSize="16" m_fontStyle="Bold"
+                                    m_fontColor="#B0A090" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Avatar">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="36" m_MinHeight="36" />
+                                <Image m_Color="#E8D8CC" />
+                            </GameObject>
+                            <GameObject name="Gap">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="12" />
+                            </GameObject>
+                            <GameObject name="Name">
+                                <RectTransform />
+                                <LayoutElement m_FlexibleWidth="1" m_MinHeight="56" />
+                                <TMPro.TextMeshProUGUI m_text="Mia" m_fontSize="15"
+                                    m_fontColor="#5A4E42" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Score">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="70" m_MinHeight="56" />
+                                <TMPro.TextMeshProUGUI m_text="4,810" m_fontSize="15" m_fontStyle="Bold"
+                                    m_fontColor="#FF6B8A" m_HorizontalAlignment="Right" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="PadR">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="16" />
+                            </GameObject>
+                        </GameObject>
+
+                        <!-- Separator -->
+                        <GameObject name="Sep5">
+                            <RectTransform />
+                            <Image m_Color="#F0E0D4" />
+                            <LayoutElement m_MinHeight="1" />
+                        </GameObject>
+
+                        <!-- Row 6 -->
+                        <GameObject name="Row6">
+                            <RectTransform />
+                            <LayoutElement m_MinHeight="56" />
+                            <Image m_Color="#FFF8F0" />
+                            <HorizontalLayoutGroup m_Spacing="0"
+                                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                                m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                            <GameObject name="Pad">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="16" />
+                            </GameObject>
+                            <GameObject name="Rank">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="32" m_MinHeight="56" />
+                                <TMPro.TextMeshProUGUI m_text="6" m_fontSize="16" m_fontStyle="Bold"
+                                    m_fontColor="#B0A090" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Avatar">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="36" m_MinHeight="36" />
+                                <Image m_Color="#E8D8CC" />
+                            </GameObject>
+                            <GameObject name="Gap">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="12" />
+                            </GameObject>
+                            <GameObject name="Name">
+                                <RectTransform />
+                                <LayoutElement m_FlexibleWidth="1" m_MinHeight="56" />
+                                <TMPro.TextMeshProUGUI m_text="Noah" m_fontSize="15"
+                                    m_fontColor="#5A4E42" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Score">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="70" m_MinHeight="56" />
+                                <TMPro.TextMeshProUGUI m_text="3,920" m_fontSize="15" m_fontStyle="Bold"
+                                    m_fontColor="#FF6B8A" m_HorizontalAlignment="Right" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="PadR">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="16" />
+                            </GameObject>
+                        </GameObject>
+
+                        <!-- Separator -->
+                        <GameObject name="Sep6">
+                            <RectTransform />
+                            <Image m_Color="#F0E0D4" />
+                            <LayoutElement m_MinHeight="1" />
+                        </GameObject>
+
+                        <!-- Row 7 -->
+                        <GameObject name="Row7">
+                            <RectTransform />
+                            <LayoutElement m_MinHeight="56" />
+                            <Image m_Color="#FFF8F0" />
+                            <HorizontalLayoutGroup m_Spacing="0"
+                                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                                m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+                            <GameObject name="Pad">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="16" />
+                            </GameObject>
+                            <GameObject name="Rank">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="32" m_MinHeight="56" />
+                                <TMPro.TextMeshProUGUI m_text="7" m_fontSize="16" m_fontStyle="Bold"
+                                    m_fontColor="#B0A090" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Avatar">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="36" m_MinHeight="36" />
+                                <Image m_Color="#E8D8CC" />
+                            </GameObject>
+                            <GameObject name="Gap">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="12" />
+                            </GameObject>
+                            <GameObject name="Name">
+                                <RectTransform />
+                                <LayoutElement m_FlexibleWidth="1" m_MinHeight="56" />
+                                <TMPro.TextMeshProUGUI m_text="Lily" m_fontSize="15"
+                                    m_fontColor="#5A4E42" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Score">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="70" m_MinHeight="56" />
+                                <TMPro.TextMeshProUGUI m_text="3,115" m_fontSize="15" m_fontStyle="Bold"
+                                    m_fontColor="#FF6B8A" m_HorizontalAlignment="Right" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="PadR">
+                                <RectTransform />
+                                <LayoutElement m_MinWidth="16" />
+                            </GameObject>
+                        </GameObject>
+
+                        <!-- Bottom pad -->
+                        <GameObject name="BottomPad">
+                            <RectTransform />
+                            <LayoutElement m_MinHeight="8" />
+                        </GameObject>
+                    </GameObject>
+                </GameObject>
+            </GameObject>
+
+            <!-- ═══════════ MY RANK FOOTER ═══════════ -->
+            <GameObject name="Divider2">
+                <RectTransform />
+                <Image m_Color="#F0E0D4" />
+                <LayoutElement m_MinHeight="1" />
+            </GameObject>
+
+            <GameObject name="MyRank">
+                <RectTransform />
+                <Image m_Color="#FFF0E6" />
+                <LayoutElement m_MinHeight="60" />
+                <HorizontalLayoutGroup m_Spacing="0"
+                    m_ChildControlWidth="true" m_ChildControlHeight="true"
+                    m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+
+                <GameObject name="Pad">
+                    <RectTransform />
+                    <LayoutElement m_MinWidth="16" />
+                </GameObject>
+                <GameObject name="Rank">
+                    <RectTransform />
+                    <LayoutElement m_MinWidth="32" m_MinHeight="60" />
+                    <TMPro.TextMeshProUGUI m_text="24" m_fontSize="16" m_fontStyle="Bold"
+                        m_fontColor="#FF6B8A" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                </GameObject>
+                <GameObject name="Avatar">
+                    <RectTransform />
+                    <LayoutElement m_MinWidth="36" m_MinHeight="36" />
+                    <Image m_Color="#FF6B8A" />
+                </GameObject>
+                <GameObject name="Gap">
+                    <RectTransform />
+                    <LayoutElement m_MinWidth="12" />
+                </GameObject>
+                <GameObject name="Info">
+                    <RectTransform />
+                    <LayoutElement m_FlexibleWidth="1" m_MinHeight="60" />
+                    <VerticalLayoutGroup m_Spacing="1" m_ChildAlignment="MiddleLeft"
+                        m_ChildControlWidth="true" m_ChildControlHeight="true"
+                        m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+                    <GameObject name="Name">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="20" />
+                        <TMPro.TextMeshProUGUI m_text="You" m_fontSize="15" m_fontStyle="Bold"
+                            m_fontColor="#5A4E42" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                    <GameObject name="Hint">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="16" />
+                        <TMPro.TextMeshProUGUI m_text="890 more to reach #23" m_fontSize="11"
+                            m_fontColor="#B0A090" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                </GameObject>
+                <GameObject name="Score">
+                    <RectTransform />
+                    <LayoutElement m_MinWidth="70" m_MinHeight="60" />
+                    <TMPro.TextMeshProUGUI m_text="1,240" m_fontSize="16" m_fontStyle="Bold"
+                        m_fontColor="#FF6B8A" m_HorizontalAlignment="Right" m_VerticalAlignment="Middle" />
+                </GameObject>
+                <GameObject name="PadR">
+                    <RectTransform />
+                    <LayoutElement m_MinWidth="16" />
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</UnityPrefab>

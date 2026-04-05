@@ -1,0 +1,80 @@
+<UnityPrefab>
+    <GameObject name="ConfirmDialog">
+        <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+        <Image m_Color="#00000099" />
+
+        <GameObject name="Panel">
+            <RectTransform m_AnchorMin="0.5, 0.5" m_AnchorMax="0.5, 0.5" m_SizeDelta="450, 220" />
+            <Image m_Color="#1E1E2E" />
+            <VerticalLayoutGroup m_Spacing="0"
+                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+
+            <!-- Header -->
+            <GameObject name="Header">
+                <RectTransform />
+                <Image m_Color="#2A2A3E" />
+                <LayoutElement m_MinHeight="52" />
+                <GameObject name="TitleText">
+                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                    <TMPro.TextMeshProUGUI m_text="Confirmation" m_fontSize="22" m_fontStyle="Bold"
+                          m_fontColor="#E0E0FF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                </GameObject>
+            </GameObject>
+
+            <!-- Separator -->
+            <GameObject name="Separator">
+                <RectTransform />
+                <Image m_Color="#4A4A6A" />
+                <LayoutElement m_MinHeight="2" />
+            </GameObject>
+
+            <!-- Body -->
+            <GameObject name="Body">
+                <RectTransform />
+                <LayoutElement m_MinHeight="100" />
+                <GameObject name="MessageText">
+                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1"
+                                   m_SizeDelta="-48, -24" />
+                    <TMPro.TextMeshProUGUI m_text="Are you sure you want to perform this action? This cannot be undone."
+                          m_fontSize="16" m_fontColor="#B0B0CC" m_HorizontalAlignment="Left" m_VerticalAlignment="Top"
+                          m_TextWrappingMode="Normal" />
+                </GameObject>
+            </GameObject>
+
+            <!-- Footer -->
+            <GameObject name="Footer">
+                <RectTransform />
+                <Image m_Color="#252538" />
+                <LayoutElement m_MinHeight="66" />
+                <HorizontalLayoutGroup m_Spacing="12" m_ChildAlignment="MiddleCenter"
+                    m_ChildControlWidth="false" m_ChildControlHeight="false"
+                    m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+
+                <GameObject name="ButtonCancel">
+                    <RectTransform m_SizeDelta="130, 42" />
+                    <Image m_Color="#3A3A50" />
+                    <Button />
+                    <LayoutElement m_MinWidth="130" m_MinHeight="42" />
+                    <GameObject name="Label">
+                        <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                        <TMPro.TextMeshProUGUI m_text="Cancel" m_fontSize="16"
+                              m_fontColor="#B0B0CC" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                </GameObject>
+
+                <GameObject name="ButtonConfirm">
+                    <RectTransform m_SizeDelta="130, 42" />
+                    <Image m_Color="#5B68E0" />
+                    <Button />
+                    <LayoutElement m_MinWidth="130" m_MinHeight="42" />
+                    <GameObject name="Label">
+                        <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                        <TMPro.TextMeshProUGUI m_text="Confirm" m_fontSize="16" m_fontStyle="Bold"
+                              m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                    </GameObject>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</UnityPrefab>

@@ -1,0 +1,625 @@
+<UnityPrefab>
+    <GameObject name="Shop">
+        <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+        <Image m_Color="#0B0B1E" />
+        <VerticalLayoutGroup m_Spacing="0"
+            m_ChildControlWidth="true" m_ChildControlHeight="true"
+            m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+
+        <!-- ═══════════ TOP BAR ═══════════ -->
+        <GameObject name="TopBar">
+            <RectTransform />
+            <Image m_Color="#12122A" />
+            <LayoutElement m_MinHeight="70" />
+            <HorizontalLayoutGroup m_Spacing="0"
+                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+
+            <!-- Left spacer -->
+            <GameObject name="LeftPad">
+                <RectTransform />
+                <LayoutElement m_MinWidth="16" />
+            </GameObject>
+
+            <!-- Back button -->
+            <GameObject name="BackButton">
+                <RectTransform />
+                <LayoutElement m_MinWidth="44" m_MinHeight="44" />
+                <Image m_Color="#1E1E38" />
+                <Button m_Transition="ColorTint"
+                    m_Colors.m_NormalColor="#FFFFFF"
+                    m_Colors.m_HighlightedColor="#DDDDFF"
+                    m_Colors.m_PressedColor="#AAAACC" />
+                <GameObject name="Icon">
+                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                    <TMPro.TextMeshProUGUI m_text="&lt;" m_fontSize="22" m_fontStyle="Bold"
+                        m_fontColor="#8888BB" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                </GameObject>
+            </GameObject>
+
+            <!-- Title -->
+            <GameObject name="Title">
+                <RectTransform />
+                <LayoutElement m_FlexibleWidth="1" m_MinHeight="44" />
+                <TMPro.TextMeshProUGUI m_text="SHOP" m_fontSize="28" m_fontStyle="Bold"
+                    m_fontColor="#F0C850" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle"
+                    m_characterSpacing="6" />
+            </GameObject>
+
+            <!-- Currency badge -->
+            <GameObject name="Currency">
+                <RectTransform />
+                <LayoutElement m_MinWidth="130" m_MinHeight="38" />
+                <Image m_Color="#1E1E38" />
+                <GameObject name="CoinText">
+                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-16, 0" />
+                    <TMPro.TextMeshProUGUI m_text="12,450" m_fontSize="17" m_fontStyle="Bold"
+                        m_fontColor="#F0C850" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                </GameObject>
+            </GameObject>
+
+            <!-- Right spacer -->
+            <GameObject name="RightPad">
+                <RectTransform />
+                <LayoutElement m_MinWidth="16" />
+            </GameObject>
+        </GameObject>
+
+        <!-- ═══════════ TAB BAR ═══════════ -->
+        <GameObject name="TabBar">
+            <RectTransform />
+            <Image m_Color="#0F0F25" />
+            <LayoutElement m_MinHeight="46" />
+            <HorizontalLayoutGroup m_Spacing="2"
+                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+
+            <GameObject name="TabWeapons">
+                <RectTransform />
+                <LayoutElement m_MinHeight="46" />
+                <Image m_Color="#1A1A35" />
+                <Button m_Transition="ColorTint"
+                    m_Colors.m_NormalColor="#FFFFFF"
+                    m_Colors.m_HighlightedColor="#DDDDFF" />
+                <GameObject name="Label">
+                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                    <TMPro.TextMeshProUGUI m_text="Weapons" m_fontSize="14" m_fontStyle="Bold"
+                        m_fontColor="#F0C850" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                </GameObject>
+            </GameObject>
+
+            <GameObject name="TabArmor">
+                <RectTransform />
+                <LayoutElement m_MinHeight="46" />
+                <Image m_Color="#0F0F25" />
+                <Button m_Transition="ColorTint"
+                    m_Colors.m_NormalColor="#FFFFFF"
+                    m_Colors.m_HighlightedColor="#DDDDFF" />
+                <GameObject name="Label">
+                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                    <TMPro.TextMeshProUGUI m_text="Armor" m_fontSize="14"
+                        m_fontColor="#666688" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                </GameObject>
+            </GameObject>
+
+            <GameObject name="TabPotions">
+                <RectTransform />
+                <LayoutElement m_MinHeight="46" />
+                <Image m_Color="#0F0F25" />
+                <Button m_Transition="ColorTint"
+                    m_Colors.m_NormalColor="#FFFFFF"
+                    m_Colors.m_HighlightedColor="#DDDDFF" />
+                <GameObject name="Label">
+                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                    <TMPro.TextMeshProUGUI m_text="Potions" m_fontSize="14"
+                        m_fontColor="#666688" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                </GameObject>
+            </GameObject>
+
+            <GameObject name="TabGems">
+                <RectTransform />
+                <LayoutElement m_MinHeight="46" />
+                <Image m_Color="#0F0F25" />
+                <Button m_Transition="ColorTint"
+                    m_Colors.m_NormalColor="#FFFFFF"
+                    m_Colors.m_HighlightedColor="#DDDDFF" />
+                <GameObject name="Label">
+                    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                    <TMPro.TextMeshProUGUI m_text="Gems" m_fontSize="14"
+                        m_fontColor="#6666AA" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                </GameObject>
+            </GameObject>
+        </GameObject>
+
+        <!-- Tab accent line -->
+        <GameObject name="TabAccent">
+            <RectTransform />
+            <Image m_Color="#F0C85060" />
+            <LayoutElement m_MinHeight="2" />
+        </GameObject>
+
+        <!-- ═══════════ SCROLL AREA ═══════════ -->
+        <GameObject name="ScrollArea">
+            <RectTransform />
+            <LayoutElement m_FlexibleHeight="1" />
+            <ScrollRect m_Horizontal="false" m_Vertical="true"
+                m_MovementType="Elastic" m_Elasticity="0.1"
+                m_Content="#ShopContent" m_Viewport="#ShopViewport" />
+
+            <GameObject name="Viewport" id="ShopViewport">
+                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                <Image m_Color="#0B0B1E" />
+                <Mask m_ShowMaskGraphic="false" />
+
+                <GameObject name="Content" id="ShopContent">
+                    <RectTransform m_AnchorMin="0, 1" m_AnchorMax="1, 1"
+                        m_Pivot="0.5, 1" m_SizeDelta="0, 0" />
+                    <VerticalLayoutGroup m_Spacing="10"
+                        m_ChildControlWidth="true" m_ChildControlHeight="true"
+                        m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+                    <ContentSizeFitter m_VerticalFit="PreferredSize" />
+
+                    <!-- Top padding -->
+                    <GameObject name="TopPad">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="12" />
+                    </GameObject>
+
+                    <!-- ── FEATURED BANNER ── -->
+                    <GameObject name="FeaturedBanner">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="110" />
+                        <Image m_Color="#1A1035" />
+                        <GameObject name="Glow">
+                            <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                            <Image m_Color="#FF440010" />
+                        </GameObject>
+                        <GameObject name="BannerInner">
+                            <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-28, -20" />
+                            <VerticalLayoutGroup m_Spacing="4"
+                                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                                m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+                            <GameObject name="Tag">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="18" />
+                                <TMPro.TextMeshProUGUI m_text="LIMITED OFFER" m_fontSize="11" m_fontStyle="Bold"
+                                    m_fontColor="#FF5577" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle"
+                                    m_characterSpacing="3" />
+                            </GameObject>
+                            <GameObject name="ItemName">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="30" />
+                                <TMPro.TextMeshProUGUI m_text="Legendary Flame Sword" m_fontSize="21" m_fontStyle="Bold"
+                                    m_fontColor="#FF9944" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="PriceLine">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="22" />
+                                <TMPro.TextMeshProUGUI m_text="4,999 coins  &lt;s&gt;9,999&lt;/s&gt;" m_fontSize="14"
+                                    m_fontColor="#F0C850" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle"
+                                    m_isRichText="true" />
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- ── SECTION: SWORDS ── -->
+                    <GameObject name="SwordsHeader">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <GameObject name="Text">
+                            <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-24, 0" />
+                            <TMPro.TextMeshProUGUI m_text="SWORDS" m_fontSize="12" m_fontStyle="Bold"
+                                m_fontColor="#555577" m_HorizontalAlignment="Left" m_VerticalAlignment="Bottom"
+                                m_characterSpacing="4" />
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Item: Iron Sword (Common) -->
+                    <GameObject name="ItemIronSword">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="76" />
+                        <Image m_Color="#13132A" />
+                        <HorizontalLayoutGroup m_Spacing="0"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+
+                        <GameObject name="LeftPad">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                        <GameObject name="Icon">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="52" m_MinHeight="52" />
+                            <Image m_Color="#1C1C38" />
+                            <GameObject name="Rarity">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 0" m_SizeDelta="0, 3" />
+                                <Image m_Color="#888888" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="Gap1">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                        <GameObject name="Info">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="52" />
+                            <VerticalLayoutGroup m_Spacing="2" m_ChildAlignment="MiddleLeft"
+                                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                                m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+                            <GameObject name="Name">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="24" />
+                                <TMPro.TextMeshProUGUI m_text="Iron Sword" m_fontSize="16" m_fontStyle="Bold"
+                                    m_fontColor="#DDDDEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Stats">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="18" />
+                                <TMPro.TextMeshProUGUI m_text="+12 ATK" m_fontSize="12"
+                                    m_fontColor="#55BB66" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="BuyButton">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="82" m_MinHeight="38" />
+                            <Image m_Color="#33BB55" />
+                            <Button m_Transition="ColorTint"
+                                m_Colors.m_NormalColor="#FFFFFF"
+                                m_Colors.m_HighlightedColor="#DDFFDD"
+                                m_Colors.m_PressedColor="#AADDAA" />
+                            <GameObject name="Price">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <TMPro.TextMeshProUGUI m_text="150" m_fontSize="15" m_fontStyle="Bold"
+                                    m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="RightPad">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Item: Steel Blade (Uncommon) -->
+                    <GameObject name="ItemSteelBlade">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="76" />
+                        <Image m_Color="#13132A" />
+                        <HorizontalLayoutGroup m_Spacing="0"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+
+                        <GameObject name="LeftPad">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                        <GameObject name="Icon">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="52" m_MinHeight="52" />
+                            <Image m_Color="#1C1C38" />
+                            <GameObject name="Rarity">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 0" m_SizeDelta="0, 3" />
+                                <Image m_Color="#44BB44" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="Gap1">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                        <GameObject name="Info">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="52" />
+                            <VerticalLayoutGroup m_Spacing="2" m_ChildAlignment="MiddleLeft"
+                                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                                m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+                            <GameObject name="Name">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="24" />
+                                <TMPro.TextMeshProUGUI m_text="Steel Blade" m_fontSize="16" m_fontStyle="Bold"
+                                    m_fontColor="#55DD66" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Stats">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="18" />
+                                <TMPro.TextMeshProUGUI m_text="+28 ATK  +5 CRIT" m_fontSize="12"
+                                    m_fontColor="#55BB66" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="BuyButton">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="82" m_MinHeight="38" />
+                            <Image m_Color="#33BB55" />
+                            <Button m_Transition="ColorTint"
+                                m_Colors.m_NormalColor="#FFFFFF"
+                                m_Colors.m_HighlightedColor="#DDFFDD"
+                                m_Colors.m_PressedColor="#AADDAA" />
+                            <GameObject name="Price">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <TMPro.TextMeshProUGUI m_text="500" m_fontSize="15" m_fontStyle="Bold"
+                                    m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="RightPad">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Item: Shadow Katana (Epic) -->
+                    <GameObject name="ItemShadowKatana">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="76" />
+                        <Image m_Color="#15102A" />
+                        <HorizontalLayoutGroup m_Spacing="0"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+
+                        <GameObject name="LeftPad">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                        <GameObject name="Icon">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="52" m_MinHeight="52" />
+                            <Image m_Color="#1C1C38" />
+                            <GameObject name="Rarity">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 0" m_SizeDelta="0, 3" />
+                                <Image m_Color="#BB55EE" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="Gap1">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                        <GameObject name="Info">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="52" />
+                            <VerticalLayoutGroup m_Spacing="2" m_ChildAlignment="MiddleLeft"
+                                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                                m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+                            <GameObject name="Name">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="24" />
+                                <TMPro.TextMeshProUGUI m_text="Shadow Katana" m_fontSize="16" m_fontStyle="Bold"
+                                    m_fontColor="#CC77EE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Stats">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="18" />
+                                <TMPro.TextMeshProUGUI m_text="+55 ATK  +15 CRIT  +10% Lifesteal" m_fontSize="12"
+                                    m_fontColor="#55BB66" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="BuyButton">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="82" m_MinHeight="38" />
+                            <Image m_Color="#33BB55" />
+                            <Button m_Transition="ColorTint"
+                                m_Colors.m_NormalColor="#FFFFFF"
+                                m_Colors.m_HighlightedColor="#DDFFDD"
+                                m_Colors.m_PressedColor="#AADDAA" />
+                            <GameObject name="Price">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <TMPro.TextMeshProUGUI m_text="2,800" m_fontSize="15" m_fontStyle="Bold"
+                                    m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="RightPad">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- ── SECTION: BOWS ── -->
+                    <GameObject name="BowsHeader">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="36" />
+                        <GameObject name="Text">
+                            <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-24, 0" />
+                            <TMPro.TextMeshProUGUI m_text="BOWS" m_fontSize="12" m_fontStyle="Bold"
+                                m_fontColor="#555577" m_HorizontalAlignment="Left" m_VerticalAlignment="Bottom"
+                                m_characterSpacing="4" />
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Item: Short Bow (Common) -->
+                    <GameObject name="ItemShortBow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="76" />
+                        <Image m_Color="#13132A" />
+                        <HorizontalLayoutGroup m_Spacing="0"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+
+                        <GameObject name="LeftPad">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                        <GameObject name="Icon">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="52" m_MinHeight="52" />
+                            <Image m_Color="#1C1C38" />
+                            <GameObject name="Rarity">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 0" m_SizeDelta="0, 3" />
+                                <Image m_Color="#888888" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="Gap1">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                        <GameObject name="Info">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="52" />
+                            <VerticalLayoutGroup m_Spacing="2" m_ChildAlignment="MiddleLeft"
+                                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                                m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+                            <GameObject name="Name">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="24" />
+                                <TMPro.TextMeshProUGUI m_text="Short Bow" m_fontSize="16" m_fontStyle="Bold"
+                                    m_fontColor="#DDDDEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Stats">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="18" />
+                                <TMPro.TextMeshProUGUI m_text="+10 ATK  +8 Range" m_fontSize="12"
+                                    m_fontColor="#55BB66" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="BuyButton">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="82" m_MinHeight="38" />
+                            <Image m_Color="#33BB55" />
+                            <Button m_Transition="ColorTint"
+                                m_Colors.m_NormalColor="#FFFFFF"
+                                m_Colors.m_HighlightedColor="#DDFFDD"
+                                m_Colors.m_PressedColor="#AADDAA" />
+                            <GameObject name="Price">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <TMPro.TextMeshProUGUI m_text="120" m_fontSize="15" m_fontStyle="Bold"
+                                    m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="RightPad">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Item: Elven Longbow (Rare) -->
+                    <GameObject name="ItemElvenLongbow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="76" />
+                        <Image m_Color="#101228" />
+                        <HorizontalLayoutGroup m_Spacing="0"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+
+                        <GameObject name="LeftPad">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                        <GameObject name="Icon">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="52" m_MinHeight="52" />
+                            <Image m_Color="#1C1C38" />
+                            <GameObject name="Rarity">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 0" m_SizeDelta="0, 3" />
+                                <Image m_Color="#4488EE" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="Gap1">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                        <GameObject name="Info">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="52" />
+                            <VerticalLayoutGroup m_Spacing="2" m_ChildAlignment="MiddleLeft"
+                                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                                m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+                            <GameObject name="Name">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="24" />
+                                <TMPro.TextMeshProUGUI m_text="Elven Longbow" m_fontSize="16" m_fontStyle="Bold"
+                                    m_fontColor="#66AAFF" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Stats">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="18" />
+                                <TMPro.TextMeshProUGUI m_text="+35 ATK  +20 Range  +10 DEX" m_fontSize="12"
+                                    m_fontColor="#55BB66" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="BuyButton">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="82" m_MinHeight="38" />
+                            <Image m_Color="#33BB55" />
+                            <Button m_Transition="ColorTint"
+                                m_Colors.m_NormalColor="#FFFFFF"
+                                m_Colors.m_HighlightedColor="#DDFFDD"
+                                m_Colors.m_PressedColor="#AADDAA" />
+                            <GameObject name="Price">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <TMPro.TextMeshProUGUI m_text="1,200" m_fontSize="15" m_fontStyle="Bold"
+                                    m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="RightPad">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Owned item example -->
+                    <GameObject name="ItemWoodenBow">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="76" />
+                        <Image m_Color="#13132A" />
+                        <HorizontalLayoutGroup m_Spacing="0"
+                            m_ChildControlWidth="true" m_ChildControlHeight="true"
+                            m_ChildForceExpandWidth="false" m_ChildForceExpandHeight="false" />
+
+                        <GameObject name="LeftPad">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                        <GameObject name="Icon">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="52" m_MinHeight="52" />
+                            <Image m_Color="#1C1C38" />
+                            <GameObject name="Rarity">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 0" m_SizeDelta="0, 3" />
+                                <Image m_Color="#888888" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="Gap1">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                        <GameObject name="Info">
+                            <RectTransform />
+                            <LayoutElement m_FlexibleWidth="1" m_MinHeight="52" />
+                            <VerticalLayoutGroup m_Spacing="2" m_ChildAlignment="MiddleLeft"
+                                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                                m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+                            <GameObject name="Name">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="24" />
+                                <TMPro.TextMeshProUGUI m_text="Wooden Bow" m_fontSize="16" m_fontStyle="Bold"
+                                    m_fontColor="#777788" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                            <GameObject name="Stats">
+                                <RectTransform />
+                                <LayoutElement m_MinHeight="18" />
+                                <TMPro.TextMeshProUGUI m_text="+5 ATK  +4 Range" m_fontSize="12"
+                                    m_fontColor="#556655" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="OwnedBadge">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="82" m_MinHeight="38" />
+                            <Image m_Color="#1E1E38" />
+                            <GameObject name="Text">
+                                <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+                                <TMPro.TextMeshProUGUI m_text="OWNED" m_fontSize="12" m_fontStyle="Bold"
+                                    m_fontColor="#555577" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+                            </GameObject>
+                        </GameObject>
+                        <GameObject name="RightPad">
+                            <RectTransform />
+                            <LayoutElement m_MinWidth="14" />
+                        </GameObject>
+                    </GameObject>
+
+                    <!-- Bottom padding -->
+                    <GameObject name="BottomPad">
+                        <RectTransform />
+                        <LayoutElement m_MinHeight="20" />
+                    </GameObject>
+
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</UnityPrefab>

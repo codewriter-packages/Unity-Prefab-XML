@@ -72,9 +72,9 @@ Save as `.prefabxml` — Unity imports it as a prefab automatically.
 ### ✨ Features
 
 - 🧩 **Any component** — use any Unity component by class name, including custom scripts with full namespace
-- ⚓ **Anchor presets** — `stretch`, `middle-center`, `top-left` instead of raw anchorMin/anchorMax numbers
+- ⚓ **Standard Unity field names** — uses `m_` serialized property names, 1:1 mapping to C#
 - 🔗 **Object references** — link components to other GameObjects via `#id`
-- 🎨 **Asset slots** — expose sprites, fonts, materials to the Inspector with `{variableName}`
+- 🎨 **Asset references** — reference sprites, fonts, materials by project path
 - 🌳 **Nested hierarchies** — parent-child relationships through XML nesting
 - 🔢 **Value types** — Color (`#FF0000`), Vector2/3/4, Enum, RectOffset, and more
 
@@ -84,9 +84,35 @@ Save as `.prefabxml` — Unity imports it as a prefab automatically.
 - ⚡ **Rapid prototyping** — sketch out a prefab in a text editor without opening the Unity Inspector
 - 📝 **Diff-friendly UI** — review prefab changes in pull requests as readable XML, not cryptic YAML
 
-### 📖 Format specification
+### 📖 Format & Guide
 
-See [FORMAT.md](./FORMAT.md) for the full format reference with examples.
+- [FORMAT.md](./FORMAT.md) — format specification
+- [GUIDE.md](./GUIDE.md) — common mistakes and best practices for LLM generation
+
+### 📂 Samples & Templates
+
+- `Templates/` — reference templates for common UI components (Button, Slider, Toggle, Dropdown, etc.) with all field names
+- `Samples/` — complete working examples
+
+## 🎨 Syntax Highlighting
+
+`.prefabxml` files are plain XML, so you can enable syntax highlighting in your IDE by associating the extension with the XML file type:
+
+### VS Code
+
+Add to your `.vscode/settings.json`:
+
+```json
+{
+    "files.associations": {
+        "*.prefabxml": "xml"
+    }
+}
+```
+
+### JetBrains Rider
+
+Go to **Settings → Editor → File Types**, find **XML** in the list, and add `*.prefabxml` to the registered patterns.
 
 ## 📦 How to Install
 

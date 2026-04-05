@@ -1,0 +1,31 @@
+<UnityPrefab>
+    <GameObject name="Text (TMP)">
+        <RectTransform
+            m_AnchorMin="0.5, 0.5" m_AnchorMax="0.5, 0.5"
+            m_Pivot="0.5, 0.5"
+            m_SizeDelta="200, 50"
+            m_AnchoredPosition="0, 0" />
+        <TMPro.TextMeshProUGUI
+            m_text="New Text"
+            m_fontSize="24"
+            m_fontStyle="Normal"
+            m_fontColor="#FFFFFF"
+            m_HorizontalAlignment="Center"
+            m_VerticalAlignment="Middle"
+            m_TextWrappingMode="Normal"
+            m_overflowMode="Overflow"
+            m_isRichText="true"
+            m_RaycastTarget="false" />
+            <!-- m_fontStyle: Normal, Bold, Italic, Underline, Strikethrough -->
+            <!-- m_HorizontalAlignment: Left, Center, Right, Justified, Flush, Geometry -->
+            <!-- m_VerticalAlignment: Top, Middle, Bottom, Baseline, Geometry, Capline -->
+            <!-- m_TextWrappingMode: NoWrap, Normal, PreserveWhitespace, PreserveWhitespaceNoWrap -->
+            <!-- m_overflowMode: Overflow, Ellipsis, Masking, Truncate, ScrollRect -->
+            <!-- m_fontAsset="Assets/Fonts/Roboto SDF.asset" (asset path) -->
+            <!-- m_characterSpacing="0" m_wordSpacing="0" m_lineSpacing="0" m_paragraphSpacing="0" -->
+            <!-- m_enableAutoSizing="false" m_fontSizeMin="10" m_fontSizeMax="36" -->
+            <!-- m_margin="0, 0, 0, 0" (Vector4: left, top, right, bottom) -->
+            <!-- m_enableVertexGradient="false" -->
+            <!-- m_Maskable="true" -->
+    </GameObject>
+</UnityPrefab>

@@ -1,0 +1,26 @@
+<UnityPrefab>
+    <GameObject name="Image">
+        <RectTransform
+            m_AnchorMin="0.5, 0.5" m_AnchorMax="0.5, 0.5"
+            m_Pivot="0.5, 0.5"
+            m_SizeDelta="100, 100"
+            m_AnchoredPosition="0, 0" />
+        <Image
+            m_Color="#FFFFFF"
+            m_RaycastTarget="true"
+            m_Maskable="true"
+            m_Type="Simple"
+            m_PreserveAspect="false"
+            m_FillCenter="true" />
+            <!-- m_Sprite="Assets/Sprites/icon.png" (asset path) -->
+            <!-- m_Material (default: UI/Default) -->
+            <!-- m_Type: Simple, Sliced, Tiled, Filled -->
+            <!-- m_FillMethod: Horizontal, Vertical, Radial90, Radial180, Radial360 -->
+            <!-- m_FillAmount="1" (0-1, only for Filled type) -->
+            <!-- m_FillClockwise="true" -->
+            <!-- m_FillOrigin="0" -->
+            <!-- m_UseSpriteMesh="false" -->
+            <!-- m_PixelsPerUnitMultiplier="1" -->
+            <!-- m_RaycastPadding="0, 0, 0, 0" (Vector4: left, bottom, right, top) -->
+    </GameObject>
+</UnityPrefab>

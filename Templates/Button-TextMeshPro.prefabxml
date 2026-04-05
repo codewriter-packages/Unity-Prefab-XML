@@ -1,0 +1,44 @@
+<UnityPrefab>
+    <GameObject name="Button">
+        <RectTransform
+            m_AnchorMin="0.5, 0.5" m_AnchorMax="0.5, 0.5"
+            m_Pivot="0.5, 0.5"
+            m_SizeDelta="220, 60"
+            m_AnchoredPosition="0, 0" />
+        <Image
+            m_Color="#44D962"
+            m_RaycastTarget="true"
+            m_Maskable="true" />
+        <Button
+            m_Interactable="true"
+            m_Transition="ColorTint"
+            m_Colors.m_NormalColor="#FFFFFF"
+            m_Colors.m_HighlightedColor="#E8E8E8"
+            m_Colors.m_PressedColor="#C0C0C0"
+            m_Colors.m_SelectedColor="#FFFFFF"
+            m_Colors.m_DisabledColor="#A0A0A080"
+            m_Colors.m_ColorMultiplier="1"
+            m_Colors.m_FadeDuration="0.1" />
+            <!-- m_Transition: None, ColorTint, SpriteSwap, Animation -->
+            <!-- m_Navigation.m_Mode: None, Horizontal, Vertical, Automatic, Explicit -->
+
+        <GameObject name="Label">
+            <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+            <TMPro.TextMeshProUGUI
+                m_text="Button"
+                m_fontSize="24"
+                m_fontStyle="Bold"
+                m_fontColor="#FFFFFF"
+                m_HorizontalAlignment="Center"
+                m_VerticalAlignment="Middle"
+                m_TextWrappingMode="NoWrap"
+                m_overflowMode="Overflow"
+                m_isRichText="true" />
+                <!-- m_fontStyle: Normal, Bold, Italic, Underline, Strikethrough -->
+                <!-- m_overflowMode: Overflow, Ellipsis, Masking, Truncate, ScrollRect -->
+                <!-- m_characterSpacing="0" m_wordSpacing="0" m_lineSpacing="0" -->
+                <!-- m_enableAutoSizing="false" m_fontSizeMin="10" m_fontSizeMax="36" -->
+                <!-- m_margin="0, 0, 0, 0" (Vector4: left, top, right, bottom) -->
+        </GameObject>
+    </GameObject>
+</UnityPrefab>

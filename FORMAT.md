@@ -1,13 +1,13 @@
 # PrefabXML Format
 
-PrefabXML (`.prefabxml`) is a simplified XML format for describing Unity UI prefabs.
+PrefabXML (`.prefabxml`) is a simplified XML format for describing Unity prefabs.
 
 ## Structure
 
 ```xml
 <UnityPrefab>
     <GameObject name="...">
-        <Component attr="value" />
+        <Component m_Property="value" />
         <GameObject name="...">
             ...child objects...
         </GameObject>
@@ -17,7 +17,23 @@ PrefabXML (`.prefabxml`) is a simplified XML format for describing Unity UI pref
 
 - `<UnityPrefab>` — root element, exactly one per file.
 - `<GameObject name="..." active="true">` — a Unity GameObject. Nesting creates parent-child hierarchy. The `active` attribute is optional (default `"true"`), set to `"false"` to create an inactive object.
-- Any other tag inside `<GameObject>` is a **component** (e.g. `<RectTransform>`, `<Image>`, `<Text>`, `<Button>`). Components are processed in document order — `<RectTransform>` or `<Transform>` must be the first component if present.
+- Any other tag inside `<GameObject>` is a **component** (e.g. `<RectTransform>`, `<Image>`, `<Button>`). Components are processed in document order — `<RectTransform>` must be the first component if present.
+
+## Property names
+
+Property names match Unity's **serialized field names** exactly (the `m_` prefixed names used by SerializedObject). These are the same names you see in `.prefab` YAML files and in the Unity debug Inspector.
+
+```xml
+<RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="400, 250" />
+<Image m_Color="#FF0000" m_RaycastTarget="true" />
+<TMPro.TextMeshProUGUI m_text="Hello" m_fontSize="24" m_fontColor="#FFFFFF" />
+```
+
+Nested properties use dot notation:
+
+```xml
+<Button m_Transition="ColorTint" m_Colors.m_NormalColor="#FFFFFF" m_Colors.m_PressedColor="#CCCCCC" />
+```
 
 ## Object references
 
@@ -25,33 +41,38 @@ Use the `id` attribute on `<GameObject>` to give it a unique identifier. Then re
 
 ```xml
 <GameObject name="Scroll Area">
-    <ScrollRect content="#Content" viewport="#Viewport" />
+    <ScrollRect m_Horizontal="false" m_Vertical="true"
+        m_Content="#Content" m_Viewport="#Viewport" />
 
     <GameObject name="Viewport" id="Viewport">
-        <Image />
-        <Mask showMaskGraphic="false" />
+        <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+        <Image m_Color="#1E1E2E" />
+        <Mask m_ShowMaskGraphic="false" />
 
         <GameObject name="Content" id="Content">
-            <RectTransform width="400" height="1000" />
-            <VerticalLayoutGroup spacing="8" padding="10" />
+            <RectTransform m_AnchorMin="0, 1" m_AnchorMax="1, 1"
+                m_Pivot="0.5, 1" m_SizeDelta="0, 0" />
+            <VerticalLayoutGroup m_Spacing="8"
+                m_ChildControlWidth="true" m_ChildControlHeight="true"
+                m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
         </GameObject>
     </GameObject>
 </GameObject>
 ```
 
-The `id` is optional — only add it when the object needs to be referenced from another component. The `id` value must be unique within the file.
+The `id` is optional — only add it when the object needs to be referenced from another component. The `id` value must be unique within the file. The importer automatically resolves the reference type (e.g. `m_FillRect` expects `RectTransform`, so it calls `GetComponent<RectTransform>()` on the referenced GameObject).
 
-## Exposed properties (asset references)
+## Asset references
 
-Use `{variableName}` as a property value to expose it in the ScriptedImporter inspector. This allows assigning assets (sprites, fonts, materials, etc.) via the Unity Editor:
+Reference assets (sprites, fonts, materials, etc.) by their project path:
 
 ```xml
-<Image sprite="{iconSprite}" />
-<Text font="{headerFont}" fontSize="24" color="#FFFFFF" />
-<Image sprite="{backgroundImage}" material="{customMaterial}" />
+<Image m_Sprite="Assets/Sprites/icon.png" />
+<TMPro.TextMeshProUGUI m_fontAsset="Assets/Fonts/Roboto SDF.asset" m_fontSize="24" m_fontColor="#FFFFFF" />
+<Image m_Material="Assets/Materials/UIBlur.mat" />
 ```
 
-Regular values (like `fontSize="24"`) are parsed from XML. Values wrapped in `{}` become editable fields in the importer inspector. The field type is inferred automatically from the component property (e.g. `sprite` → `Sprite`, `font` → `Font`, `material` → `Material`).
+The importer loads assets via `AssetDatabase.LoadAssetAtPath` and automatically tracks dependencies — the prefab reimports when referenced assets change.
 
 ## Setting component properties
 
@@ -60,9 +81,8 @@ Regular values (like `fontSize="24"`) are parsed from XML. Values wrapped in `{}
 For simple values, write properties as XML attributes directly on the component tag:
 
 ```xml
-<Image color="#FF0000" />
-<Text text="Hello" fontSize="24" color="#FFFFFF" alignment="MiddleCenter" />
-<RectTransform width="200" height="100" />
+<Image m_Color="#FF0000" m_RaycastTarget="true" m_Maskable="true" />
+<RectTransform m_AnchorMin="0.5, 0.5" m_AnchorMax="0.5, 0.5" m_SizeDelta="200, 100" />
 ```
 
 If a component has no properties, use a self-closing tag:
@@ -73,51 +93,41 @@ If a component has no properties, use a self-closing tag:
 
 ### Long form (Field tag)
 
-For complex values such as arrays, lists, or multi-line content, use `<Field>` child elements:
+For arrays and lists, use `<Field>` child elements with `<Item>` entries:
 
 ```xml
-<Dropdown>
-    <Field name="options">
-        <Item value="Option A" />
-        <Item value="Option B" />
-        <Item value="Option C" />
+<TMPro.TMP_Dropdown m_Value="0">
+    <Field name="m_Options.m_Options">
+        <Item m_Text="Option A" />
+        <Item m_Text="Option B" />
+        <Item m_Text="Option C" />
     </Field>
-</Dropdown>
-```
-
-Both forms can be mixed within one component:
-
-```xml
-<Dropdown captionText="Choose...">
-    <Field name="options">
-        <Item value="Option A" />
-        <Item value="Option B" />
-    </Field>
-</Dropdown>
+</TMPro.TMP_Dropdown>
 ```
 
 ## Property value types
 
-Values are written as strings and parsed by type:
+Values are written as strings and parsed by `SerializedPropertyType`:
 
 | Type | Example | Notes |
 |------|---------|-------|
-| int / float | `"100"`, `"0.5"` | |
-| bool | `"true"`, `"false"` | |
-| string | `"Hello World"` | |
+| Integer | `"100"` | |
+| Float | `"0.5"` | |
+| Boolean | `"true"`, `"false"` | |
+| String | `"Hello World"` | |
 | Color | `"#FF0000"`, `"#FF000080"` | hex RRGGBB or RRGGBBAA |
-| Enum | `"MiddleCenter"`, `"Bold"` | enum member name |
+| Enum | `"MiddleCenter"`, `"Bold"` | enum member name (case-insensitive) |
 | Vector2 | `"10, 20"` | |
 | Vector3 | `"1, 2, 3"` | |
 | Vector4 | `"1, 2, 3, 4"` | |
-| RectOffset | `"16"`, `"16, 16, 8, 8"` | 1 value = all sides; 4 values = left, right, top, bottom (matches `new RectOffset(l, r, t, b)`) |
+| ObjectReference | `"#id"` | reference to GameObject by id |
 
 ## Available components
 
 Any Unity component can be used by its class name. For built-in Unity components from `UnityEngine` and `UnityEngine.UI` namespaces, the short class name is enough:
 
 ```xml
-<Image color="#FF0000" />
+<Image m_Color="#FF0000" />
 <Button />
 ```
 
@@ -125,113 +135,24 @@ For custom or third-party components, use the fully qualified name (namespace + 
 
 ```xml
 <MyGame.UI.HealthBar maxValue="100" currentValue="75" />
-<TMPro.TextMeshProUGUI text="Hello" fontSize="24" />
+<TMPro.TextMeshProUGUI m_text="Hello" m_fontSize="24" />
 ```
 
-### RectTransform anchor presets
+## Templates
 
-The `anchor` attribute on `RectTransform` provides a shorthand for common `anchorMin` / `anchorMax` combinations:
+See the `Templates/` folder for ready-to-use reference templates with all common properties:
 
-| Preset | anchorMin | anchorMax | Description |
-|--------|-----------|-----------|-------------|
-| `top-left` | `0, 1` | `0, 1` | top-left corner |
-| `top-center` | `0.5, 1` | `0.5, 1` | top edge, centered |
-| `top-right` | `1, 1` | `1, 1` | top-right corner |
-| `middle-left` | `0, 0.5` | `0, 0.5` | left edge, centered |
-| `middle-center` | `0.5, 0.5` | `0.5, 0.5` | center of parent |
-| `middle-right` | `1, 0.5` | `1, 0.5` | right edge, centered |
-| `bottom-left` | `0, 0` | `0, 0` | bottom-left corner |
-| `bottom-center` | `0.5, 0` | `0.5, 0` | bottom edge, centered |
-| `bottom-right` | `1, 0` | `1, 0` | bottom-right corner |
-| `stretch-horizontal` | `0, 0.5` | `1, 0.5` | stretch to parent width |
-| `stretch-vertical` | `0.5, 0` | `0.5, 1` | stretch to parent height |
-| `stretch` | `0, 0` | `1, 1` | fill entire parent |
+- `Image.prefabxml` — Image with all m_ fields
+- `RawImage.prefabxml` — RawImage
+- `Text-TextMeshPro.prefabxml` — TextMeshProUGUI with alignment, wrapping, overflow
+- `Button-TextMeshPro.prefabxml` — Button with ColorTint and TMP label
+- `Toggle.prefabxml` — Toggle with track, checkmark, and label
+- `Slider.prefabxml` — Slider with fill and handle
+- `ScrollView.prefabxml` — ScrollRect with viewport, mask, and content
+- `Dropdown.prefabxml` — TMP_Dropdown with template and options
 
-Examples:
+## Samples
 
-```xml
-<!-- centered panel with fixed size -->
-<RectTransform anchor="middle-center" width="400" height="300" />
+See the `Samples/` folder for complete working examples:
 
-<!-- top bar stretching full width -->
-<RectTransform anchor="stretch-horizontal" height="60" />
-
-<!-- fill parent completely -->
-<RectTransform anchor="stretch" />
-```
-
-You can still use `anchorMin` and `anchorMax` directly for non-standard values:
-
-```xml
-<RectTransform anchorMin="0.1, 0.1" anchorMax="0.9, 0.9" />
-```
-
-### Common UI components
-
-| Component | Common properties |
-|-----------|-------------------|
-| `RectTransform` | `width`, `height`, `anchor`, `pivot`, `anchoredPosition`, `anchorMin`, `anchorMax` |
-| `Image` | `color`, `sprite`, `type`, `raycastTarget` |
-| `Text` | `text`, `fontSize`, `fontStyle`, `color`, `alignment` |
-| `Button` | `interactable`, `transition` |
-| `Toggle` | `isOn`, `interactable` |
-| `InputField` | `text`, `placeholder`, `characterLimit` |
-| `Slider` | `minValue`, `maxValue`, `value`, `wholeNumbers` |
-| `ScrollRect` | `horizontal`, `vertical` |
-| `Dropdown` | `captionText`, `options` (use Field form) |
-| `HorizontalLayoutGroup` | `spacing`, `padding`, `childAlignment`, `childForceExpandWidth`, `childForceExpandHeight` |
-| `VerticalLayoutGroup` | `spacing`, `padding`, `childAlignment`, `childForceExpandWidth`, `childForceExpandHeight` |
-| `GridLayoutGroup` | `cellSize`, `spacing`, `constraint`, `constraintCount` |
-| `LayoutElement` | `minWidth`, `minHeight`, `preferredWidth`, `preferredHeight`, `flexibleWidth`, `flexibleHeight` |
-| `ContentSizeFitter` | `horizontalFit`, `verticalFit` |
-| `CanvasGroup` | `alpha`, `interactable`, `blocksRaycasts` |
-| `Mask` | `showMaskGraphic` |
-
-## Full example
-
-Confirmation dialog with a title, message, and Yes/No buttons:
-
-```xml
-<UnityPrefab>
-    <GameObject name="ConfirmDialog">
-        <RectTransform width="400" height="250" />
-        <Image color="#222222" />
-        <VerticalLayoutGroup padding="16" spacing="12" />
-
-        <GameObject name="Title">
-            <RectTransform height="40" />
-            <Text text="Подтверждение" fontSize="24" fontStyle="Bold"
-                  color="#FFFFFF" alignment="MiddleCenter" />
-        </GameObject>
-
-        <GameObject name="Message">
-            <RectTransform height="80" />
-            <Text text="Вы уверены, что хотите выполнить это действие?"
-                  fontSize="18" color="#CCCCCC" alignment="MiddleCenter" />
-        </GameObject>
-
-        <GameObject name="Buttons">
-            <RectTransform height="50" />
-            <HorizontalLayoutGroup spacing="20" childAlignment="MiddleCenter" />
-
-            <GameObject name="ButtonYes">
-                <RectTransform width="120" height="40" />
-                <Image color="#4CAF50" />
-                <Button />
-                <GameObject name="Label">
-                    <Text text="Да" fontSize="20" color="#FFFFFF" alignment="MiddleCenter" />
-                </GameObject>
-            </GameObject>
-
-            <GameObject name="ButtonNo">
-                <RectTransform width="120" height="40" />
-                <Image color="#F44336" />
-                <Button />
-                <GameObject name="Label">
-                    <Text text="Нет" fontSize="20" color="#FFFFFF" alignment="MiddleCenter" />
-                </GameObject>
-            </GameObject>
-        </GameObject>
-    </GameObject>
-</UnityPrefab>
-```
+- `ConfirmDialog.prefabxml` — Confirmation dialog with overlay, header, message, and Cancel/Confirm buttons
