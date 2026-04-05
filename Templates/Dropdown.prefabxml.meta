@@ -2,7 +2,17 @@ fileFormatVersion: 2
 guid: ce1d38d3b80891d4c9c6f40b8b51d74d
 ScriptedImporter:
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Sprite
+      assembly: UnityEngine.CoreModule
+      name: dropdownArrow
+    second: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  - first:
+      type: UnityEngine:Sprite
+      assembly: UnityEngine.CoreModule
+      name: dropdownBackground
+    second: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   serializedVersion: 2
   userData: 
   assetBundleName: 

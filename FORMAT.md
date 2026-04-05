@@ -74,6 +74,25 @@ Reference assets (sprites, fonts, materials, etc.) by their project path:
 
 The importer loads assets via `AssetDatabase.LoadAssetAtPath` and automatically tracks dependencies — the prefab reimports when referenced assets change.
 
+## Asset bindings
+
+Use `{name}` syntax to declare an asset binding — a named slot that can be assigned in the Inspector instead of hardcoding a path:
+
+```xml
+<Image m_Sprite="{heroIcon}" />
+<TextMeshProUGUI m_fontAsset="{mainFont}" />
+<Image m_Material="{backgroundMaterial}" />
+```
+
+When the file is imported, the Inspector shows an **Asset Bindings** section with a typed field for each `{name}` found in the XML. The field type is determined automatically from the property where the binding is used (e.g. `m_Sprite` → `Sprite`, `m_fontAsset` → `TMP_FontAsset`).
+
+Bindings are useful when:
+- The LLM doesn't know what assets exist in the project
+- You want to decouple prefab structure from specific asset paths
+- You want a designer to assign assets after the XML is generated
+
+The same binding name can be used in multiple places — they all share the same assigned asset. Using the same name with different property types is an error.
+
 ## Setting component properties
 
 ### Short form (attributes)
@@ -123,6 +142,7 @@ Values are written as strings and parsed by `SerializedPropertyType`:
 | Vector3 | `"1, 2, 3"` | |
 | Vector4 | `"1, 2, 3, 4"` | |
 | ObjectReference | `"#id"` | reference to GameObject by id |
+| ObjectReference | `"{name}"` | asset binding, assigned in Inspector |
 
 ## Available components
 

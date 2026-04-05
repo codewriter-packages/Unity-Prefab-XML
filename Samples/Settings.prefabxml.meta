@@ -2,7 +2,42 @@ fileFormatVersion: 2
 guid: 8c324a930e4a48548a1f7e4db8e59b20
 ScriptedImporter:
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Sprite
+      assembly: UnityEngine.CoreModule
+      name: buttonBackground
+    second: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  - first:
+      type: UnityEngine:Sprite
+      assembly: UnityEngine.CoreModule
+      name: dropdownArrow
+    second: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  - first:
+      type: UnityEngine:Sprite
+      assembly: UnityEngine.CoreModule
+      name: dropdownBackground
+    second: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  - first:
+      type: UnityEngine:Sprite
+      assembly: UnityEngine.CoreModule
+      name: sliderBackground
+    second: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  - first:
+      type: UnityEngine:Sprite
+      assembly: UnityEngine.CoreModule
+      name: sliderFill
+    second: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  - first:
+      type: UnityEngine:Sprite
+      assembly: UnityEngine.CoreModule
+      name: toggleBackground
+    second: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  - first:
+      type: UnityEngine:Sprite
+      assembly: UnityEngine.CoreModule
+      name: toggleCheckmark
+    second: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   serializedVersion: 2
   userData: 
   assetBundleName: 

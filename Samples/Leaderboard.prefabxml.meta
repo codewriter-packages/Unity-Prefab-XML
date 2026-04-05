@@ -2,7 +2,12 @@ fileFormatVersion: 2
 guid: d4022ca298839a84db00aca96c968a34
 ScriptedImporter:
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Sprite
+      assembly: UnityEngine.CoreModule
+      name: avatarIcon
+    second: {fileID: 21300000, guid: baf2fc9abcd81dc4cb4928fdc21658db, type: 3}
   serializedVersion: 2
   userData: 
   assetBundleName: 

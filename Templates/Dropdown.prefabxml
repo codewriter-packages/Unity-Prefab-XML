@@ -5,7 +5,7 @@
             m_Pivot="0.5, 0.5"
             m_SizeDelta="200, 40"
             m_AnchoredPosition="0, 0" />
-        <Image m_Color="#2A2A3E" />
+        <Image m_Sprite="{dropdownBackground}" m_Type="Sliced" m_Color="#2A2A3E" />
         <TMP_Dropdown
             m_Template="#Template"
             m_CaptionText="#CaptionText"
@@ -45,7 +45,7 @@
             <RectTransform m_AnchorMin="1, 0.5" m_AnchorMax="1, 0.5"
                 m_Pivot="1, 0.5"
                 m_SizeDelta="20, 20" m_AnchoredPosition="-10, 0" />
-            <Image m_Color="#AAAACC" />
+            <Image m_Sprite="{dropdownArrow}" m_Color="#AAAACC" />
         </GameObject>
 
         <!-- Dropdown template (inactive, cloned when opened) -->

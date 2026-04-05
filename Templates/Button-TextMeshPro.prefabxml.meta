@@ -2,7 +2,12 @@ fileFormatVersion: 2
 guid: 5716b2aa02159224aae7f5a54649a6f5
 ScriptedImporter:
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Sprite
+      assembly: UnityEngine.CoreModule
+      name: buttonImage
+    second: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   serializedVersion: 2
   userData: 
   assetBundleName: 

@@ -12,13 +12,27 @@ namespace UnityPrefabXML
         public Dictionary<string, GameObject> IdRegistry { get; } = new Dictionary<string, GameObject>();
         public Dictionary<XElement, GameObject> ElementToGameObject { get; } = new Dictionary<XElement, GameObject>();
         public List<System.Action> DeferredActions { get; } = new List<System.Action>();
+        public Dictionary<string, Object> AssetBindings { get; }
+        public Dictionary<string, System.Type> DiscoveredBindings { get; } = new Dictionary<string, System.Type>();
 
         private readonly List<ImportDiagnostic> _diagnostics;
 
-        public PrefabXmlBuildContext(AssetImportContext ctx, List<ImportDiagnostic> diagnostics)
+        public PrefabXmlBuildContext(AssetImportContext ctx, List<ImportDiagnostic> diagnostics,
+            Dictionary<string, Object> assetBindings)
         {
             Ctx = ctx;
             _diagnostics = diagnostics;
+            AssetBindings = assetBindings;
+        }
+
+        public static bool IsBinding(string value)
+        {
+            return value.Length > 2 && value[0] == '{' && value[value.Length - 1] == '}';
+        }
+
+        public static string GetBindingName(string value)
+        {
+            return value.Substring(1, value.Length - 2);
         }
 
         public void LogError(string message, int line = -1)

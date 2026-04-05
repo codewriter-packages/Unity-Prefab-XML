@@ -105,7 +105,32 @@ namespace UnityPrefabXML
                     break;
 
                 case SerializedPropertyType.ObjectReference:
-                    if (value.StartsWith("#"))
+                    if (PrefabXmlBuildContext.IsBinding(value))
+                    {
+                        var bindingName = PrefabXmlBuildContext.GetBindingName(value);
+                        var expectedType = ExtractPPtrTypeName(prop.type);
+                        var targetType = ResolveAssetType(expectedType);
+
+                        if (context.DiscoveredBindings.TryGetValue(bindingName, out var existingType)
+                            && existingType != targetType)
+                        {
+                            context.LogError(
+                                $"Binding '{{{bindingName}}}' used with conflicting types: {existingType.Name} and {targetType.Name}.",
+                                element);
+                        }
+
+                        context.DiscoveredBindings[bindingName] = targetType;
+
+                        if (context.AssetBindings.TryGetValue(bindingName, out var boundAsset))
+                        {
+                            prop.objectReferenceValue = boundAsset;
+
+                            var assetPath = AssetDatabase.GetAssetPath(boundAsset);
+                            if (assetPath.StartsWith("Assets/") || assetPath.StartsWith("Packages/"))
+                                context.Ctx.DependsOnSourceAsset(assetPath);
+                        }
+                    }
+                    else if (value.StartsWith("#"))
                     {
                         // Object reference by id
                         var refId = value.Substring(1);

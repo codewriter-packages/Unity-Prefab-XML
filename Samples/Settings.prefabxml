@@ -5,7 +5,7 @@
 
         <GameObject name="Panel">
             <RectTransform m_AnchorMin="0.5, 0.5" m_AnchorMax="0.5, 0.5" m_SizeDelta="520, 480" />
-            <Image m_Color="#1E1E2E" />
+            <Image m_Sprite="{panelBackground}" m_Type="Sliced" m_Color="#1E1E2E" />
             <VerticalLayoutGroup m_Spacing="0"
                 m_ChildControlWidth="true" m_ChildControlHeight="true"
                 m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
@@ -74,7 +74,7 @@
                         <GameObject name="Dropdown">
                             <RectTransform />
                             <LayoutElement m_MinWidth="180" m_MinHeight="36" />
-                            <Image m_Color="#2A2A3E" />
+                            <Image m_Sprite="{dropdownBackground}" m_Type="Sliced" m_Color="#2A2A3E" />
                             <TMP_Dropdown m_Value="2"
                                 m_Template="#ResTemplate" m_CaptionText="#ResCaptionText" m_ItemText="#ResItemText">
                                 <Field name="m_Options.m_Options">
@@ -93,7 +93,7 @@
                             <GameObject name="Arrow">
                                 <RectTransform m_AnchorMin="1, 0.5" m_AnchorMax="1, 0.5" m_Pivot="1, 0.5"
                                     m_SizeDelta="16, 16" m_AnchoredPosition="-6, 0" />
-                                <Image m_Color="#8888AA" />
+                                <Image m_Sprite="{dropdownArrow}" m_Color="#8888AA" />
                             </GameObject>
                             <GameObject name="Template" id="ResTemplate" active="false">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 1" m_SizeDelta="0, 150" />
@@ -139,7 +139,7 @@
                         <GameObject name="Dropdown">
                             <RectTransform />
                             <LayoutElement m_MinWidth="180" m_MinHeight="36" />
-                            <Image m_Color="#2A2A3E" />
+                            <Image m_Sprite="{dropdownBackground}" m_Type="Sliced" m_Color="#2A2A3E" />
                             <TMP_Dropdown m_Value="0"
                                 m_Template="#ModeTemplate" m_CaptionText="#ModeCaptionText" m_ItemText="#ModeItemText">
                                 <Field name="m_Options.m_Options">
@@ -156,7 +156,7 @@
                             <GameObject name="Arrow">
                                 <RectTransform m_AnchorMin="1, 0.5" m_AnchorMax="1, 0.5" m_Pivot="1, 0.5"
                                     m_SizeDelta="16, 16" m_AnchoredPosition="-6, 0" />
-                                <Image m_Color="#8888AA" />
+                                <Image m_Sprite="{dropdownArrow}" m_Color="#8888AA" />
                             </GameObject>
                             <GameObject name="Template" id="ModeTemplate" active="false">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 1" m_SizeDelta="0, 150" />
@@ -202,11 +202,11 @@
                         <GameObject name="Toggle">
                             <RectTransform />
                             <LayoutElement m_MinWidth="36" m_MinHeight="36" />
-                            <Image m_Color="#2A2A3E" />
+                            <Image m_Sprite="{toggleBackground}" m_Type="Sliced" m_Color="#2A2A3E" />
                             <Toggle m_IsOn="true" graphic="#VSyncCheck" />
                             <GameObject name="Checkmark" id="VSyncCheck">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-6, -6" />
-                                <Image m_Color="#44D962" />
+                                <Image m_Sprite="{toggleCheckmark}" m_Color="#44D962" />
                             </GameObject>
                         </GameObject>
                     </GameObject>
@@ -235,7 +235,7 @@
                         <GameObject name="Dropdown">
                             <RectTransform />
                             <LayoutElement m_MinWidth="180" m_MinHeight="36" />
-                            <Image m_Color="#2A2A3E" />
+                            <Image m_Sprite="{dropdownBackground}" m_Type="Sliced" m_Color="#2A2A3E" />
                             <TMP_Dropdown m_Value="3"
                                 m_Template="#QualTemplate" m_CaptionText="#QualCaptionText" m_ItemText="#QualItemText">
                                 <Field name="m_Options.m_Options">
@@ -253,7 +253,7 @@
                             <GameObject name="Arrow">
                                 <RectTransform m_AnchorMin="1, 0.5" m_AnchorMax="1, 0.5" m_Pivot="1, 0.5"
                                     m_SizeDelta="16, 16" m_AnchoredPosition="-6, 0" />
-                                <Image m_Color="#8888AA" />
+                                <Image m_Sprite="{dropdownArrow}" m_Color="#8888AA" />
                             </GameObject>
                             <GameObject name="Template" id="QualTemplate" active="false">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 1" m_SizeDelta="0, 150" />
@@ -299,7 +299,7 @@
                         <GameObject name="Dropdown">
                             <RectTransform />
                             <LayoutElement m_MinWidth="180" m_MinHeight="36" />
-                            <Image m_Color="#2A2A3E" />
+                            <Image m_Sprite="{dropdownBackground}" m_Type="Sliced" m_Color="#2A2A3E" />
                             <TMP_Dropdown m_Value="2"
                                 m_Template="#AATemplate" m_CaptionText="#AACaptionText" m_ItemText="#AAItemText">
                                 <Field name="m_Options.m_Options">
@@ -317,7 +317,7 @@
                             <GameObject name="Arrow">
                                 <RectTransform m_AnchorMin="1, 0.5" m_AnchorMax="1, 0.5" m_Pivot="1, 0.5"
                                     m_SizeDelta="16, 16" m_AnchoredPosition="-6, 0" />
-                                <Image m_Color="#8888AA" />
+                                <Image m_Sprite="{dropdownArrow}" m_Color="#8888AA" />
                             </GameObject>
                             <GameObject name="Template" id="AATemplate" active="false">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 0" m_Pivot="0.5, 1" m_SizeDelta="0, 150" />
@@ -363,11 +363,11 @@
                         <GameObject name="Toggle">
                             <RectTransform />
                             <LayoutElement m_MinWidth="36" m_MinHeight="36" />
-                            <Image m_Color="#2A2A3E" />
+                            <Image m_Sprite="{toggleBackground}" m_Type="Sliced" m_Color="#2A2A3E" />
                             <Toggle m_IsOn="true" graphic="#ShadowsCheck" />
                             <GameObject name="Checkmark" id="ShadowsCheck">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-6, -6" />
-                                <Image m_Color="#44D962" />
+                                <Image m_Sprite="{toggleCheckmark}" m_Color="#44D962" />
                             </GameObject>
                         </GameObject>
                     </GameObject>
@@ -396,13 +396,13 @@
                         <GameObject name="Slider">
                             <RectTransform />
                             <LayoutElement m_FlexibleWidth="1" m_MinHeight="20" />
-                            <Image m_Color="#2A2A3E" />
+                            <Image m_Sprite="{sliderBackground}" m_Type="Sliced" m_Color="#2A2A3E" />
                             <Slider m_Value="0.8" m_FillRect="#MasterFill" m_HandleRect="#MasterHandle" />
                             <GameObject name="FillArea">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
                                 <GameObject name="Fill" id="MasterFill">
                                     <RectTransform m_AnchorMin="0, 0" m_AnchorMax="0.8, 1" m_SizeDelta="0, 0" />
-                                    <Image m_Color="#44D962" />
+                                    <Image m_Sprite="{sliderFill}" m_Type="Sliced" m_Color="#44D962" />
                                 </GameObject>
                             </GameObject>
                             <GameObject name="HandleArea">
@@ -431,13 +431,13 @@
                         <GameObject name="Slider">
                             <RectTransform />
                             <LayoutElement m_FlexibleWidth="1" m_MinHeight="20" />
-                            <Image m_Color="#2A2A3E" />
+                            <Image m_Sprite="{sliderBackground}" m_Type="Sliced" m_Color="#2A2A3E" />
                             <Slider m_Value="0.6" m_FillRect="#MusicFill" m_HandleRect="#MusicHandle" />
                             <GameObject name="FillArea">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
                                 <GameObject name="Fill" id="MusicFill">
                                     <RectTransform m_AnchorMin="0, 0" m_AnchorMax="0.6, 1" m_SizeDelta="0, 0" />
-                                    <Image m_Color="#5B68E0" />
+                                    <Image m_Sprite="{sliderFill}" m_Type="Sliced" m_Color="#5B68E0" />
                                 </GameObject>
                             </GameObject>
                             <GameObject name="HandleArea">
@@ -466,13 +466,13 @@
                         <GameObject name="Slider">
                             <RectTransform />
                             <LayoutElement m_FlexibleWidth="1" m_MinHeight="20" />
-                            <Image m_Color="#2A2A3E" />
+                            <Image m_Sprite="{sliderBackground}" m_Type="Sliced" m_Color="#2A2A3E" />
                             <Slider m_Value="0.7" m_FillRect="#SFXFill" m_HandleRect="#SFXHandle" />
                             <GameObject name="FillArea">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
                                 <GameObject name="Fill" id="SFXFill">
                                     <RectTransform m_AnchorMin="0, 0" m_AnchorMax="0.7, 1" m_SizeDelta="0, 0" />
-                                    <Image m_Color="#5B68E0" />
+                                    <Image m_Sprite="{sliderFill}" m_Type="Sliced" m_Color="#5B68E0" />
                                 </GameObject>
                             </GameObject>
                             <GameObject name="HandleArea">
@@ -509,13 +509,13 @@
                         <GameObject name="Slider">
                             <RectTransform />
                             <LayoutElement m_FlexibleWidth="1" m_MinHeight="20" />
-                            <Image m_Color="#2A2A3E" />
+                            <Image m_Sprite="{sliderBackground}" m_Type="Sliced" m_Color="#2A2A3E" />
                             <Slider m_Value="0.5" m_FillRect="#SensFill" m_HandleRect="#SensHandle" />
                             <GameObject name="FillArea">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
                                 <GameObject name="Fill" id="SensFill">
                                     <RectTransform m_AnchorMin="0, 0" m_AnchorMax="0.5, 1" m_SizeDelta="0, 0" />
-                                    <Image m_Color="#5B68E0" />
+                                    <Image m_Sprite="{sliderFill}" m_Type="Sliced" m_Color="#5B68E0" />
                                 </GameObject>
                             </GameObject>
                             <GameObject name="HandleArea">
@@ -544,11 +544,11 @@
                         <GameObject name="Toggle">
                             <RectTransform />
                             <LayoutElement m_MinWidth="36" m_MinHeight="36" />
-                            <Image m_Color="#2A2A3E" />
+                            <Image m_Sprite="{toggleBackground}" m_Type="Sliced" m_Color="#2A2A3E" />
                             <Toggle m_IsOn="false" graphic="#InvertYCheck" />
                             <GameObject name="Checkmark" id="InvertYCheck">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-6, -6" />
-                                <Image m_Color="#44D962" />
+                                <Image m_Sprite="{toggleCheckmark}" m_Color="#44D962" />
                             </GameObject>
                         </GameObject>
                     </GameObject>
@@ -581,7 +581,7 @@
 
                 <GameObject name="ButtonDefaults">
                     <RectTransform m_SizeDelta="130, 38" />
-                    <Image m_Color="#3A3A50" />
+                    <Image m_Sprite="{buttonBackground}" m_Type="Sliced" m_Color="#3A3A50" />
                     <Button />
                     <LayoutElement m_MinWidth="130" m_MinHeight="38" />
                     <GameObject name="Label">
@@ -593,7 +593,7 @@
 
                 <GameObject name="ButtonApply">
                     <RectTransform m_SizeDelta="130, 38" />
-                    <Image m_Color="#5B68E0" />
+                    <Image m_Sprite="{buttonBackground}" m_Type="Sliced" m_Color="#5B68E0" />
                     <Button />
                     <LayoutElement m_MinWidth="130" m_MinHeight="38" />
                     <GameObject name="Label">

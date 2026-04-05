@@ -79,7 +79,7 @@ Save as `.prefabxml` — Unity imports it as a prefab automatically.
 - 🧩 **Any component** — use any Unity component by class name, including custom scripts with full namespace
 - ⚓ **Standard Unity field names** — uses `m_` serialized property names, 1:1 mapping to C#
 - 🔗 **Object references** — link components to other GameObjects via `#id`
-- 🎨 **Asset references** — reference sprites, fonts, materials by project path
+- 🎨 **Asset references** — reference sprites, fonts, materials by project path or via `{name}` bindings assigned in the Inspector
 - 🌳 **Nested hierarchies** — parent-child relationships through XML nesting
 - 🔢 **Value types** — Color (`#FF0000`), Vector2/3/4, Enum, RectOffset, and more
 - 🎮 **Custom MonoBehaviours** — add your own scripts and wire `[SerializeField]` fields via `#id` references directly in XML (see `Samples/Counter`)

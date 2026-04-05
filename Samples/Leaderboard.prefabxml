@@ -83,7 +83,7 @@
                     <GameObject name="Avatar">
                         <RectTransform />
                         <LayoutElement m_MinWidth="44" m_MinHeight="44" m_PreferredWidth="44" m_PreferredHeight="44" />
-                        <Image m_Color="#C0C0C0" m_Sprite="Packages/com.codewriter.unity-prefab-xml/Samples/Leaderboard Icon.png" m_PreserveAspect="true" />
+                        <Image m_Color="#C0C0C0" m_Sprite="{avatarIcon}" m_PreserveAspect="true" />
                     </GameObject>
                     <GameObject name="Name">
                         <RectTransform />
@@ -119,7 +119,7 @@
                     <GameObject name="Avatar">
                         <RectTransform />
                         <LayoutElement m_MinWidth="52" m_MinHeight="52" m_PreferredWidth="52" m_PreferredHeight="52" />
-                        <Image m_Color="#FFB020" m_Sprite="Packages/com.codewriter.unity-prefab-xml/Samples/Leaderboard Icon.png" m_PreserveAspect="true" />
+                        <Image m_Color="#FFB020" m_Sprite="{avatarIcon}" m_PreserveAspect="true" />
                     </GameObject>
                     <GameObject name="Name">
                         <RectTransform />
@@ -149,7 +149,7 @@
                     <GameObject name="Avatar">
                         <RectTransform />
                         <LayoutElement m_MinWidth="40" m_MinHeight="40" m_PreferredWidth="40" m_PreferredHeight="40" />
-                        <Image m_Color="#CD8844" m_Sprite="Packages/com.codewriter.unity-prefab-xml/Samples/Leaderboard Icon.png" m_PreserveAspect="true" />
+                        <Image m_Color="#CD8844" m_Sprite="{avatarIcon}" m_PreserveAspect="true" />
                     </GameObject>
                     <GameObject name="Name">
                         <RectTransform />
@@ -215,7 +215,7 @@
                             <GameObject name="Avatar">
                                 <RectTransform />
                                 <LayoutElement m_MinWidth="36" m_MinHeight="36" m_PreferredWidth="36" m_PreferredHeight="36" />
-                                <Image m_Color="#E8D8CC" m_Sprite="Packages/com.codewriter.unity-prefab-xml/Samples/Leaderboard Icon.png" m_PreserveAspect="true" />
+                                <Image m_Color="#E8D8CC" m_Sprite="{avatarIcon}" m_PreserveAspect="true" />
                             </GameObject>
                             <GameObject name="Gap">
                                 <RectTransform />
@@ -267,7 +267,7 @@
                             <GameObject name="Avatar">
                                 <RectTransform />
                                 <LayoutElement m_MinWidth="36" m_MinHeight="36" m_PreferredWidth="36" m_PreferredHeight="36" />
-                                <Image m_Color="#E8D8CC" m_Sprite="Packages/com.codewriter.unity-prefab-xml/Samples/Leaderboard Icon.png" m_PreserveAspect="true" />
+                                <Image m_Color="#E8D8CC" m_Sprite="{avatarIcon}" m_PreserveAspect="true" />
                             </GameObject>
                             <GameObject name="Gap">
                                 <RectTransform />
@@ -319,7 +319,7 @@
                             <GameObject name="Avatar">
                                 <RectTransform />
                                 <LayoutElement m_MinWidth="36" m_MinHeight="36" m_PreferredWidth="36" m_PreferredHeight="36" />
-                                <Image m_Color="#E8D8CC" m_Sprite="Packages/com.codewriter.unity-prefab-xml/Samples/Leaderboard Icon.png" m_PreserveAspect="true" />
+                                <Image m_Color="#E8D8CC" m_Sprite="{avatarIcon}" m_PreserveAspect="true" />
                             </GameObject>
                             <GameObject name="Gap">
                                 <RectTransform />
@@ -371,7 +371,7 @@
                             <GameObject name="Avatar">
                                 <RectTransform />
                                 <LayoutElement m_MinWidth="36" m_MinHeight="36" m_PreferredWidth="36" m_PreferredHeight="36" />
-                                <Image m_Color="#E8D8CC" m_Sprite="Packages/com.codewriter.unity-prefab-xml/Samples/Leaderboard Icon.png" m_PreserveAspect="true" />
+                                <Image m_Color="#E8D8CC" m_Sprite="{avatarIcon}" m_PreserveAspect="true" />
                             </GameObject>
                             <GameObject name="Gap">
                                 <RectTransform />
@@ -432,7 +432,7 @@
                 <GameObject name="Avatar">
                     <RectTransform />
                     <LayoutElement m_MinWidth="36" m_MinHeight="36" m_PreferredWidth="36" m_PreferredHeight="36" />
-                    <Image m_Color="#FF6B8A" m_Sprite="Packages/com.codewriter.unity-prefab-xml/Samples/Leaderboard Icon.png" m_PreserveAspect="true" />
+                    <Image m_Color="#FF6B8A" m_Sprite="{avatarIcon}" m_PreserveAspect="true" />
                 </GameObject>
                 <GameObject name="Gap">
                     <RectTransform />

@@ -26,13 +26,13 @@
             <RectTransform m_AnchorMin="1, 0.5" m_AnchorMax="1, 0.5"
                 m_Pivot="1, 0.5"
                 m_SizeDelta="28, 28" m_AnchoredPosition="0, 0" />
-            <Image m_Color="#44D962" />
+            <Image m_Sprite="{toggleBackground}" m_Type="Sliced" m_Color="#44D962" />
 
             <!-- Checkmark (visible when ON) -->
             <GameObject name="Checkmark" id="Checkmark">
                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1"
                     m_SizeDelta="-6, -6" />
-                <Image m_Color="#FFFFFF" />
+                <Image m_Sprite="{toggleCheckmark}" m_Color="#FFFFFF" />
             </GameObject>
         </GameObject>
 
