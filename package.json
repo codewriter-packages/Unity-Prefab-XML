@@ -1,0 +1,10 @@
+{
+  "name": "com.codewriter.unity-prefab-xml",
+  "displayName": "Unity Prefab XML",
+  "description": "XML to Prefab importer for Unity. Designed for LLM-driven prefab generation.",
+  "version": "0.1.0",
+  "unity": "6000.0",
+  "author": "CodeWriter (https://github.com/orgs/codewriter-packages)",
+  "homepage": "https://github.com/codewriter-packages/Unity-Prefab-XML#readme",
+  "dependencies": {}
+}
