@@ -40,7 +40,7 @@
         <GameObject name="Label">
             <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1"
                 m_SizeDelta="-60, 0" />
-            <TMPro.TextMeshProUGUI m_text="Toggle" m_fontSize="18"
+            <TextMeshProUGUI m_text="Toggle" m_fontSize="18"
                 m_fontColor="#FFFFFF" m_RaycastTarget="false"
                 m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
         </GameObject>

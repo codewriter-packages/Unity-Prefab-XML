@@ -13,14 +13,14 @@
             <Button />
             <GameObject name="Label">
                 <RectTransform />
-                <TMPro.TextMeshProUGUI m_text="-" m_fontSize="28" m_fontStyle="Bold"
+                <TextMeshProUGUI m_text="-" m_fontSize="28" m_fontStyle="Bold"
                     m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
             </GameObject>
         </GameObject>
 
         <GameObject name="Display" id="CounterText">
             <RectTransform m_SizeDelta="100, 80" />
-            <TMPro.TextMeshProUGUI m_text="0" m_fontSize="36" m_fontStyle="Bold"
+            <TextMeshProUGUI m_text="0" m_fontSize="36" m_fontStyle="Bold"
                 m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
         </GameObject>
 
@@ -30,7 +30,7 @@
             <Button />
             <GameObject name="Label">
                 <RectTransform />
-                <TMPro.TextMeshProUGUI m_text="+" m_fontSize="28" m_fontStyle="Bold"
+                <TextMeshProUGUI m_text="+" m_fontSize="28" m_fontStyle="Bold"
                     m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
             </GameObject>
         </GameObject>

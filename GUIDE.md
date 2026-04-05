@@ -10,12 +10,12 @@ All property names must match Unity's serialized field names exactly. Built-in U
 <!-- WRONG -->
 <RectTransform width="100" height="50" anchor="center" />
 <Image color="#FF0000" />
-<TMPro.TextMeshProUGUI text="Hello" fontSize="24" alignment="Center" />
+<TextMeshProUGUI text="Hello" fontSize="24" alignment="Center" />
 
 <!-- CORRECT -->
 <RectTransform m_SizeDelta="100, 50" m_AnchorMin="0.5, 0.5" m_AnchorMax="0.5, 0.5" />
 <Image m_Color="#FF0000" />
-<TMPro.TextMeshProUGUI m_text="Hello" m_fontSize="24"
+<TextMeshProUGUI m_text="Hello" m_fontSize="24"
     m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
 ```
 
@@ -25,10 +25,10 @@ TMP uses lowercase after `m_` (unlike standard Unity components). Common mistake
 
 ```xml
 <!-- WRONG -->
-<TMPro.TextMeshProUGUI m_Text="..." m_FontSize="24" m_Color="#FFF" m_textAlignment="Center" m_enableWordWrapping="true" />
+<TextMeshProUGUI m_Text="..." m_FontSize="24" m_Color="#FFF" m_textAlignment="Center" m_enableWordWrapping="true" />
 
 <!-- CORRECT -->
-<TMPro.TextMeshProUGUI m_text="..." m_fontSize="24" m_fontColor="#FFFFFF"
+<TextMeshProUGUI m_text="..." m_fontSize="24" m_fontColor="#FFFFFF"
     m_HorizontalAlignment="Center" m_VerticalAlignment="Middle"
     m_TextWrappingMode="Normal" />
 ```
@@ -49,10 +49,10 @@ Key TMP fields:
 
 ```xml
 <!-- WRONG -->
-<TMPro.TextMeshProUGUI m_fontStyle="1" />
+<TextMeshProUGUI m_fontStyle="1" />
 
 <!-- CORRECT -->
-<TMPro.TextMeshProUGUI m_fontStyle="Bold" />
+<TextMeshProUGUI m_fontStyle="Bold" />
 ```
 
 ## One Graphic per GameObject
@@ -63,7 +63,7 @@ Key TMP fields:
 <!-- WRONG: two Graphics on one object -->
 <GameObject name="Label">
     <Image m_Color="#222222" />
-    <TMPro.TextMeshProUGUI m_text="Hello" />
+    <TextMeshProUGUI m_text="Hello" />
 </GameObject>
 
 <!-- CORRECT: text in child object -->
@@ -71,7 +71,7 @@ Key TMP fields:
     <Image m_Color="#222222" />
     <GameObject name="Text">
         <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-        <TMPro.TextMeshProUGUI m_text="Hello" m_fontSize="16" m_fontColor="#FFFFFF"
+        <TextMeshProUGUI m_text="Hello" m_fontSize="16" m_fontColor="#FFFFFF"
             m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
     </GameObject>
 </GameObject>
@@ -176,11 +176,11 @@ When present, `<RectTransform>` must be the first component tag inside `<GameObj
 
 ```xml
 <!-- WRONG -->
-<TMPro.TextMeshProUGUI id="CaptionText" m_text="Hello" />
+<TextMeshProUGUI id="CaptionText" m_text="Hello" />
 
 <!-- CORRECT -->
 <GameObject name="Caption" id="CaptionText">
-    <TMPro.TextMeshProUGUI m_text="Hello" />
+    <TextMeshProUGUI m_text="Hello" />
 </GameObject>
 ```
 
@@ -200,13 +200,13 @@ Do NOT set every possible attribute. Set only what differs from defaults. Compar
 
 ```xml
 <!-- TOO VERBOSE -->
-<TMPro.TextMeshProUGUI m_text="Hello" m_fontSize="24" m_fontStyle="Normal"
+<TextMeshProUGUI m_text="Hello" m_fontSize="24" m_fontStyle="Normal"
     m_fontColor="#FFFFFF" m_HorizontalAlignment="Left" m_VerticalAlignment="Top"
     m_TextWrappingMode="Normal" m_overflowMode="Overflow" m_isRichText="true"
     m_RaycastTarget="true" m_Maskable="true" m_enableAutoSizing="false" />
 
 <!-- BETTER: only set what you need -->
-<TMPro.TextMeshProUGUI m_text="Hello" m_fontSize="24" m_fontColor="#FFFFFF"
+<TextMeshProUGUI m_text="Hello" m_fontSize="24" m_fontColor="#FFFFFF"
     m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
 ```
 

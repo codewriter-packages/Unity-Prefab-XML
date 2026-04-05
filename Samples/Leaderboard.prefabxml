@@ -25,20 +25,20 @@
                     <GameObject name="EventTag">
                         <RectTransform />
                         <LayoutElement m_MinHeight="18" />
-                        <TMPro.TextMeshProUGUI m_text="WEEKEND EVENT" m_fontSize="10" m_fontStyle="Bold"
+                        <TextMeshProUGUI m_text="WEEKEND EVENT" m_fontSize="10" m_fontStyle="Bold"
                             m_fontColor="#FFD4DE" m_HorizontalAlignment="Center" m_VerticalAlignment="Bottom"
                             m_characterSpacing="4" />
                     </GameObject>
                     <GameObject name="Title">
                         <RectTransform />
                         <LayoutElement m_MinHeight="32" />
-                        <TMPro.TextMeshProUGUI m_text="Star Collectors" m_fontSize="24" m_fontStyle="Bold"
+                        <TextMeshProUGUI m_text="Star Collectors" m_fontSize="24" m_fontStyle="Bold"
                             m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                     </GameObject>
                     <GameObject name="Timer">
                         <RectTransform />
                         <LayoutElement m_MinHeight="20" />
-                        <TMPro.TextMeshProUGUI m_text="Ends in 1d 14h 22m" m_fontSize="12"
+                        <TextMeshProUGUI m_text="Ends in 1d 14h 22m" m_fontSize="12"
                             m_fontColor="#FFD4DE" m_HorizontalAlignment="Center" m_VerticalAlignment="Top" />
                     </GameObject>
                 </GameObject>
@@ -54,7 +54,7 @@
                         m_Colors.m_PressedColor="#FFBBBB" />
                     <GameObject name="X">
                         <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                        <TMPro.TextMeshProUGUI m_text="x" m_fontSize="18" m_fontStyle="Bold"
+                        <TextMeshProUGUI m_text="x" m_fontSize="18" m_fontStyle="Bold"
                             m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                     </GameObject>
                 </GameObject>
@@ -88,13 +88,13 @@
                     <GameObject name="Name">
                         <RectTransform />
                         <LayoutElement m_MinHeight="16" />
-                        <TMPro.TextMeshProUGUI m_text="Emily" m_fontSize="12" m_fontStyle="Bold"
+                        <TextMeshProUGUI m_text="Emily" m_fontSize="12" m_fontStyle="Bold"
                             m_fontColor="#6B5E50" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                     </GameObject>
                     <GameObject name="Score">
                         <RectTransform />
                         <LayoutElement m_MinHeight="16" />
-                        <TMPro.TextMeshProUGUI m_text="8,240" m_fontSize="13" m_fontStyle="Bold"
+                        <TextMeshProUGUI m_text="8,240" m_fontSize="13" m_fontStyle="Bold"
                             m_fontColor="#FF6B8A" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                     </GameObject>
                 </GameObject>
@@ -113,7 +113,7 @@
                     <GameObject name="Crown">
                         <RectTransform />
                         <LayoutElement m_MinHeight="16" />
-                        <TMPro.TextMeshProUGUI m_text="1" m_fontSize="14" m_fontStyle="Bold"
+                        <TextMeshProUGUI m_text="1" m_fontSize="14" m_fontStyle="Bold"
                             m_fontColor="#FFB020" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                     </GameObject>
                     <GameObject name="Avatar">
@@ -124,13 +124,13 @@
                     <GameObject name="Name">
                         <RectTransform />
                         <LayoutElement m_MinHeight="16" />
-                        <TMPro.TextMeshProUGUI m_text="Sophie" m_fontSize="13" m_fontStyle="Bold"
+                        <TextMeshProUGUI m_text="Sophie" m_fontSize="13" m_fontStyle="Bold"
                             m_fontColor="#6B5E50" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                     </GameObject>
                     <GameObject name="Score">
                         <RectTransform />
                         <LayoutElement m_MinHeight="16" />
-                        <TMPro.TextMeshProUGUI m_text="12,580" m_fontSize="14" m_fontStyle="Bold"
+                        <TextMeshProUGUI m_text="12,580" m_fontSize="14" m_fontStyle="Bold"
                             m_fontColor="#FF6B8A" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                     </GameObject>
                 </GameObject>
@@ -154,13 +154,13 @@
                     <GameObject name="Name">
                         <RectTransform />
                         <LayoutElement m_MinHeight="16" />
-                        <TMPro.TextMeshProUGUI m_text="Alex" m_fontSize="12" m_fontStyle="Bold"
+                        <TextMeshProUGUI m_text="Alex" m_fontSize="12" m_fontStyle="Bold"
                             m_fontColor="#6B5E50" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                     </GameObject>
                     <GameObject name="Score">
                         <RectTransform />
                         <LayoutElement m_MinHeight="16" />
-                        <TMPro.TextMeshProUGUI m_text="6,105" m_fontSize="13" m_fontStyle="Bold"
+                        <TextMeshProUGUI m_text="6,105" m_fontSize="13" m_fontStyle="Bold"
                             m_fontColor="#FF6B8A" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                     </GameObject>
                 </GameObject>
@@ -209,7 +209,7 @@
                             <GameObject name="Rank">
                                 <RectTransform />
                                 <LayoutElement m_MinWidth="32" m_MinHeight="56" />
-                                <TMPro.TextMeshProUGUI m_text="4" m_fontSize="16" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="4" m_fontSize="16" m_fontStyle="Bold"
                                     m_fontColor="#B0A090" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Avatar">
@@ -224,13 +224,13 @@
                             <GameObject name="Name">
                                 <RectTransform />
                                 <LayoutElement m_FlexibleWidth="1" m_MinHeight="56" />
-                                <TMPro.TextMeshProUGUI m_text="Jordan" m_fontSize="15"
+                                <TextMeshProUGUI m_text="Jordan" m_fontSize="15"
                                     m_fontColor="#5A4E42" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Score">
                                 <RectTransform />
                                 <LayoutElement m_MinWidth="70" m_MinHeight="56" />
-                                <TMPro.TextMeshProUGUI m_text="5,430" m_fontSize="15" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="5,430" m_fontSize="15" m_fontStyle="Bold"
                                     m_fontColor="#FF6B8A" m_HorizontalAlignment="Right" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="PadR">
@@ -261,7 +261,7 @@
                             <GameObject name="Rank">
                                 <RectTransform />
                                 <LayoutElement m_MinWidth="32" m_MinHeight="56" />
-                                <TMPro.TextMeshProUGUI m_text="5" m_fontSize="16" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="5" m_fontSize="16" m_fontStyle="Bold"
                                     m_fontColor="#B0A090" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Avatar">
@@ -276,13 +276,13 @@
                             <GameObject name="Name">
                                 <RectTransform />
                                 <LayoutElement m_FlexibleWidth="1" m_MinHeight="56" />
-                                <TMPro.TextMeshProUGUI m_text="Mia" m_fontSize="15"
+                                <TextMeshProUGUI m_text="Mia" m_fontSize="15"
                                     m_fontColor="#5A4E42" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Score">
                                 <RectTransform />
                                 <LayoutElement m_MinWidth="70" m_MinHeight="56" />
-                                <TMPro.TextMeshProUGUI m_text="4,810" m_fontSize="15" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="4,810" m_fontSize="15" m_fontStyle="Bold"
                                     m_fontColor="#FF6B8A" m_HorizontalAlignment="Right" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="PadR">
@@ -313,7 +313,7 @@
                             <GameObject name="Rank">
                                 <RectTransform />
                                 <LayoutElement m_MinWidth="32" m_MinHeight="56" />
-                                <TMPro.TextMeshProUGUI m_text="6" m_fontSize="16" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="6" m_fontSize="16" m_fontStyle="Bold"
                                     m_fontColor="#B0A090" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Avatar">
@@ -328,13 +328,13 @@
                             <GameObject name="Name">
                                 <RectTransform />
                                 <LayoutElement m_FlexibleWidth="1" m_MinHeight="56" />
-                                <TMPro.TextMeshProUGUI m_text="Noah" m_fontSize="15"
+                                <TextMeshProUGUI m_text="Noah" m_fontSize="15"
                                     m_fontColor="#5A4E42" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Score">
                                 <RectTransform />
                                 <LayoutElement m_MinWidth="70" m_MinHeight="56" />
-                                <TMPro.TextMeshProUGUI m_text="3,920" m_fontSize="15" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="3,920" m_fontSize="15" m_fontStyle="Bold"
                                     m_fontColor="#FF6B8A" m_HorizontalAlignment="Right" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="PadR">
@@ -365,7 +365,7 @@
                             <GameObject name="Rank">
                                 <RectTransform />
                                 <LayoutElement m_MinWidth="32" m_MinHeight="56" />
-                                <TMPro.TextMeshProUGUI m_text="7" m_fontSize="16" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="7" m_fontSize="16" m_fontStyle="Bold"
                                     m_fontColor="#B0A090" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Avatar">
@@ -380,13 +380,13 @@
                             <GameObject name="Name">
                                 <RectTransform />
                                 <LayoutElement m_FlexibleWidth="1" m_MinHeight="56" />
-                                <TMPro.TextMeshProUGUI m_text="Lily" m_fontSize="15"
+                                <TextMeshProUGUI m_text="Lily" m_fontSize="15"
                                     m_fontColor="#5A4E42" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Score">
                                 <RectTransform />
                                 <LayoutElement m_MinWidth="70" m_MinHeight="56" />
-                                <TMPro.TextMeshProUGUI m_text="3,115" m_fontSize="15" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="3,115" m_fontSize="15" m_fontStyle="Bold"
                                     m_fontColor="#FF6B8A" m_HorizontalAlignment="Right" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="PadR">
@@ -426,7 +426,7 @@
                 <GameObject name="Rank">
                     <RectTransform />
                     <LayoutElement m_MinWidth="32" m_MinHeight="60" />
-                    <TMPro.TextMeshProUGUI m_text="24" m_fontSize="16" m_fontStyle="Bold"
+                    <TextMeshProUGUI m_text="24" m_fontSize="16" m_fontStyle="Bold"
                         m_fontColor="#FF6B8A" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                 </GameObject>
                 <GameObject name="Avatar">
@@ -447,20 +447,20 @@
                     <GameObject name="Name">
                         <RectTransform />
                         <LayoutElement m_MinHeight="20" />
-                        <TMPro.TextMeshProUGUI m_text="You" m_fontSize="15" m_fontStyle="Bold"
+                        <TextMeshProUGUI m_text="You" m_fontSize="15" m_fontStyle="Bold"
                             m_fontColor="#5A4E42" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                     </GameObject>
                     <GameObject name="Hint">
                         <RectTransform />
                         <LayoutElement m_MinHeight="16" />
-                        <TMPro.TextMeshProUGUI m_text="890 more to reach #23" m_fontSize="11"
+                        <TextMeshProUGUI m_text="890 more to reach #23" m_fontSize="11"
                             m_fontColor="#B0A090" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                     </GameObject>
                 </GameObject>
                 <GameObject name="Score">
                     <RectTransform />
                     <LayoutElement m_MinWidth="70" m_MinHeight="60" />
-                    <TMPro.TextMeshProUGUI m_text="1,240" m_fontSize="16" m_fontStyle="Bold"
+                    <TextMeshProUGUI m_text="1,240" m_fontSize="16" m_fontStyle="Bold"
                         m_fontColor="#FF6B8A" m_HorizontalAlignment="Right" m_VerticalAlignment="Middle" />
                 </GameObject>
                 <GameObject name="PadR">

@@ -24,7 +24,7 @@
 
         <GameObject name="Label">
             <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-            <TMPro.TextMeshProUGUI
+            <TextMeshProUGUI
                 m_text="Button"
                 m_fontSize="24"
                 m_fontStyle="Bold"

@@ -32,7 +32,7 @@
                     m_Colors.m_PressedColor="#AAAACC" />
                 <GameObject name="Icon">
                     <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                    <TMPro.TextMeshProUGUI m_text="&lt;" m_fontSize="22" m_fontStyle="Bold"
+                    <TextMeshProUGUI m_text="&lt;" m_fontSize="22" m_fontStyle="Bold"
                         m_fontColor="#8888BB" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                 </GameObject>
             </GameObject>
@@ -41,7 +41,7 @@
             <GameObject name="Title">
                 <RectTransform />
                 <LayoutElement m_FlexibleWidth="1" m_MinHeight="44" />
-                <TMPro.TextMeshProUGUI m_text="SHOP" m_fontSize="28" m_fontStyle="Bold"
+                <TextMeshProUGUI m_text="SHOP" m_fontSize="28" m_fontStyle="Bold"
                     m_fontColor="#F0C850" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle"
                     m_characterSpacing="6" />
             </GameObject>
@@ -53,7 +53,7 @@
                 <Image m_Color="#1E1E38" />
                 <GameObject name="CoinText">
                     <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-16, 0" />
-                    <TMPro.TextMeshProUGUI m_text="12,450" m_fontSize="17" m_fontStyle="Bold"
+                    <TextMeshProUGUI m_text="12,450" m_fontSize="17" m_fontStyle="Bold"
                         m_fontColor="#F0C850" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                 </GameObject>
             </GameObject>
@@ -83,7 +83,7 @@
                     m_Colors.m_HighlightedColor="#DDDDFF" />
                 <GameObject name="Label">
                     <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                    <TMPro.TextMeshProUGUI m_text="Weapons" m_fontSize="14" m_fontStyle="Bold"
+                    <TextMeshProUGUI m_text="Weapons" m_fontSize="14" m_fontStyle="Bold"
                         m_fontColor="#F0C850" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                 </GameObject>
             </GameObject>
@@ -97,7 +97,7 @@
                     m_Colors.m_HighlightedColor="#DDDDFF" />
                 <GameObject name="Label">
                     <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                    <TMPro.TextMeshProUGUI m_text="Armor" m_fontSize="14"
+                    <TextMeshProUGUI m_text="Armor" m_fontSize="14"
                         m_fontColor="#666688" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                 </GameObject>
             </GameObject>
@@ -111,7 +111,7 @@
                     m_Colors.m_HighlightedColor="#DDDDFF" />
                 <GameObject name="Label">
                     <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                    <TMPro.TextMeshProUGUI m_text="Potions" m_fontSize="14"
+                    <TextMeshProUGUI m_text="Potions" m_fontSize="14"
                         m_fontColor="#666688" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                 </GameObject>
             </GameObject>
@@ -125,7 +125,7 @@
                     m_Colors.m_HighlightedColor="#DDDDFF" />
                 <GameObject name="Label">
                     <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                    <TMPro.TextMeshProUGUI m_text="Gems" m_fontSize="14"
+                    <TextMeshProUGUI m_text="Gems" m_fontSize="14"
                         m_fontColor="#6666AA" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                 </GameObject>
             </GameObject>
@@ -182,20 +182,20 @@
                             <GameObject name="Tag">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="18" />
-                                <TMPro.TextMeshProUGUI m_text="LIMITED OFFER" m_fontSize="11" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="LIMITED OFFER" m_fontSize="11" m_fontStyle="Bold"
                                     m_fontColor="#FF5577" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle"
                                     m_characterSpacing="3" />
                             </GameObject>
                             <GameObject name="ItemName">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="30" />
-                                <TMPro.TextMeshProUGUI m_text="Legendary Flame Sword" m_fontSize="21" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="Legendary Flame Sword" m_fontSize="21" m_fontStyle="Bold"
                                     m_fontColor="#FF9944" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="PriceLine">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="22" />
-                                <TMPro.TextMeshProUGUI m_text="4,999 coins  &lt;s&gt;9,999&lt;/s&gt;" m_fontSize="14"
+                                <TextMeshProUGUI m_text="4,999 coins  &lt;s&gt;9,999&lt;/s&gt;" m_fontSize="14"
                                     m_fontColor="#F0C850" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle"
                                     m_isRichText="true" />
                             </GameObject>
@@ -208,7 +208,7 @@
                         <LayoutElement m_MinHeight="36" />
                         <GameObject name="Text">
                             <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-24, 0" />
-                            <TMPro.TextMeshProUGUI m_text="SWORDS" m_fontSize="12" m_fontStyle="Bold"
+                            <TextMeshProUGUI m_text="SWORDS" m_fontSize="12" m_fontStyle="Bold"
                                 m_fontColor="#555577" m_HorizontalAlignment="Left" m_VerticalAlignment="Bottom"
                                 m_characterSpacing="4" />
                         </GameObject>
@@ -249,13 +249,13 @@
                             <GameObject name="Name">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="24" />
-                                <TMPro.TextMeshProUGUI m_text="Iron Sword" m_fontSize="16" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="Iron Sword" m_fontSize="16" m_fontStyle="Bold"
                                     m_fontColor="#DDDDEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Stats">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="18" />
-                                <TMPro.TextMeshProUGUI m_text="+12 ATK" m_fontSize="12"
+                                <TextMeshProUGUI m_text="+12 ATK" m_fontSize="12"
                                     m_fontColor="#55BB66" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                         </GameObject>
@@ -269,7 +269,7 @@
                                 m_Colors.m_PressedColor="#AADDAA" />
                             <GameObject name="Price">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                                <TMPro.TextMeshProUGUI m_text="150" m_fontSize="15" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="150" m_fontSize="15" m_fontStyle="Bold"
                                     m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                             </GameObject>
                         </GameObject>
@@ -314,13 +314,13 @@
                             <GameObject name="Name">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="24" />
-                                <TMPro.TextMeshProUGUI m_text="Steel Blade" m_fontSize="16" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="Steel Blade" m_fontSize="16" m_fontStyle="Bold"
                                     m_fontColor="#55DD66" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Stats">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="18" />
-                                <TMPro.TextMeshProUGUI m_text="+28 ATK  +5 CRIT" m_fontSize="12"
+                                <TextMeshProUGUI m_text="+28 ATK  +5 CRIT" m_fontSize="12"
                                     m_fontColor="#55BB66" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                         </GameObject>
@@ -334,7 +334,7 @@
                                 m_Colors.m_PressedColor="#AADDAA" />
                             <GameObject name="Price">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                                <TMPro.TextMeshProUGUI m_text="500" m_fontSize="15" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="500" m_fontSize="15" m_fontStyle="Bold"
                                     m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                             </GameObject>
                         </GameObject>
@@ -379,13 +379,13 @@
                             <GameObject name="Name">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="24" />
-                                <TMPro.TextMeshProUGUI m_text="Shadow Katana" m_fontSize="16" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="Shadow Katana" m_fontSize="16" m_fontStyle="Bold"
                                     m_fontColor="#CC77EE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Stats">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="18" />
-                                <TMPro.TextMeshProUGUI m_text="+55 ATK  +15 CRIT  +10% Lifesteal" m_fontSize="12"
+                                <TextMeshProUGUI m_text="+55 ATK  +15 CRIT  +10% Lifesteal" m_fontSize="12"
                                     m_fontColor="#55BB66" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                         </GameObject>
@@ -399,7 +399,7 @@
                                 m_Colors.m_PressedColor="#AADDAA" />
                             <GameObject name="Price">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                                <TMPro.TextMeshProUGUI m_text="2,800" m_fontSize="15" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="2,800" m_fontSize="15" m_fontStyle="Bold"
                                     m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                             </GameObject>
                         </GameObject>
@@ -415,7 +415,7 @@
                         <LayoutElement m_MinHeight="36" />
                         <GameObject name="Text">
                             <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="-24, 0" />
-                            <TMPro.TextMeshProUGUI m_text="BOWS" m_fontSize="12" m_fontStyle="Bold"
+                            <TextMeshProUGUI m_text="BOWS" m_fontSize="12" m_fontStyle="Bold"
                                 m_fontColor="#555577" m_HorizontalAlignment="Left" m_VerticalAlignment="Bottom"
                                 m_characterSpacing="4" />
                         </GameObject>
@@ -456,13 +456,13 @@
                             <GameObject name="Name">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="24" />
-                                <TMPro.TextMeshProUGUI m_text="Short Bow" m_fontSize="16" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="Short Bow" m_fontSize="16" m_fontStyle="Bold"
                                     m_fontColor="#DDDDEE" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Stats">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="18" />
-                                <TMPro.TextMeshProUGUI m_text="+10 ATK  +8 Range" m_fontSize="12"
+                                <TextMeshProUGUI m_text="+10 ATK  +8 Range" m_fontSize="12"
                                     m_fontColor="#55BB66" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                         </GameObject>
@@ -476,7 +476,7 @@
                                 m_Colors.m_PressedColor="#AADDAA" />
                             <GameObject name="Price">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                                <TMPro.TextMeshProUGUI m_text="120" m_fontSize="15" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="120" m_fontSize="15" m_fontStyle="Bold"
                                     m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                             </GameObject>
                         </GameObject>
@@ -521,13 +521,13 @@
                             <GameObject name="Name">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="24" />
-                                <TMPro.TextMeshProUGUI m_text="Elven Longbow" m_fontSize="16" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="Elven Longbow" m_fontSize="16" m_fontStyle="Bold"
                                     m_fontColor="#66AAFF" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Stats">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="18" />
-                                <TMPro.TextMeshProUGUI m_text="+35 ATK  +20 Range  +10 DEX" m_fontSize="12"
+                                <TextMeshProUGUI m_text="+35 ATK  +20 Range  +10 DEX" m_fontSize="12"
                                     m_fontColor="#55BB66" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                         </GameObject>
@@ -541,7 +541,7 @@
                                 m_Colors.m_PressedColor="#AADDAA" />
                             <GameObject name="Price">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                                <TMPro.TextMeshProUGUI m_text="1,200" m_fontSize="15" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="1,200" m_fontSize="15" m_fontStyle="Bold"
                                     m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                             </GameObject>
                         </GameObject>
@@ -586,13 +586,13 @@
                             <GameObject name="Name">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="24" />
-                                <TMPro.TextMeshProUGUI m_text="Wooden Bow" m_fontSize="16" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="Wooden Bow" m_fontSize="16" m_fontStyle="Bold"
                                     m_fontColor="#777788" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                             <GameObject name="Stats">
                                 <RectTransform />
                                 <LayoutElement m_MinHeight="18" />
-                                <TMPro.TextMeshProUGUI m_text="+5 ATK  +4 Range" m_fontSize="12"
+                                <TextMeshProUGUI m_text="+5 ATK  +4 Range" m_fontSize="12"
                                     m_fontColor="#556655" m_HorizontalAlignment="Left" m_VerticalAlignment="Middle" />
                             </GameObject>
                         </GameObject>
@@ -602,7 +602,7 @@
                             <Image m_Color="#1E1E38" />
                             <GameObject name="Text">
                                 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                                <TMPro.TextMeshProUGUI m_text="OWNED" m_fontSize="12" m_fontStyle="Bold"
+                                <TextMeshProUGUI m_text="OWNED" m_fontSize="12" m_fontStyle="Bold"
                                     m_fontColor="#555577" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                             </GameObject>
                         </GameObject>

@@ -26,7 +26,7 @@ Property names match Unity's **serialized field names** exactly (the `m_` prefix
 ```xml
 <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="400, 250" />
 <Image m_Color="#FF0000" m_RaycastTarget="true" />
-<TMPro.TextMeshProUGUI m_text="Hello" m_fontSize="24" m_fontColor="#FFFFFF" />
+<TextMeshProUGUI m_text="Hello" m_fontSize="24" m_fontColor="#FFFFFF" />
 ```
 
 Nested properties use dot notation:
@@ -68,7 +68,7 @@ Reference assets (sprites, fonts, materials, etc.) by their project path:
 
 ```xml
 <Image m_Sprite="Assets/Sprites/icon.png" />
-<TMPro.TextMeshProUGUI m_fontAsset="Assets/Fonts/Roboto SDF.asset" m_fontSize="24" m_fontColor="#FFFFFF" />
+<TextMeshProUGUI m_fontAsset="Assets/Fonts/Roboto SDF.asset" m_fontSize="24" m_fontColor="#FFFFFF" />
 <Image m_Material="Assets/Materials/UIBlur.mat" />
 ```
 
@@ -96,13 +96,13 @@ If a component has no properties, use a self-closing tag:
 For arrays and lists, use `<Field>` child elements with `<Item>` entries:
 
 ```xml
-<TMPro.TMP_Dropdown m_Value="0">
+<TMP_Dropdown m_Value="0">
     <Field name="m_Options.m_Options">
         <Item m_Text="Option A" />
         <Item m_Text="Option B" />
         <Item m_Text="Option C" />
     </Field>
-</TMPro.TMP_Dropdown>
+</TMP_Dropdown>
 ```
 
 ## Property value types
@@ -135,7 +135,7 @@ For custom or third-party components, use the fully qualified name (namespace + 
 
 ```xml
 <MyGame.UI.HealthBar maxValue="100" currentValue="75" />
-<TMPro.TextMeshProUGUI m_text="Hello" m_fontSize="24" />
+<TextMeshProUGUI m_text="Hello" m_fontSize="24" />
 ```
 
 ## Templates

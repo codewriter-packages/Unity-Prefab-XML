@@ -17,7 +17,7 @@
                 <LayoutElement m_MinHeight="52" />
                 <GameObject name="TitleText">
                     <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                    <TMPro.TextMeshProUGUI m_text="Confirmation" m_fontSize="22" m_fontStyle="Bold"
+                    <TextMeshProUGUI m_text="Confirmation" m_fontSize="22" m_fontStyle="Bold"
                           m_fontColor="#E0E0FF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                 </GameObject>
             </GameObject>
@@ -36,7 +36,7 @@
                 <GameObject name="MessageText">
                     <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1"
                                    m_SizeDelta="-48, -24" />
-                    <TMPro.TextMeshProUGUI m_text="Are you sure you want to perform this action? This cannot be undone."
+                    <TextMeshProUGUI m_text="Are you sure you want to perform this action? This cannot be undone."
                           m_fontSize="16" m_fontColor="#B0B0CC" m_HorizontalAlignment="Left" m_VerticalAlignment="Top"
                           m_TextWrappingMode="Normal" />
                 </GameObject>
@@ -58,7 +58,7 @@
                     <LayoutElement m_MinWidth="130" m_MinHeight="42" />
                     <GameObject name="Label">
                         <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                        <TMPro.TextMeshProUGUI m_text="Cancel" m_fontSize="16"
+                        <TextMeshProUGUI m_text="Cancel" m_fontSize="16"
                               m_fontColor="#B0B0CC" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                     </GameObject>
                 </GameObject>
@@ -70,7 +70,7 @@
                     <LayoutElement m_MinWidth="130" m_MinHeight="42" />
                     <GameObject name="Label">
                         <RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
-                        <TMPro.TextMeshProUGUI m_text="Confirm" m_fontSize="16" m_fontStyle="Bold"
+                        <TextMeshProUGUI m_text="Confirm" m_fontSize="16" m_fontStyle="Bold"
                               m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
                     </GameObject>
                 </GameObject>
