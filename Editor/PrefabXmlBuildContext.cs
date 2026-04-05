@@ -12,8 +12,6 @@ namespace UnityPrefabXML
         public Dictionary<XElement, GameObject> ElementToGameObject { get; } = new Dictionary<XElement, GameObject>();
         public List<System.Action> DeferredActions { get; } = new List<System.Action>();
 
-        private int _objectIndex;
-
         public PrefabXmlBuildContext(AssetImportContext ctx)
         {
             Ctx = ctx;
@@ -45,14 +43,23 @@ namespace UnityPrefabXML
             Ctx.SetMainObject(rootGo);
         }
 
-        public string NextObjectId(string hint)
-        {
-            return $"{hint}_{_objectIndex++}";
-        }
-
         public void RegisterSubObject(GameObject go)
         {
-            Ctx.AddObjectToAsset(NextObjectId(go.name), go);
+            Ctx.AddObjectToAsset(GetStableId(go), go);
+        }
+
+        private string GetStableId(GameObject go)
+        {
+            var parts = new List<string>();
+            var current = go.transform;
+            while (current != null)
+            {
+                int siblingIndex = current.GetSiblingIndex();
+                parts.Add($"{current.name}[{siblingIndex}]");
+                current = current.parent;
+            }
+            parts.Reverse();
+            return string.Join("/", parts);
         }
 
         private XDocument ParseXml(string path)
