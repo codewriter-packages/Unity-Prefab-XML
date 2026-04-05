@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using System.Xml.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -34,9 +33,8 @@ namespace UnityPrefabXML
                 var type = ResolveType(tagName);
                 if (type == null)
                 {
-                    var lineInfo = (IXmlLineInfo)compElement;
-                    context.Ctx.LogImportWarning(
-                        $"Unknown component '{tagName}' at line {lineInfo.LineNumber}. Skipped.");
+                    context.LogWarning(
+                        $"Unknown component '{tagName}'. Skipped.", compElement);
                     continue;
                 }
 

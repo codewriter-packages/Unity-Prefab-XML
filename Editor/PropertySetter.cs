@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Xml;
 using System.Xml.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -23,9 +22,8 @@ namespace UnityPrefabXML
                 var prop = so.FindProperty(name);
                 if (prop == null)
                 {
-                    var lineInfo = (IXmlLineInfo)element;
-                    context.Ctx.LogImportWarning(
-                        $"Unknown property '{name}' on {component.GetType().Name} at line {lineInfo.LineNumber}. Skipped.");
+                    context.LogWarning(
+                        $"Unknown property '{name}' on {component.GetType().Name}. Skipped.", element);
                     continue;
                 }
 
@@ -118,7 +116,7 @@ namespace UnityPrefabXML
                         {
                             if (!context.IdRegistry.TryGetValue(refId, out var referencedGo))
                             {
-                                context.Ctx.LogImportWarning($"Unresolved reference '#{refId}'.");
+                                context.LogWarning($"Unresolved reference '#{refId}'.");
                                 return;
                             }
 
@@ -157,9 +155,8 @@ namespace UnityPrefabXML
 
                 default:
                 {
-                    var lineInfo = (IXmlLineInfo)element;
-                    context.Ctx.LogImportWarning(
-                        $"Unsupported property type '{prop.propertyType}' for '{prop.name}' at line {lineInfo.LineNumber}. Skipped.");
+                    context.LogWarning(
+                        $"Unsupported property type '{prop.propertyType}' for '{prop.name}'. Skipped.", element);
                     break;
                 }
             }
@@ -226,20 +223,18 @@ namespace UnityPrefabXML
                 var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
                 if (texture != null)
                 {
-                    var lineInfo = (IXmlLineInfo)element;
                     var importer = AssetImporter.GetAtPath(path) as TextureImporter;
                     var textureType = importer != null ? importer.textureType.ToString() : "unknown";
-                    context.Ctx.LogImportError(
+                    context.LogError(
                         $"Texture at '{path}' is not imported as Sprite (current type: {textureType}). " +
-                        $"Select the texture in Project window, set 'Texture Type' to 'Sprite (2D and UI)' and click Apply. " +
-                        $"(line {lineInfo.LineNumber})");
+                        $"Select the texture in Project window, set 'Texture Type' to 'Sprite (2D and UI)' and click Apply.",
+                        element);
                     return null;
                 }
             }
 
-            var li = (IXmlLineInfo)element;
-            context.Ctx.LogImportWarning(
-                $"Asset not found at '{path}' for '{prop.name}' (type={assetType.Name}) at line {li.LineNumber}. Skipped.");
+            context.LogWarning(
+                $"Asset not found at '{path}' for '{prop.name}' (type={assetType.Name}). Skipped.", element);
             return null;
         }
 

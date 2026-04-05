@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Xml;
 using System.Xml.Linq;
 using UnityEditor.AssetImporters;
 using UnityEngine;
@@ -12,9 +13,46 @@ namespace UnityPrefabXML
         public Dictionary<XElement, GameObject> ElementToGameObject { get; } = new Dictionary<XElement, GameObject>();
         public List<System.Action> DeferredActions { get; } = new List<System.Action>();
 
-        public PrefabXmlBuildContext(AssetImportContext ctx)
+        private readonly List<ImportDiagnostic> _diagnostics;
+
+        public PrefabXmlBuildContext(AssetImportContext ctx, List<ImportDiagnostic> diagnostics)
         {
             Ctx = ctx;
+            _diagnostics = diagnostics;
+        }
+
+        public void LogError(string message, int line = -1)
+        {
+            _diagnostics.Add(new ImportDiagnostic
+            {
+                severity = ImportDiagnostic.Severity.Error,
+                message = message,
+                line = line
+            });
+            Ctx.LogImportError(message);
+        }
+
+        public void LogWarning(string message, int line = -1)
+        {
+            _diagnostics.Add(new ImportDiagnostic
+            {
+                severity = ImportDiagnostic.Severity.Warning,
+                message = message,
+                line = line
+            });
+            Ctx.LogImportWarning(message);
+        }
+
+        public void LogError(string message, XElement element)
+        {
+            var lineInfo = (IXmlLineInfo)element;
+            LogError(message, lineInfo.HasLineInfo() ? lineInfo.LineNumber : -1);
+        }
+
+        public void LogWarning(string message, XElement element)
+        {
+            var lineInfo = (IXmlLineInfo)element;
+            LogWarning(message, lineInfo.HasLineInfo() ? lineInfo.LineNumber : -1);
         }
 
         public void Execute(string assetPath)
@@ -71,7 +109,7 @@ namespace UnityPrefabXML
             }
             catch (System.Xml.XmlException ex)
             {
-                Ctx.LogImportError($"XML parse error at line {ex.LineNumber}: {ex.Message}");
+                LogError($"XML parse error at line {ex.LineNumber}: {ex.Message}", ex.LineNumber);
                 CreateErrorPlaceholder();
                 return null;
             }
@@ -81,7 +119,7 @@ namespace UnityPrefabXML
         {
             if (root == null || root.Name.LocalName != "UnityPrefab")
             {
-                Ctx.LogImportError("Root element must be <UnityPrefab>.");
+                LogError("Root element must be <UnityPrefab>.", line: 1);
                 CreateErrorPlaceholder();
                 return false;
             }
@@ -97,7 +135,7 @@ namespace UnityPrefabXML
                 {
                     if (rootGo != null)
                     {
-                        Ctx.LogImportError("<UnityPrefab> must contain exactly one root <GameObject>.");
+                        LogError("<UnityPrefab> must contain exactly one root <GameObject>.", child);
                         CreateErrorPlaceholder();
                         return null;
                     }
@@ -105,14 +143,14 @@ namespace UnityPrefabXML
                 }
                 else
                 {
-                    Ctx.LogImportWarning(
-                        $"Unexpected element <{child.Name.LocalName}> under <UnityPrefab>. Ignored.");
+                    LogWarning(
+                        $"Unexpected element <{child.Name.LocalName}> under <UnityPrefab>. Ignored.", child);
                 }
             }
 
             if (rootGo == null)
             {
-                Ctx.LogImportError("<UnityPrefab> must contain a <GameObject> child.");
+                LogError("<UnityPrefab> must contain a <GameObject> child.");
                 CreateErrorPlaceholder();
                 return null;
             }

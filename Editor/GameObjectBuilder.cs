@@ -1,4 +1,3 @@
-using System.Xml;
 using System.Xml.Linq;
 using UnityEngine;
 
@@ -11,9 +10,8 @@ namespace UnityPrefabXML
             string name = element.Attribute("name")?.Value;
             if (string.IsNullOrEmpty(name))
             {
-                var lineInfo = (IXmlLineInfo)element;
-                context.Ctx.LogImportWarning(
-                    $"<GameObject> at line {lineInfo.LineNumber} has no 'name' attribute. Using 'Unnamed'.");
+                context.LogWarning(
+                    $"<GameObject> has no 'name' attribute. Using 'Unnamed'.", element);
                 name = "Unnamed";
             }
 
@@ -40,8 +38,8 @@ namespace UnityPrefabXML
                 var id = idAttr.Value;
                 if (context.IdRegistry.ContainsKey(id))
                 {
-                    context.Ctx.LogImportWarning(
-                        $"Duplicate id '{id}' on <GameObject name=\"{name}\">. Overwriting.");
+                    context.LogWarning(
+                        $"Duplicate id '{id}' on <GameObject name=\"{name}\">. Overwriting.", element);
                 }
                 context.IdRegistry[id] = go;
             }
