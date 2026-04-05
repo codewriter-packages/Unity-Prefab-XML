@@ -18,6 +18,7 @@ namespace UnityPrefabXML
             }
 
             var go = new GameObject(name);
+            context.ElementToGameObject[element] = go;
 
             if (parent != null)
             {

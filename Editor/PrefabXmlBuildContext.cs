@@ -9,6 +9,7 @@ namespace UnityPrefabXML
     {
         public AssetImportContext Ctx { get; }
         public Dictionary<string, GameObject> IdRegistry { get; } = new Dictionary<string, GameObject>();
+        public Dictionary<XElement, GameObject> ElementToGameObject { get; } = new Dictionary<XElement, GameObject>();
         public List<System.Action> DeferredActions { get; } = new List<System.Action>();
 
         private int _objectIndex;
@@ -33,7 +34,8 @@ namespace UnityPrefabXML
             // Pass 1: Build hierarchy
             GameObject rootGo = GameObjectBuilder.Build(rootElement, parent: null, this);
 
-            // Pass 2: Components (Step 2)
+            // Pass 2: Components
+            ComponentBuilder.ProcessAll(rootElement, rootGo, this);
 
             // Pass 3: Resolve deferred references (Step 8)
 

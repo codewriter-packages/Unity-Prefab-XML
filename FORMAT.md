@@ -17,7 +17,7 @@ PrefabXML (`.prefabxml`) is a simplified XML format for describing Unity UI pref
 
 - `<UnityPrefab>` — root element, exactly one per file.
 - `<GameObject name="..." active="true">` — a Unity GameObject. Nesting creates parent-child hierarchy. The `active` attribute is optional (default `"true"`), set to `"false"` to create an inactive object.
-- Any other tag inside `<GameObject>` is a **component** (e.g. `<RectTransform>`, `<Image>`, `<Text>`, `<Button>`).
+- Any other tag inside `<GameObject>` is a **component** (e.g. `<RectTransform>`, `<Image>`, `<Text>`, `<Button>`). Components are processed in document order — `<RectTransform>` or `<Transform>` must be the first component if present.
 
 ## Object references
 
