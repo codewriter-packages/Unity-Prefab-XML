@@ -109,6 +109,7 @@ namespace UnityPrefabXML
                 case SerializedPropertyType.ObjectReference:
                     if (value.StartsWith("#"))
                     {
+                        // Object reference by id
                         var refId = value.Substring(1);
                         var propPath = prop.propertyPath;
                         var targetObject = prop.serializedObject.targetObject;
@@ -125,9 +126,10 @@ namespace UnityPrefabXML
                             var p = so.FindProperty(propPath);
 
                             var expectedType = ExtractPPtrTypeName(propType);
+                            if (expectedType != null && expectedType.StartsWith("$"))
+                                expectedType = expectedType.Substring(1);
                             if (expectedType != null
-                                && expectedType != "GameObject"
-                                && expectedType[0] != '$')
+                                && expectedType != "GameObject")
                             {
                                 p.objectReferenceValue = referencedGo.GetComponent(expectedType);
                             }
@@ -138,6 +140,18 @@ namespace UnityPrefabXML
 
                             so.ApplyModifiedPropertiesWithoutUndo();
                         });
+                    }
+                    else
+                    {
+                        // Asset reference by path
+                        var expectedType = ExtractPPtrTypeName(prop.type);
+                        var assetType = ResolveAssetType(expectedType);
+                        var asset = LoadAsset(value, assetType, prop, element, context);
+                        if (asset != null)
+                        {
+                            prop.objectReferenceValue = asset;
+                            context.Ctx.DependsOnSourceAsset(value);
+                        }
                     }
                     break;
 
@@ -155,6 +169,78 @@ namespace UnityPrefabXML
         {
             if (!propType.StartsWith("PPtr<")) return null;
             return propType.Substring(5, propType.Length - 6);
+        }
+
+        private static readonly Dictionary<string, System.Type> BuiltinAssetTypes = new Dictionary<string, System.Type>
+        {
+            { "$Sprite", typeof(Sprite) },
+            { "$Texture2D", typeof(Texture2D) },
+            { "$Material", typeof(Material) },
+            { "$Font", typeof(Font) },
+            { "$Shader", typeof(Shader) },
+            { "$Mesh", typeof(Mesh) },
+            { "$AudioClip", typeof(AudioClip) },
+            { "$GameObject", typeof(GameObject) },
+            { "Sprite", typeof(Sprite) },
+            { "Texture2D", typeof(Texture2D) },
+            { "Material", typeof(Material) },
+            { "Font", typeof(Font) },
+            { "Shader", typeof(Shader) },
+            { "Mesh", typeof(Mesh) },
+            { "AudioClip", typeof(AudioClip) },
+            { "GameObject", typeof(GameObject) },
+        };
+
+        private static System.Type ResolveAssetType(string typeName)
+        {
+            if (string.IsNullOrEmpty(typeName))
+                return typeof(UnityEngine.Object);
+
+            if (BuiltinAssetTypes.TryGetValue(typeName, out var builtinType))
+                return builtinType;
+
+            // Strip $ prefix for custom types
+            if (typeName[0] == '$')
+                typeName = typeName.Substring(1);
+
+            // Search all assemblies for custom types
+            foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var type = asm.GetType(typeName);
+                if (type != null) return type;
+            }
+
+            return typeof(UnityEngine.Object);
+        }
+
+        private static UnityEngine.Object LoadAsset(string path, System.Type assetType,
+            SerializedProperty prop, XElement element, PrefabXmlBuildContext context)
+        {
+            var asset = AssetDatabase.LoadAssetAtPath(path, assetType);
+            if (asset != null)
+                return asset;
+
+            // Sprite-specific: check if texture exists but not imported as Sprite
+            if (assetType == typeof(Sprite))
+            {
+                var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+                if (texture != null)
+                {
+                    var lineInfo = (IXmlLineInfo)element;
+                    var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+                    var textureType = importer != null ? importer.textureType.ToString() : "unknown";
+                    context.Ctx.LogImportError(
+                        $"Texture at '{path}' is not imported as Sprite (current type: {textureType}). " +
+                        $"Select the texture in Project window, set 'Texture Type' to 'Sprite (2D and UI)' and click Apply. " +
+                        $"(line {lineInfo.LineNumber})");
+                    return null;
+                }
+            }
+
+            var li = (IXmlLineInfo)element;
+            context.Ctx.LogImportWarning(
+                $"Asset not found at '{path}' for '{prop.name}' (type={assetType.Name}) at line {li.LineNumber}. Skipped.");
+            return null;
         }
 
         private static Color ParseColor(string value)

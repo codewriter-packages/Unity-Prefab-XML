@@ -81,6 +81,13 @@ namespace UnityPrefabXML
             return result;
         }
 
+        [UnityEditor.InitializeOnLoadMethod]
+        private static void ResetCache()
+        {
+            _shortNameCache = null;
+            _fullNameCache = null;
+        }
+
         private static void EnsureCache()
         {
             if (_shortNameCache != null) return;

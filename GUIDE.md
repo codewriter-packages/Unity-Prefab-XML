@@ -205,6 +205,24 @@ Do NOT set every possible attribute. Set only what differs from defaults. Compar
     m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
 ```
 
+## Image with Sprite inside LayoutGroup
+
+When an `Image` has `m_Sprite` set, it reports the sprite's native size as its preferred size to the layout system. This overrides `LayoutElement.m_MinWidth`/`m_MinHeight`. To control the size, set `m_PreferredWidth`/`m_PreferredHeight` on LayoutElement — they take priority over Image's preferred size:
+
+```xml
+<!-- WRONG: Image sprite size overrides min size -->
+<GameObject name="Icon">
+    <LayoutElement m_MinWidth="48" m_MinHeight="48" />
+    <Image m_Sprite="Assets/Sprites/avatar.png" />
+</GameObject>
+
+<!-- CORRECT: preferred size takes priority -->
+<GameObject name="Icon">
+    <LayoutElement m_MinWidth="48" m_MinHeight="48" m_PreferredWidth="48" m_PreferredHeight="48" />
+    <Image m_Sprite="Assets/Sprites/avatar.png" m_PreserveAspect="true" />
+</GameObject>
+```
+
 ## Use Templates as reference
 
 When unsure about field names, check `Templates/` folder for correct serialized property names:
