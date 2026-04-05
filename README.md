@@ -1,4 +1,4 @@
-# Unity Prefab XML
+# Unity Prefab XML [![Github license](https://img.shields.io/github/license/codewriter-packages/Unity-Prefab-XML.svg?style=flat-square)](#) [![Unity 6000.0](https://img.shields.io/badge/Unity-6000.0+-2296F3.svg?style=flat-square)](#) ![GitHub package.json version](https://img.shields.io/github/package-json/v/codewriter-packages/Unity-Prefab-XML?style=flat-square) 
 
 _XML to Prefab importer for Unity_
 
@@ -49,15 +49,20 @@ GameObject:
 <UnityPrefab>
   <GameObject name="MyButton">
     <RectTransform
-        anchor="middle-center"
-        width="200" height="50" />
-    <Image color="#4CAF50" />
+        m_SizeDelta="200, 50" />
+    <Image m_Color="#4CAF50" />
     <Button />
     <GameObject name="Label">
-      <Text text="Click me"
-            fontSize="20"
-            color="#FFFFFF"
-            alignment="MiddleCenter" />
+      <RectTransform
+          m_AnchorMin="0, 0"
+          m_AnchorMax="1, 1"
+          m_SizeDelta="0, 0" />
+      <TextMeshProUGUI
+          m_text="Click me"
+          m_fontSize="20"
+          m_fontColor="#FFFFFF"
+          m_HorizontalAlignment="Center"
+          m_VerticalAlignment="Middle" />
     </GameObject>
   </GameObject>
 </UnityPrefab>
@@ -77,12 +82,24 @@ Save as `.prefabxml` — Unity imports it as a prefab automatically.
 - 🎨 **Asset references** — reference sprites, fonts, materials by project path
 - 🌳 **Nested hierarchies** — parent-child relationships through XML nesting
 - 🔢 **Value types** — Color (`#FF0000`), Vector2/3/4, Enum, RectOffset, and more
+- 🎮 **Custom MonoBehaviours** — add your own scripts and wire `[SerializeField]` fields via `#id` references directly in XML (see `Samples/Counter`)
 
 ### 🚀 Use cases
 
 - 🤖 **AI-generated prefabs** — ask an LLM to create UI or scene objects from a text description
 - ⚡ **Rapid prototyping** — sketch out a prefab in a text editor without opening the Unity Inspector
 - 📝 **Diff-friendly UI** — review prefab changes in pull requests as readable XML, not cryptic YAML
+
+### 🤖 Getting started with LLM
+
+1. Add [FORMAT.md](./FORMAT.md), [GUIDE.md](./GUIDE.md) and relevant files from `Templates/` to the LLM context
+2. Describe the UI you want: *"Create a settings panel with volume slider, music toggle, and resolution dropdown"*
+3. Save the generated XML as `.prefabxml` in your Unity project — it imports as a prefab automatically
+4. Drag the prefab onto a Canvas
+
+**Tips:**
+- Include your existing `.prefabxml` files in the prompt so the LLM matches your project's style and uses correct asset paths
+- Ask the LLM to generate both a C# MonoBehaviour and a `.prefabxml` in one go — the script's `[SerializeField]` fields can be wired to UI elements via `#id` references (see `Samples/Counter` for an example)
 
 ### 📖 Format & Guide
 

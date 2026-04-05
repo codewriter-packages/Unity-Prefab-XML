@@ -13,7 +13,7 @@ All property names must match Unity's serialized field names exactly. Built-in U
 <TextMeshProUGUI text="Hello" fontSize="24" alignment="Center" />
 
 <!-- CORRECT -->
-<RectTransform m_SizeDelta="100, 50" m_AnchorMin="0.5, 0.5" m_AnchorMax="0.5, 0.5" />
+<RectTransform m_SizeDelta="100, 50" />
 <Image m_Color="#FF0000" />
 <TextMeshProUGUI m_text="Hello" m_fontSize="24"
     m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />

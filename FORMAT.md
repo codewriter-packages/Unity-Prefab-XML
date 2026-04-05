@@ -81,8 +81,10 @@ The importer loads assets via `AssetDatabase.LoadAssetAtPath` and automatically 
 For simple values, write properties as XML attributes directly on the component tag:
 
 ```xml
-<Image m_Color="#FF0000" m_RaycastTarget="true" m_Maskable="true" />
-<RectTransform m_AnchorMin="0.5, 0.5" m_AnchorMax="0.5, 0.5" m_SizeDelta="200, 100" />
+<Image m_Color="#FF0000" />
+<RectTransform m_SizeDelta="200, 100" />
+<TextMeshProUGUI m_text="Hello" m_fontSize="24" m_fontColor="#FFFFFF"
+    m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
 ```
 
 If a component has no properties, use a self-closing tag:
@@ -131,11 +133,11 @@ Any Unity component can be used by its class name. For built-in Unity components
 <Button />
 ```
 
-For custom or third-party components, use the fully qualified name (namespace + class):
+Common third-party components like `TextMeshProUGUI`, `TMP_Dropdown` also work by short name. For custom components with namespace collisions, use the fully qualified name:
 
 ```xml
-<MyGame.UI.HealthBar maxValue="100" currentValue="75" />
 <TextMeshProUGUI m_text="Hello" m_fontSize="24" />
+<MyGame.UI.HealthBar maxValue="100" currentValue="75" />
 ```
 
 ## Templates
