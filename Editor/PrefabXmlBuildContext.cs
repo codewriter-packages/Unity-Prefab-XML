@@ -37,7 +37,8 @@ namespace UnityPrefabXML
             // Pass 2: Components
             ComponentBuilder.ProcessAll(rootElement, rootGo, this);
 
-            // Pass 3: Resolve deferred references (Step 8)
+            // Pass 3: Resolve deferred references
+            foreach (var action in DeferredActions) action();
 
             // Register
             Ctx.AddObjectToAsset("root", rootGo);

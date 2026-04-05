@@ -75,7 +75,38 @@ namespace UnityPrefabXML
                     break;
 
                 case SerializedPropertyType.ObjectReference:
-                    // Handled in Step 8 (#id) and Step 11 ({variable})
+                    if (value.StartsWith("#"))
+                    {
+                        var refId = value.Substring(1);
+                        var propPath = prop.propertyPath;
+                        var targetObject = prop.serializedObject.targetObject;
+                        var propType = prop.type;
+                        context.DeferredActions.Add(() =>
+                        {
+                            if (!context.IdRegistry.TryGetValue(refId, out var referencedGo))
+                            {
+                                context.Ctx.LogImportWarning($"Unresolved reference '#{refId}'.");
+                                return;
+                            }
+
+                            var so = new SerializedObject(targetObject);
+                            var p = so.FindProperty(propPath);
+
+                            var expectedType = ExtractPPtrTypeName(propType);
+                            if (expectedType != null
+                                && expectedType != "GameObject"
+                                && expectedType[0] != '$')
+                            {
+                                p.objectReferenceValue = referencedGo.GetComponent(expectedType);
+                            }
+                            else
+                            {
+                                p.objectReferenceValue = referencedGo;
+                            }
+
+                            so.ApplyModifiedPropertiesWithoutUndo();
+                        });
+                    }
                     break;
 
                 default:
@@ -86,6 +117,12 @@ namespace UnityPrefabXML
                     break;
                 }
             }
+        }
+
+        private static string ExtractPPtrTypeName(string propType)
+        {
+            if (!propType.StartsWith("PPtr<")) return null;
+            return propType.Substring(5, propType.Length - 6);
         }
 
         private static Color ParseColor(string value)
