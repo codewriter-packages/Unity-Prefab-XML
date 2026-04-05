@@ -40,7 +40,20 @@ namespace UnityPrefabXML
                     continue;
                 }
 
-                go.AddComponent(type);
+                // RectTransform/Transform already exist on GameObject
+                Component component;
+                if (typeof(Transform).IsAssignableFrom(type))
+                {
+                    component = go.GetComponent(type);
+                    if (component == null)
+                        component = go.AddComponent(type);
+                }
+                else
+                {
+                    component = go.AddComponent(type);
+                }
+
+                PropertySetter.ApplyAttributes(component, compElement, context);
             }
 
             // Recurse into child GameObjects
