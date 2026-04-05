@@ -1,0 +1,38 @@
+<UnityPrefab>
+    <GameObject name="Counter">
+        <RectTransform m_SizeDelta="200, 80" />
+        <Image m_Color="#1E1E2E" />
+        <CounterController
+            counterText="#CounterText"
+            incrementButton="#IncrementBtn"
+            decrementButton="#DecrementBtn" />
+
+        <GameObject name="DecrementBtn" id="DecrementBtn">
+            <RectTransform m_SizeDelta="50, 80" m_AnchoredPosition="-75, 0" />
+            <Image m_Color="#FF5577" />
+            <Button />
+            <GameObject name="Label">
+                <RectTransform />
+                <TMPro.TextMeshProUGUI m_text="-" m_fontSize="28" m_fontStyle="Bold"
+                    m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+            </GameObject>
+        </GameObject>
+
+        <GameObject name="Display" id="CounterText">
+            <RectTransform m_SizeDelta="100, 80" />
+            <TMPro.TextMeshProUGUI m_text="0" m_fontSize="36" m_fontStyle="Bold"
+                m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+        </GameObject>
+
+        <GameObject name="IncrementBtn" id="IncrementBtn">
+            <RectTransform m_SizeDelta="50, 80" m_AnchoredPosition="75, 0" />
+            <Image m_Color="#44D962" />
+            <Button />
+            <GameObject name="Label">
+                <RectTransform />
+                <TMPro.TextMeshProUGUI m_text="+" m_fontSize="28" m_fontStyle="Bold"
+                    m_fontColor="#FFFFFF" m_HorizontalAlignment="Center" m_VerticalAlignment="Middle" />
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</UnityPrefab>

@@ -137,6 +137,23 @@ A bare `<Slider />` will error — it needs at least `m_FillRect`. `m_HandleRect
 </GameObject>
 ```
 
+## RectTransform defaults
+
+`m_AnchorMin` and `m_AnchorMax` default to `0.5, 0.5` (center). If you want a centered element, just set size and position:
+
+```xml
+<!-- No need to specify anchors for centered elements -->
+<RectTransform m_SizeDelta="200, 80" />
+<RectTransform m_SizeDelta="200, 80" m_AnchoredPosition="0, 50" />
+```
+
+Only specify anchors when you need stretch or non-center alignment:
+
+```xml
+<!-- Stretch to fill parent -->
+<RectTransform m_AnchorMin="0, 0" m_AnchorMax="1, 1" m_SizeDelta="0, 0" />
+```
+
 ## RectTransform must be first component
 
 When present, `<RectTransform>` must be the first component tag inside `<GameObject>`:
