@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using UnityEditor;
@@ -28,6 +30,36 @@ namespace UnityPrefabXML
                 }
 
                 SetPropertyValue(prop, value, element, context);
+            }
+
+            // Process <Field> child elements for arrays/lists
+            foreach (var fieldElement in element.Elements())
+            {
+                if (fieldElement.Name.LocalName != "Field") continue;
+
+                var fieldName = fieldElement.Attribute("name")?.Value;
+                if (fieldName == null) continue;
+
+                var fieldProp = so.FindProperty(fieldName);
+                if (fieldProp == null || !fieldProp.isArray) continue;
+
+                var items = fieldElement.Elements("Item").ToList();
+                fieldProp.arraySize = items.Count;
+                for (int i = 0; i < items.Count; i++)
+                {
+                    var itemElement = items[i];
+                    var arrayElement = fieldProp.GetArrayElementAtIndex(i);
+
+                    // Set attributes on array element's sub-properties
+                    foreach (var attr in itemElement.Attributes())
+                    {
+                        var subProp = arrayElement.FindPropertyRelative(attr.Name.LocalName);
+                        if (subProp != null)
+                        {
+                            SetPropertyValue(subProp, attr.Value, itemElement, context);
+                        }
+                    }
+                }
             }
 
             so.ApplyModifiedPropertiesWithoutUndo();
