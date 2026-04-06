@@ -309,7 +309,7 @@ namespace UnityPrefabXML
             }
         }
 
-        private static string ExtractPPtrTypeName(string propType)
+        internal static string ExtractPPtrTypeName(string propType)
         {
             if (!propType.StartsWith("PPtr<")) return null;
             return propType.Substring(5, propType.Length - 6);
