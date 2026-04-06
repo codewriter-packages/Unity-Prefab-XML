@@ -177,6 +177,32 @@ The same `rid` can be used in multiple `<Item>` elements to share the same manag
     name="counter" context="#Root" />
 ```
 
+### Standalone managed references
+
+For non-array `[SerializeReference]` fields, use `@refId` syntax in the component attribute:
+
+```xml
+<MyComponent myAction="@action1">
+    <Ref id="action1" type="MyAssembly MyGame.PlaySound" clip="boom" />
+</MyComponent>
+```
+
+### Nested managed references
+
+When a `[SerializeReference]` object contains another `[SerializeReference]` field, use `@refId` to link them. All `<Ref>` elements are declared flat at the component level:
+
+```xml
+<MyComponent>
+    <Ref id="cond1" type="MyAssembly MyGame.IsAlive" threshold="0.5" />
+    <Ref id="action1" type="MyAssembly MyGame.PlaySound" clip="boom" condition="@cond1" />
+    <Field name="actions">
+        <Item rid="action1" />
+    </Field>
+</MyComponent>
+```
+
+Here `condition="@cond1"` on `action1` assigns the `cond1` managed reference instance to the `condition` field of `PlaySound`. The `@` prefix distinguishes managed reference links from string values.
+
 ## Property value types
 
 Values are written as strings and parsed by `SerializedPropertyType`:
@@ -194,6 +220,7 @@ Values are written as strings and parsed by `SerializedPropertyType`:
 | Vector4 | `"1, 2, 3, 4"` | |
 | ObjectReference | `"#id"` | reference to GameObject by id |
 | ObjectReference | `"{name}"` | asset binding, assigned in Inspector |
+| ManagedReference | `"@refId"` | reference to a `<Ref>` by id |
 
 ## Available components
 

@@ -249,8 +249,8 @@ namespace UnityPrefabXML
                 // Some components may fail to add (e.g. require other components)
             }
 
-            var refs = new List<XElement>();
-            var fields = new List<object>();
+            var allRefs = new List<XElement>();
+            var fields = new List<XElement>();
 
             try
             {
@@ -275,15 +275,22 @@ namespace UnityPrefabXML
                             continue;
                         }
 
-                        var fieldResult = BuildField(prop, ctx);
+                        var fieldResult = BuildField(prop, ctx, allRefs);
                         if (fieldResult != null)
                             fields.Add(fieldResult);
                         enterChildren = false;
                         continue;
                     }
 
+                    // Standalone ManagedReference → @refId attribute + Ref elements
                     if (prop.propertyType == SerializedPropertyType.ManagedReference)
                     {
+                        if (!IsDefault(prop, defaultSo))
+                        {
+                            var refId = SerializeManagedReference(prop, ctx, allRefs);
+                            if (refId != null)
+                                el.Add(new XAttribute(name, $"@{refId}"));
+                        }
                         enterChildren = false;
                         continue;
                     }
@@ -316,21 +323,10 @@ namespace UnityPrefabXML
             }
 
             // Add child elements: Refs first, then Fields
+            foreach (var r in allRefs)
+                el.Add(r);
             foreach (var field in fields)
-            {
-                if (field is FieldWithRefs fwr)
-                {
-                    foreach (var r in fwr.refs)
-                        el.Add(r);
-                }
-            }
-            foreach (var field in fields)
-            {
-                if (field is FieldWithRefs fwr)
-                    el.Add(fwr.field);
-                else if (field is XElement xe)
-                    el.Add(xe);
-            }
+                el.Add(field);
 
             return el;
         }
@@ -345,7 +341,7 @@ namespace UnityPrefabXML
             return SerializedProperty.DataEquals(prop, defaultProp);
         }
 
-        private static object BuildField(SerializedProperty prop, ConvertContext ctx)
+        private static XElement BuildField(SerializedProperty prop, ConvertContext ctx, List<XElement> allRefs)
         {
             if (prop.arraySize == 0) return null;
 
@@ -369,7 +365,6 @@ namespace UnityPrefabXML
             // ManagedReference array
             if (firstElement.propertyType == SerializedPropertyType.ManagedReference)
             {
-                var container = new List<XElement>();
                 var fieldEl = new XElement("Field", new XAttribute("name", prop.propertyPath));
 
                 for (int i = 0; i < prop.arraySize; i++)
@@ -381,31 +376,11 @@ namespace UnityPrefabXML
                         continue;
                     }
 
-                    var refId = $"ref{ctx.RefCounter++}";
-                    var refEl = new XElement("Ref",
-                        new XAttribute("id", refId),
-                        new XAttribute("type", elProp.managedReferenceFullTypename));
-
-                    // Serialize managed reference sub-properties
-                    var copy = elProp.Copy();
-                    bool enter = true;
-                    while (copy.NextVisible(enter))
-                    {
-                        enter = false;
-                        if (!copy.propertyPath.StartsWith(elProp.propertyPath + ".")) break;
-                        var relName = copy.propertyPath.Substring(elProp.propertyPath.Length + 1);
-                        if (relName.Contains(".")) continue;
-
-                        var val = SerializeValue(copy, ctx);
-                        if (val != null)
-                            refEl.Add(new XAttribute(relName, val));
-                    }
-
-                    container.Add(refEl);
+                    var refId = SerializeManagedReference(elProp, ctx, allRefs);
                     fieldEl.Add(new XElement("Item", new XAttribute("rid", refId)));
                 }
 
-                return new FieldWithRefs { refs = container, field = fieldEl };
+                return fieldEl;
             }
 
             // Regular struct array
@@ -434,6 +409,46 @@ namespace UnityPrefabXML
                 }
                 return fieldEl;
             }
+        }
+
+        /// <summary>
+        /// Serializes a ManagedReference property into a Ref element, handling nested ManagedReferences recursively.
+        /// Returns the ref id, or null if the managed reference value is null.
+        /// </summary>
+        private static string SerializeManagedReference(SerializedProperty prop, ConvertContext ctx, List<XElement> allRefs)
+        {
+            if (prop.managedReferenceValue == null) return null;
+
+            var refId = $"ref{ctx.RefCounter++}";
+            var refEl = new XElement("Ref",
+                new XAttribute("id", refId),
+                new XAttribute("type", prop.managedReferenceFullTypename));
+
+            var copy = prop.Copy();
+            bool enter = true;
+            while (copy.NextVisible(enter))
+            {
+                enter = false;
+                if (!copy.propertyPath.StartsWith(prop.propertyPath + ".")) break;
+                var relName = copy.propertyPath.Substring(prop.propertyPath.Length + 1);
+                if (relName.Contains(".")) continue;
+
+                if (copy.propertyType == SerializedPropertyType.ManagedReference)
+                {
+                    var nestedRefId = SerializeManagedReference(copy, ctx, allRefs);
+                    if (nestedRefId != null)
+                        refEl.Add(new XAttribute(relName, $"@{nestedRefId}"));
+                }
+                else
+                {
+                    var val = SerializeValue(copy, ctx);
+                    if (val != null)
+                        refEl.Add(new XAttribute(relName, val));
+                }
+            }
+
+            allRefs.Add(refEl);
+            return refId;
         }
 
         private static string SerializeValue(SerializedProperty prop, ConvertContext ctx)
@@ -537,10 +552,5 @@ namespace UnityPrefabXML
             public int RefCounter;
         }
 
-        private class FieldWithRefs
-        {
-            public List<XElement> refs;
-            public XElement field;
-        }
     }
 }

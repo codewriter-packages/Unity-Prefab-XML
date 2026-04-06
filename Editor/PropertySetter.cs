@@ -53,6 +53,14 @@ namespace UnityPrefabXML
                     continue;
                 }
 
+                if (prop.propertyType == SerializedPropertyType.ManagedReference
+                    && value.StartsWith("@"))
+                {
+                    ApplyManagedRefLink(prop, value.Substring(1),
+                        managedRefInstances, managedRefElements, element, context);
+                    continue;
+                }
+
                 SetPropertyValue(prop, value, element, context);
             }
 
@@ -88,29 +96,8 @@ namespace UnityPrefabXML
                         }
 
                         arrayElement.managedReferenceValue = instance;
-
-                        // Apply sub-properties from Ref attributes on first use
-                        if (managedRefElements.Remove(ridValue, out var refElement))
-                        {
-                            foreach (var attr in refElement.Attributes())
-                            {
-                                var attrName = attr.Name.LocalName;
-                                if (attrName == "id" || attrName == "type") continue;
-
-                                var subProp = arrayElement.FindPropertyRelative(attrName);
-                                if (subProp != null)
-                                {
-                                    SetPropertyValue(subProp, attr.Value, refElement, context);
-                                }
-                                else
-                                {
-                                    context.LogWarning(
-                                        $"Unknown property '{attrName}' on managed reference. Skipped.",
-                                        refElement);
-                                }
-                            }
-                        }
-
+                        ApplyRefAttributes(arrayElement, ridValue,
+                            managedRefInstances, managedRefElements, itemElement, context);
                         continue;
                     }
 
@@ -139,6 +126,54 @@ namespace UnityPrefabXML
             }
 
             so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void ApplyManagedRefLink(SerializedProperty prop, string rid,
+            Dictionary<string, object> managedRefInstances,
+            Dictionary<string, XElement> managedRefElements,
+            XElement sourceElement, PrefabXmlBuildContext context)
+        {
+            if (!managedRefInstances.TryGetValue(rid, out var instance))
+            {
+                context.LogWarning($"Unresolved managed reference '@{rid}'.", sourceElement);
+                return;
+            }
+
+            prop.managedReferenceValue = instance;
+            ApplyRefAttributes(prop, rid, managedRefInstances, managedRefElements, sourceElement, context);
+        }
+
+        private static void ApplyRefAttributes(SerializedProperty prop, string rid,
+            Dictionary<string, object> managedRefInstances,
+            Dictionary<string, XElement> managedRefElements,
+            XElement sourceElement, PrefabXmlBuildContext context)
+        {
+            if (!managedRefElements.Remove(rid, out var refElement)) return;
+
+            foreach (var attr in refElement.Attributes())
+            {
+                var attrName = attr.Name.LocalName;
+                if (attrName == "id" || attrName == "type") continue;
+
+                var subProp = prop.FindPropertyRelative(attrName);
+                if (subProp == null)
+                {
+                    context.LogWarning(
+                        $"Unknown property '{attrName}' on managed reference. Skipped.", refElement);
+                    continue;
+                }
+
+                if (subProp.propertyType == SerializedPropertyType.ManagedReference
+                    && attr.Value.StartsWith("@"))
+                {
+                    ApplyManagedRefLink(subProp, attr.Value.Substring(1),
+                        managedRefInstances, managedRefElements, refElement, context);
+                }
+                else
+                {
+                    SetPropertyValue(subProp, attr.Value, refElement, context);
+                }
+            }
         }
 
         private static Type ResolveManagedReferenceType(string typeString)
