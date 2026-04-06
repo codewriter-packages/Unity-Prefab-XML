@@ -48,6 +48,18 @@ namespace UnityPrefabXML
                     var itemElement = items[i];
                     var arrayElement = fieldProp.GetArrayElementAtIndex(i);
 
+                    // ObjectReference array — Item value is the reference itself
+                    if (arrayElement.propertyType == SerializedPropertyType.ObjectReference)
+                    {
+                        var refValue = itemElement.Attribute("ref")?.Value;
+                        if (refValue != null)
+                        {
+                            SetPropertyValue(arrayElement, refValue, itemElement, context);
+                        }
+
+                        continue;
+                    }
+
                     // Set attributes on array element's sub-properties
                     foreach (var attr in itemElement.Attributes())
                     {

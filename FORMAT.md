@@ -126,6 +126,17 @@ For arrays and lists, use `<Field>` child elements with `<Item>` entries:
 </TMP_Dropdown>
 ```
 
+For arrays of object references, use `ref` attribute with `#id`:
+
+```xml
+<ViewContext>
+    <Field name="listeners">
+        <Item ref="#Button1" />
+        <Item ref="#TextDisplay" />
+    </Field>
+</ViewContext>
+```
+
 ## Property value types
 
 Values are written as strings and parsed by `SerializedPropertyType`:
