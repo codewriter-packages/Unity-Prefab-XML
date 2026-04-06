@@ -252,6 +252,26 @@ When unsure about field names, check `Templates/` folder for correct serialized 
 - `Templates/Text-TextMeshPro.prefabxml` — All TMP field names
 - `Templates/Image.prefabxml` — All Image field names
 
+## Avoid multiple components of the same type on one GameObject
+
+`#id` and `#id/ComponentType` use `GetComponent()` which returns the first match. If a GameObject has two components of the same type, only the first one can be referenced — there is no way to target the second.
+
+```xml
+<!-- BAD: two ButtonClickBinder on one object — can't reference them separately -->
+<GameObject name="Btn" id="Btn">
+    <ButtonClickBinder ... />
+    <ButtonClickBinder ... />
+</GameObject>
+
+<!-- GOOD: split into separate GameObjects -->
+<GameObject name="Btn1" id="Btn1">
+    <ButtonClickBinder ... />
+</GameObject>
+<GameObject name="Btn2" id="Btn2">
+    <ButtonClickBinder ... />
+</GameObject>
+```
+
 ## Nested property paths
 
 Use dot notation for nested struct properties:

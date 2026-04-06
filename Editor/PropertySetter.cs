@@ -232,11 +232,26 @@ namespace UnityPrefabXML
                     }
                     else if (value.StartsWith("#"))
                     {
-                        // Object reference by id
-                        var refId = value.Substring(1);
+                        // Object reference by id: #objectId or #objectId/ComponentType
+                        var refValue = value.Substring(1);
                         var propPath = prop.propertyPath;
                         var targetObject = prop.serializedObject.targetObject;
                         var propType = prop.type;
+
+                        string refId;
+                        string explicitComponent;
+                        var slashIndex = refValue.IndexOf('/');
+                        if (slashIndex >= 0)
+                        {
+                            refId = refValue.Substring(0, slashIndex);
+                            explicitComponent = refValue.Substring(slashIndex + 1);
+                        }
+                        else
+                        {
+                            refId = refValue;
+                            explicitComponent = null;
+                        }
+
                         context.DeferredActions.Add(() =>
                         {
                             if (!context.IdRegistry.TryGetValue(refId, out var referencedGo))
@@ -248,17 +263,24 @@ namespace UnityPrefabXML
                             var so = new SerializedObject(targetObject);
                             var p = so.FindProperty(propPath);
 
-                            var expectedType = ExtractPPtrTypeName(propType);
-                            if (expectedType != null && expectedType.StartsWith("$"))
-                                expectedType = expectedType.Substring(1);
-                            if (expectedType != null
-                                && expectedType != "GameObject")
+                            if (explicitComponent != null)
                             {
-                                p.objectReferenceValue = referencedGo.GetComponent(expectedType);
+                                p.objectReferenceValue = referencedGo.GetComponent(explicitComponent);
                             }
                             else
                             {
-                                p.objectReferenceValue = referencedGo;
+                                var expectedType = ExtractPPtrTypeName(propType);
+                                if (expectedType != null && expectedType.StartsWith("$"))
+                                    expectedType = expectedType.Substring(1);
+                                if (expectedType != null
+                                    && expectedType != "GameObject")
+                                {
+                                    p.objectReferenceValue = referencedGo.GetComponent(expectedType);
+                                }
+                                else
+                                {
+                                    p.objectReferenceValue = referencedGo;
+                                }
                             }
 
                             so.ApplyModifiedPropertiesWithoutUndo();

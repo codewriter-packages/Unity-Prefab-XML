@@ -62,6 +62,14 @@ Use the `id` attribute on `<GameObject>` to give it a unique identifier. Then re
 
 The `id` is optional — only add it when the object needs to be referenced from another component. The `id` value must be unique within the file. The importer automatically resolves the reference type (e.g. `m_FillRect` expects `RectTransform`, so it calls `GetComponent<RectTransform>()` on the referenced GameObject).
 
+To reference a specific component type on a GameObject, use `#id/ComponentType`:
+
+```xml
+<MyComponent listener="#MyButton/ButtonClickBinder" />
+```
+
+This calls `GetComponent("ButtonClickBinder")` on the GameObject with `id="MyButton"`. Useful when a GameObject has multiple components of compatible types and you need to reference a specific one.
+
 ## Asset references
 
 Reference assets (sprites, fonts, materials, etc.) by their project path:
