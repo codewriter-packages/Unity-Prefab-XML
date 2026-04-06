@@ -137,6 +137,38 @@ For arrays of object references, use `ref` attribute with `#id`:
 </ViewContext>
 ```
 
+## Managed references (SerializeReference)
+
+For `[SerializeReference]` fields, define `<Ref>` elements inside the component tag, then reference them by `rid` from `<Item>`:
+
+```xml
+<MyComponent>
+    <Ref id="myVar" type="MyAssembly MyNamespace.MyConcreteType"
+        someField="value" otherField="42" />
+    <Ref id="myEvent" type="MyAssembly MyNamespace.MyEventType"
+        name="click" />
+    <Field name="items">
+        <Item rid="myVar" />
+        <Item rid="myEvent" />
+        <Item />  <!-- null reference -->
+    </Field>
+</MyComponent>
+```
+
+- `<Ref>` — defines a managed reference instance, scoped to the component
+  - `id` — unique identifier within the component (required)
+  - `type` — fully qualified type in Unity YAML format: `"AssemblyName Namespace.ClassName"` (required)
+  - Other attributes are set as properties on the created instance
+- `<Item rid="...">` — references a `<Ref>` by id
+- `<Item />` without `rid` in a `[SerializeReference]` array — null element
+
+The same `rid` can be used in multiple `<Item>` elements to share the same managed reference instance. Object reference properties inside `<Ref>` support `#id` syntax:
+
+```xml
+<Ref id="counter" type="CodeWriter.ViewBinding CodeWriter.ViewBinding.ViewVariableInt"
+    name="counter" context="#Root" />
+```
+
 ## Property value types
 
 Values are written as strings and parsed by `SerializedPropertyType`:

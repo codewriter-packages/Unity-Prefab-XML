@@ -14,6 +14,32 @@ namespace UnityPrefabXML
         {
             var so = new SerializedObject(component);
 
+            // Create managed reference instances once (scoped to this component)
+            var managedRefInstances = new Dictionary<string, object>();
+            var managedRefElements = new Dictionary<string, XElement>();
+            foreach (var child in element.Elements())
+            {
+                if (child.Name.LocalName != "Ref") continue;
+
+                var refId = child.Attribute("id")?.Value;
+                if (refId == null)
+                {
+                    context.LogWarning("Ref element missing 'id' attribute. Skipped.", child);
+                    continue;
+                }
+
+                var typeString = child.Attribute("type")?.Value;
+                var type = ResolveManagedReferenceType(typeString);
+                if (type == null)
+                {
+                    context.LogError($"Ref '{refId}': cannot resolve type '{typeString}'.", child);
+                    continue;
+                }
+
+                managedRefInstances[refId] = Activator.CreateInstance(type);
+                managedRefElements[refId] = child;
+            }
+
             foreach (var attr in element.Attributes())
             {
                 var name = attr.Name.LocalName;
@@ -48,6 +74,46 @@ namespace UnityPrefabXML
                     var itemElement = items[i];
                     var arrayElement = fieldProp.GetArrayElementAtIndex(i);
 
+                    // ManagedReference array element — use rid or leave null
+                    if (arrayElement.propertyType == SerializedPropertyType.ManagedReference)
+                    {
+                        var ridValue = itemElement.Attribute("rid")?.Value;
+                        if (ridValue == null)
+                            continue; // null managed reference
+
+                        if (!managedRefInstances.TryGetValue(ridValue, out var instance))
+                        {
+                            context.LogWarning($"Unresolved managed reference rid='{ridValue}'.", itemElement);
+                            continue;
+                        }
+
+                        arrayElement.managedReferenceValue = instance;
+
+                        // Apply sub-properties from Ref attributes on first use
+                        if (managedRefElements.Remove(ridValue, out var refElement))
+                        {
+                            foreach (var attr in refElement.Attributes())
+                            {
+                                var attrName = attr.Name.LocalName;
+                                if (attrName == "id" || attrName == "type") continue;
+
+                                var subProp = arrayElement.FindPropertyRelative(attrName);
+                                if (subProp != null)
+                                {
+                                    SetPropertyValue(subProp, attr.Value, refElement, context);
+                                }
+                                else
+                                {
+                                    context.LogWarning(
+                                        $"Unknown property '{attrName}' on managed reference. Skipped.",
+                                        refElement);
+                                }
+                            }
+                        }
+
+                        continue;
+                    }
+
                     // ObjectReference array — Item value is the reference itself
                     if (arrayElement.propertyType == SerializedPropertyType.ObjectReference)
                     {
@@ -73,6 +139,28 @@ namespace UnityPrefabXML
             }
 
             so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static Type ResolveManagedReferenceType(string typeString)
+        {
+            if (string.IsNullOrEmpty(typeString)) return null;
+
+            // Format: "AssemblyName Namespace.ClassName"
+            var spaceIndex = typeString.IndexOf(' ');
+            if (spaceIndex < 0) return null;
+
+            var assemblyName = typeString.Substring(0, spaceIndex);
+            var typeName = typeString.Substring(spaceIndex + 1);
+
+            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (asm.GetName().Name == assemblyName)
+                {
+                    return asm.GetType(typeName);
+                }
+            }
+
+            return null;
         }
 
         private static void SetPropertyValue(SerializedProperty prop, string value,
