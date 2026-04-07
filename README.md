@@ -136,6 +136,28 @@ Go to **Settings → Editor → File Types**, find **XML** in the list, and add 
 Library distributed as git package ([How to install package from git URL](https://docs.unity3d.com/Manual/upm-ui-giturl.html))
 <br>Git URL: `https://github.com/codewriter-packages/Unity-Prefab-XML.git`
 
+## 🤖 Claude Code Integration
+
+Install the `/prefabxml` skill and `agent-prefabxml` subagent for Claude Code:
+
+```bash
+# Install globally (~/.claude, available in all projects)
+curl -fsSL https://raw.githubusercontent.com/codewriter-packages/Unity-Prefab-XML/main/install-claude-skill.sh | bash
+
+# Or install into current project only (.claude/)
+curl -fsSL https://raw.githubusercontent.com/codewriter-packages/Unity-Prefab-XML/main/install-claude-skill.sh | bash -s -- --local
+```
+
+This adds a Claude Code [skill](https://docs.anthropic.com/en/docs/claude-code/skills) and [agent](https://docs.anthropic.com/en/docs/claude-code/agents). To update, run the same command again.
+
+**Usage:**
+
+```
+/prefabxml settings panel with volume slider, music toggle, and resolution dropdown
+```
+
+The subagent can be used for parallel prefab generation — Claude will automatically delegate to `agent-prefabxml` when generating multiple `.prefabxml` files at once.
+
 ## 📄 License
 
 Unity Prefab XML is [MIT licensed](./LICENSE.md).

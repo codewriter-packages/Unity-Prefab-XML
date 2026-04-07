@@ -13,3 +13,4 @@
 .gradle
 *_LEGACY
 *.DotSettings.user
+.claude/settings.local.json
