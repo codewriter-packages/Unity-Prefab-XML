@@ -36,7 +36,7 @@ TMP uses lowercase after `m_` (unlike standard Unity components). Common mistake
 Key TMP fields:
 - `m_text` — text content
 - `m_fontSize` — font size
-- `m_fontStyle` — `"Normal"`, `"Bold"`, `"Italic"` (use enum name, NOT number)
+- `m_fontStyle` — `"Normal"`, `"Bold"`, `"Italic"`, `"Bold, Italic"` (flags enum — use comma-separated names, NOT numbers)
 - `m_fontColor` — text color (NOT `m_Color`)
 - `m_HorizontalAlignment` — `"Left"`, `"Center"`, `"Right"`, `"Justified"`
 - `m_VerticalAlignment` — `"Top"`, `"Middle"`, `"Bottom"`
@@ -53,6 +53,13 @@ Key TMP fields:
 
 <!-- CORRECT -->
 <TextMeshProUGUI m_fontStyle="Bold" />
+```
+
+For `[Flags]` enums (like `m_fontStyle`), combine multiple values with a comma:
+
+```xml
+<TextMeshProUGUI m_fontStyle="Bold, Italic" />
+<TextMeshProUGUI m_fontStyle="Bold, Underline" />
 ```
 
 ## One Graphic per GameObject

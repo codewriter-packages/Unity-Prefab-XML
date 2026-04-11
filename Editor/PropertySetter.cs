@@ -224,7 +224,16 @@ namespace UnityPrefabXML
                     break;
 
                 case SerializedPropertyType.Enum:
-                    prop.enumValueIndex = FindEnumIndex(prop, value);
+                    if (int.TryParse(value, out var enumInt))
+                    {
+                        prop.intValue = enumInt;
+                    }
+                    else
+                    {
+                        var fieldInfo = ScriptAttributeUtilityProxy.GetFieldInfoAndStaticTypeFromProperty(prop, out _);
+                        prop.intValue = (int) Enum.Parse(fieldInfo.FieldType, value, true);
+                    }
+
                     break;
 
                 case SerializedPropertyType.Vector2:
@@ -425,26 +434,6 @@ namespace UnityPrefabXML
             if (ColorUtility.TryParseHtmlString(value, out var color))
                 return color;
             return Color.white;
-        }
-
-        private static int FindEnumIndex(SerializedProperty prop, string value)
-        {
-            var names = prop.enumDisplayNames;
-            for (int i = 0; i < names.Length; i++)
-            {
-                if (string.Equals(names[i], value, StringComparison.OrdinalIgnoreCase))
-                    return i;
-            }
-
-            // Try matching internal enum names
-            var internalNames = prop.enumNames;
-            for (int i = 0; i < internalNames.Length; i++)
-            {
-                if (string.Equals(internalNames[i], value, StringComparison.OrdinalIgnoreCase))
-                    return i;
-            }
-
-            return 0;
         }
 
         private static Vector2 ParseVector2(string value)

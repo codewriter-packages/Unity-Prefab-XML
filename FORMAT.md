@@ -215,6 +215,7 @@ Values are written as strings and parsed by `SerializedPropertyType`:
 | String | `"Hello World"` | |
 | Color | `"#FF0000"`, `"#FF000080"` | hex RRGGBB or RRGGBBAA |
 | Enum | `"MiddleCenter"`, `"Bold"` | enum member name (case-insensitive) |
+| Flags Enum | `"Bold"`, `"Bold, Italic"` | comma-separated enum member names |
 | Vector2 | `"10, 20"` | |
 | Vector3 | `"1, 2, 3"` | |
 | Vector4 | `"1, 2, 3, 4"` | |

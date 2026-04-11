@@ -42,7 +42,7 @@ If no path is provided, ask where to save or suggest a reasonable path in the cu
 - `m_text` (NOT m_Text)
 - `m_fontSize` (NOT m_FontSize)
 - `m_fontColor` (NOT m_Color)
-- `m_fontStyle` — `"Normal"`, `"Bold"`, `"Italic"`
+- `m_fontStyle` — `"Normal"`, `"Bold"`, `"Italic"`, `"Bold, Italic"` (flags enum, comma-separated)
 - `m_HorizontalAlignment` — `"Left"`, `"Center"`, `"Right"`, `"Justified"`
 - `m_VerticalAlignment` — `"Top"`, `"Middle"`, `"Bottom"`
 - `m_TextWrappingMode` — `"NoWrap"`, `"Normal"`
@@ -55,7 +55,7 @@ If no path is provided, ask where to save or suggest a reasonable path in the cu
 - **Slider needs m_FillRect**: bare `<Slider />` will break
 - **Toggle needs structure**: Background + Checkmark (see Toggle template in TEMPLATES.md)
 - **id on GameObject**: `id` goes on `<GameObject>`, NOT on component
-- **Enum — names, not numbers**: `m_fontStyle="Bold"`, not `"1"`
+- **Enum — names, not numbers**: `m_fontStyle="Bold"`, not `"1"`. For flags: `m_fontStyle="Bold, Italic"`
 - **LayoutGroup needs flags**: `m_ChildControlWidth`, `m_ChildControlHeight`
 
 ### Property value types
@@ -66,6 +66,7 @@ If no path is provided, ask where to save or suggest a reasonable path in the cu
 | Vector3 | `"x, y, z"` | `"1, 2, 3"` |
 | Boolean | `"true"` / `"false"` | |
 | Enum | value name | `"Center"`, `"Bold"` |
+| Flags Enum | comma-separated names | `"Bold, Italic"` |
 | Object ref | `"#id"` | reference to GO by id |
 | Asset ref | project path | `"Assets/Sprites/icon.png"` |
 

@@ -471,9 +471,8 @@ namespace UnityPrefabXML
                     return FormatColor(prop.colorValue);
 
                 case SerializedPropertyType.Enum:
-                    var idx = prop.enumValueIndex;
-                    if (idx < 0 || idx >= prop.enumNames.Length) return null;
-                    return prop.enumNames[idx];
+                    var fieldInfo = ScriptAttributeUtilityProxy.GetFieldInfoAndStaticTypeFromProperty(prop, out _);
+                    return Enum.ToObject(fieldInfo.FieldType, prop.intValue).ToString();
 
                 case SerializedPropertyType.Vector2:
                     return FormatVector2(prop.vector2Value);
