@@ -5,7 +5,7 @@ using System.Xml.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace UnityPrefabXML
+namespace UnityPrefabXML.Builder
 {
     public static class ComponentBuilder
     {
@@ -27,7 +27,7 @@ namespace UnityPrefabXML
             {
                 var tagName = compElement.Name.LocalName;
 
-                if (tagName == "GameObject" || tagName == "Field")
+                if (!PrefabXmlUtils.IsComponentElement(compElement))
                     continue;
 
                 var type = ResolveType(tagName);

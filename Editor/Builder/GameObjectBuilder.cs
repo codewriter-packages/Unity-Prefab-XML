@@ -1,7 +1,7 @@
 using System.Xml.Linq;
 using UnityEngine;
 
-namespace UnityPrefabXML
+namespace UnityPrefabXML.Builder
 {
     public static class GameObjectBuilder
     {

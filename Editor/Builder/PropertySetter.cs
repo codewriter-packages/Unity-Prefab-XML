@@ -6,7 +6,7 @@ using System.Xml.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace UnityPrefabXML
+namespace UnityPrefabXML.Builder
 {
     public static class PropertySetter
     {
@@ -249,9 +249,9 @@ namespace UnityPrefabXML
                     break;
 
                 case SerializedPropertyType.ObjectReference:
-                    if (PrefabXmlBuildContext.IsBinding(value))
+                    if (PrefabXmlUtils.IsBinding(value))
                     {
-                        var bindingName = PrefabXmlBuildContext.GetBindingName(value);
+                        var bindingName = PrefabXmlUtils.GetBindingName(value);
                         var expectedType = ExtractPPtrTypeName(prop.type);
                         var targetType = ResolveAssetType(expectedType);
 

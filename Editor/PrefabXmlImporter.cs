@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEditor.AssetImporters;
 using UnityEngine;
+using UnityPrefabXML.Builder;
 using Object = UnityEngine.Object;
 
 namespace UnityPrefabXML

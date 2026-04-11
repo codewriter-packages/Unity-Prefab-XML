@@ -4,7 +4,7 @@ using System.Xml.Linq;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 
-namespace UnityPrefabXML
+namespace UnityPrefabXML.Builder
 {
     public class PrefabXmlBuildContext
     {
@@ -23,16 +23,6 @@ namespace UnityPrefabXML
             Ctx = ctx;
             _diagnostics = diagnostics;
             AssetBindings = assetBindings;
-        }
-
-        public static bool IsBinding(string value)
-        {
-            return value.Length > 2 && value[0] == '{' && value[value.Length - 1] == '}';
-        }
-
-        public static string GetBindingName(string value)
-        {
-            return value.Substring(1, value.Length - 2);
         }
 
         public void LogError(string message, int line = -1)

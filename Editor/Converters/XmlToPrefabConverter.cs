@@ -2,7 +2,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace UnityPrefabXML
+namespace UnityPrefabXML.Converters
 {
     public static class XmlToPrefabConverter
     {

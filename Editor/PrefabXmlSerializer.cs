@@ -1,23 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Xml.Linq;
 using UnityEditor;
-using UnityEditor.AssetImporters;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace UnityPrefabXML
 {
-    public static class PrefabToXmlConverter
+    public static class PrefabXmlSerializer
     {
-        private static readonly HashSet<string> SkipComponents = new HashSet<string>
+        public static readonly HashSet<string> SkipComponents = new HashSet<string>
         {
             "CanvasRenderer",
         };
 
-        private static readonly HashSet<string> SkipProperties = new HashSet<string>
+        public static readonly HashSet<string> SkipProperties = new HashSet<string>
         {
             "m_ObjectHideFlags",
             "m_CorrespondingSourceObject",
@@ -40,166 +38,121 @@ namespace UnityPrefabXML
             "m_TextStyleHashCode",
         };
 
-        [MenuItem("Assets/PrefabXML/Convert UGUI Prefab to PrefabXML", true)]
-        private static bool ValidateConvert()
+        public static HashSet<string> CollectBindingNames(XDocument xmlDoc)
         {
-            foreach (var obj in Selection.objects)
+            var names = new HashSet<string>();
+            foreach (var el in xmlDoc.Descendants())
             {
-                var path = AssetDatabase.GetAssetPath(obj);
-                if (!path.EndsWith(".prefab", StringComparison.OrdinalIgnoreCase)) continue;
-                var go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                if (go != null && go.GetComponent<RectTransform>() != null)
-                    return true;
-            }
-            return false;
-        }
-
-        [MenuItem("Assets/PrefabXML/Convert UGUI Prefab to PrefabXML")]
-        private static void Convert()
-        {
-            foreach (var obj in Selection.objects)
-            {
-                var path = AssetDatabase.GetAssetPath(obj);
-                if (!path.EndsWith(".prefab", StringComparison.OrdinalIgnoreCase)) continue;
-                ConvertOne(path);
-            }
-        }
-
-        private static void ConvertOne(string path)
-        {
-            var go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            if (go == null)
-            {
-                Debug.LogError($"PrefabToXml: Cannot load prefab at '{path}'.");
-                return;
-            }
-
-            var doc = ConvertPrefab(go, out var bindings);
-            var settings = new System.Xml.XmlWriterSettings
-            {
-                Indent = true,
-                IndentChars = "    ",
-                OmitXmlDeclaration = true,
-                NewLineOnAttributes = false,
-            };
-
-            var outputPath = Path.ChangeExtension(path, ".prefabxml");
-            using (var writer = System.Xml.XmlWriter.Create(outputPath, settings))
-            {
-                doc.Save(writer);
-            }
-
-            // First import — discovers bindings and their expected types
-            AssetDatabase.ImportAsset(outputPath, ImportAssetOptions.ForceUpdate);
-
-            if (bindings.Count > 0)
-            {
-                var importer = (PrefabXmlImporter)AssetImporter.GetAtPath(outputPath);
-                var result = PrefabXmlImporter.GetResult(outputPath);
-
-                if (importer != null && result != null)
+                foreach (var attr in el.Attributes())
                 {
-                    foreach (var kvp in bindings)
+                    if (PrefabXmlUtils.IsBinding(attr.Value))
                     {
-                        var bindingName = kvp.Key;
-                        var asset = kvp.Value;
-
-                        if (result.discoveredBindings.TryGetValue(bindingName, out var expectedType))
-                        {
-                            var identifier = new AssetImporter.SourceAssetIdentifier(expectedType, bindingName);
-                            importer.AddRemap(identifier, asset);
-                        }
+                        names.Add(PrefabXmlUtils.GetBindingName(attr.Value));
                     }
-
-                    AssetDatabase.WriteImportSettingsIfDirty(outputPath);
-                    AssetDatabase.ImportAsset(outputPath, ImportAssetOptions.ForceUpdate);
                 }
             }
 
-            Debug.Log($"PrefabToXml: Converted '{path}' → '{outputPath}'");
+            return names;
         }
-
-        public static XDocument ConvertPrefab(GameObject root)
-        {
-            return ConvertPrefab(root, out _);
-        }
-
-        public static XDocument ConvertPrefab(GameObject root, out Dictionary<string, Object> bindings)
-        {
-            var ctx = new ConvertContext { Root = root };
-            AssignIds(root.transform, ctx);
-
-            var rootElement = BuildGameObject(root, ctx);
-            bindings = ctx.UsedBindings;
-            var unityPrefab = new XElement("UnityPrefab",
-                new XAttribute("format", "Packages/com.codewriter.unity-prefab-xml/FORMAT.md"),
-                new XAttribute("guide", "Packages/com.codewriter.unity-prefab-xml/GUIDE.md"),
-                rootElement);
-            return new XDocument(unityPrefab);
-        }
-
-        private static void AssignIds(Transform t, ConvertContext ctx)
+    
+        public static void AssignIds(Transform t, PrefabXmlSerializationContext ctx)
         {
             for (int i = 0; i < t.childCount; i++)
                 AssignIds(t.GetChild(i), ctx);
 
             foreach (var comp in t.gameObject.GetComponents<Component>())
             {
-                if (comp == null) continue;
+                if (comp == null)
+                {
+                    continue;
+                }
+
                 var so = new SerializedObject(comp);
                 var prop = so.GetIterator();
                 while (prop.NextVisible(true))
                 {
-                    if (prop.propertyType != SerializedPropertyType.ObjectReference) continue;
-                    if (prop.objectReferenceValue == null) continue;
+                    if (prop.propertyType != SerializedPropertyType.ObjectReference)
+                    {
+                        continue;
+                    }
+
+                    if (prop.objectReferenceValue == null)
+                    {
+                        continue;
+                    }
 
                     GameObject refGo = null;
                     if (prop.objectReferenceValue is GameObject go)
+                    {
                         refGo = go;
+                    }
                     else if (prop.objectReferenceValue is Component c)
+                    {
                         refGo = c.gameObject;
+                    }
 
                     if (refGo != null && !ctx.GoToId.ContainsKey(refGo) &&
                         refGo.transform.IsChildOf(ctx.Root.transform))
+                    {
                         ctx.GoToId[refGo] = SanitizeId(refGo.name, ctx);
+                    }
                 }
             }
         }
 
-        private static string SanitizeId(string name, ConvertContext ctx)
+        public static string SanitizeId(string name, PrefabXmlSerializationContext ctx)
         {
-            var id = name.Replace(" ", "");
-            while (ctx.UsedIds.Contains(id))
-                id += "_";
+            var id = PrefabXmlUtils.MakeUnique(name.Replace(" ", ""), ctx.UsedIds.Contains);
             ctx.UsedIds.Add(id);
             return id;
         }
 
-        private static XElement BuildGameObject(GameObject go, ConvertContext ctx)
+        public static XElement SerializeGameObject(GameObject go, PrefabXmlSerializationContext ctx)
         {
             var el = new XElement("GameObject", new XAttribute("name", go.name));
 
             if (ctx.GoToId.TryGetValue(go, out var id))
+            {
                 el.Add(new XAttribute("id", id));
+            }
+
             if (!go.activeSelf)
+            {
                 el.Add(new XAttribute("active", "false"));
+            }
 
             // Components (Transform/RectTransform is always first from GetComponents)
             foreach (var comp in go.GetComponents<Component>())
             {
-                if (comp == null) continue;
-                if (SkipComponents.Contains(comp.GetType().Name)) continue;
-                el.Add(BuildComponent(comp, ctx));
+                if (comp == null)
+                {
+                    continue;
+                }
+
+                if (SkipComponents.Contains(comp.GetType().Name))
+                {
+                    continue;
+                }
+
+                el.Add(SerializeComponent(comp, ctx));
             }
 
             // Children
             for (int i = 0; i < go.transform.childCount; i++)
-                el.Add(BuildGameObject(go.transform.GetChild(i).gameObject, ctx));
+                el.Add(SerializeGameObject(go.transform.GetChild(i).gameObject, ctx));
 
             return el;
         }
 
-        private static bool IsLeafProperty(SerializedProperty prop)
+        public static bool IsSkipProperty(string propertyPath)
+        {
+            var rootName = propertyPath.Contains(".")
+                ? propertyPath.Substring(0, propertyPath.IndexOf('.'))
+                : propertyPath;
+            return SkipProperties.Contains(rootName);
+        }
+
+        public static bool IsLeafProperty(SerializedProperty prop)
         {
             switch (prop.propertyType)
             {
@@ -221,7 +174,7 @@ namespace UnityPrefabXML
             }
         }
 
-        private static XElement BuildComponent(Component comp, ConvertContext ctx)
+        public static XElement SerializeComponent(Component comp, PrefabXmlSerializationContext ctx)
         {
             var typeName = comp.GetType().Name;
             var el = new XElement(typeName);
@@ -235,14 +188,22 @@ namespace UnityPrefabXML
                 var compType = comp.GetType();
                 Component defaultComp;
                 if (compType == typeof(Transform))
+                {
                     defaultComp = defaultGo.transform;
+                }
                 else if (compType == typeof(RectTransform))
+                {
                     defaultComp = defaultGo.AddComponent<RectTransform>();
+                }
                 else
+                {
                     defaultComp = defaultGo.AddComponent(compType);
+                }
 
                 if (defaultComp != null)
+                {
                     defaultSo = new SerializedObject(defaultComp);
+                }
             }
             catch
             {
@@ -262,22 +223,31 @@ namespace UnityPrefabXML
                     var name = prop.propertyPath;
 
                     // Check root property name for skip (handles dot-notation like m_LocalPosition.x)
-                    var rootName = name.Contains(".") ? name.Substring(0, name.IndexOf('.')) : name;
-                    if (SkipProperties.Contains(rootName)) continue;
-                    if (name.Contains(".Array.")) continue;
+                    if (IsSkipProperty(name))
+                    {
+                        continue;
+                    }
+
+                    if (name.Contains(".Array."))
+                    {
+                        continue;
+                    }
 
                     // Arrays → Field elements
                     if (prop.isArray && prop.propertyType != SerializedPropertyType.String)
                     {
-                        if (IsDefault(prop, defaultSo))
+                        if (IsDefaultValue(prop, defaultSo))
                         {
                             enterChildren = false;
                             continue;
                         }
 
-                        var fieldResult = BuildField(prop, ctx, allRefs);
+                        var fieldResult = SerializeField(prop, ctx, allRefs);
                         if (fieldResult != null)
+                        {
                             fields.Add(fieldResult);
+                        }
+
                         enterChildren = false;
                         continue;
                     }
@@ -285,12 +255,15 @@ namespace UnityPrefabXML
                     // Standalone ManagedReference → @refId attribute + Ref elements
                     if (prop.propertyType == SerializedPropertyType.ManagedReference)
                     {
-                        if (!IsDefault(prop, defaultSo))
+                        if (!IsDefaultValue(prop, defaultSo))
                         {
                             var refId = SerializeManagedReference(prop, ctx, allRefs);
                             if (refId != null)
+                            {
                                 el.Add(new XAttribute(name, $"@{refId}"));
+                            }
                         }
+
                         enterChildren = false;
                         continue;
                     }
@@ -298,12 +271,15 @@ namespace UnityPrefabXML
                     // Leaf property — serialize directly (handles Vector2, Color, etc.)
                     if (IsLeafProperty(prop))
                     {
-                        if (!IsDefault(prop, defaultSo))
+                        if (!IsDefaultValue(prop, defaultSo))
                         {
                             var value = SerializeValue(prop, ctx);
                             if (value != null)
+                            {
                                 el.Add(new XAttribute(name, value));
+                            }
                         }
+
                         enterChildren = false;
                         continue;
                     }
@@ -331,19 +307,28 @@ namespace UnityPrefabXML
             return el;
         }
 
-        private static bool IsDefault(SerializedProperty prop, SerializedObject defaultSo)
+        public static bool IsDefaultValue(SerializedProperty prop, SerializedObject defaultSo)
         {
-            if (defaultSo == null) return false;
+            if (defaultSo == null)
+            {
+                return false;
+            }
 
             var defaultProp = defaultSo.FindProperty(prop.propertyPath);
-            if (defaultProp == null) return false;
+            if (defaultProp == null)
+            {
+                return false;
+            }
 
             return SerializedProperty.DataEquals(prop, defaultProp);
         }
 
-        private static XElement BuildField(SerializedProperty prop, ConvertContext ctx, List<XElement> allRefs)
+        public static XElement SerializeField(SerializedProperty prop, PrefabXmlSerializationContext ctx, List<XElement> allRefs)
         {
-            if (prop.arraySize == 0) return null;
+            if (prop.arraySize == 0)
+            {
+                return null;
+            }
 
             var firstElement = prop.GetArrayElementAtIndex(0);
 
@@ -356,9 +341,13 @@ namespace UnityPrefabXML
                     var refStr = SerializeObjectReference(prop.GetArrayElementAtIndex(i), ctx);
                     var item = new XElement("Item");
                     if (refStr != null)
+                    {
                         item.Add(new XAttribute("ref", refStr));
+                    }
+
                     fieldEl.Add(item);
                 }
+
                 return fieldEl;
             }
 
@@ -396,17 +385,27 @@ namespace UnityPrefabXML
                     while (copy.NextVisible(enter))
                     {
                         enter = false;
-                        if (!copy.propertyPath.StartsWith(elProp.propertyPath + ".")) break;
+                        if (!copy.propertyPath.StartsWith(elProp.propertyPath + "."))
+                        {
+                            break;
+                        }
+
                         var relName = copy.propertyPath.Substring(elProp.propertyPath.Length + 1);
-                        if (relName.Contains(".")) continue;
+                        if (relName.Contains("."))
+                        {
+                            continue;
+                        }
 
                         var val = SerializeValue(copy, ctx);
                         if (val != null)
+                        {
                             item.Add(new XAttribute(relName, val));
+                        }
                     }
 
                     fieldEl.Add(item);
                 }
+
                 return fieldEl;
             }
         }
@@ -415,9 +414,13 @@ namespace UnityPrefabXML
         /// Serializes a ManagedReference property into a Ref element, handling nested ManagedReferences recursively.
         /// Returns the ref id, or null if the managed reference value is null.
         /// </summary>
-        private static string SerializeManagedReference(SerializedProperty prop, ConvertContext ctx, List<XElement> allRefs)
+        public static string SerializeManagedReference(SerializedProperty prop, PrefabXmlSerializationContext ctx,
+            List<XElement> allRefs)
         {
-            if (prop.managedReferenceValue == null) return null;
+            if (prop.managedReferenceValue == null)
+            {
+                return null;
+            }
 
             var refId = $"ref{ctx.RefCounter++}";
             var refEl = new XElement("Ref",
@@ -429,21 +432,32 @@ namespace UnityPrefabXML
             while (copy.NextVisible(enter))
             {
                 enter = false;
-                if (!copy.propertyPath.StartsWith(prop.propertyPath + ".")) break;
+                if (!copy.propertyPath.StartsWith(prop.propertyPath + "."))
+                {
+                    break;
+                }
+
                 var relName = copy.propertyPath.Substring(prop.propertyPath.Length + 1);
-                if (relName.Contains(".")) continue;
+                if (relName.Contains("."))
+                {
+                    continue;
+                }
 
                 if (copy.propertyType == SerializedPropertyType.ManagedReference)
                 {
                     var nestedRefId = SerializeManagedReference(copy, ctx, allRefs);
                     if (nestedRefId != null)
+                    {
                         refEl.Add(new XAttribute(relName, $"@{nestedRefId}"));
+                    }
                 }
                 else
                 {
                     var val = SerializeValue(copy, ctx);
                     if (val != null)
+                    {
                         refEl.Add(new XAttribute(relName, val));
+                    }
                 }
             }
 
@@ -451,7 +465,7 @@ namespace UnityPrefabXML
             return refId;
         }
 
-        private static string SerializeValue(SerializedProperty prop, ConvertContext ctx)
+        public static string SerializeValue(SerializedProperty prop, PrefabXmlSerializationContext ctx)
         {
             switch (prop.propertyType)
             {
@@ -495,10 +509,13 @@ namespace UnityPrefabXML
             }
         }
 
-        private static string SerializeObjectReference(SerializedProperty prop, ConvertContext ctx)
+        public static string SerializeObjectReference(SerializedProperty prop, PrefabXmlSerializationContext ctx)
         {
             var obj = prop.objectReferenceValue;
-            if (obj == null) return null;
+            if (obj == null)
+            {
+                return null;
+            }
 
             GameObject refGo = null;
             string componentType = null;
@@ -514,35 +531,41 @@ namespace UnityPrefabXML
             }
 
             if (refGo != null && ctx.GoToId.TryGetValue(refGo, out var id))
+            {
                 return componentType != null ? $"#{id}/{componentType}" : $"#{id}";
+            }
 
             // External asset — convert to binding
-            var bindingName = obj.name;
-            while (ctx.UsedBindings.ContainsKey(bindingName))
-                bindingName += "_";
+            var bindingName = PrefabXmlUtils.MakeUnique(obj.name, ctx.UsedBindings.ContainsKey);
             ctx.UsedBindings[bindingName] = obj;
             return $"{{{bindingName}}}";
         }
 
-        private static string FormatVector2(Vector2 v) => $"{F(v.x)}, {F(v.y)}";
-        private static string FormatVector3(Vector3 v) => $"{F(v.x)}, {F(v.y)}, {F(v.z)}";
-        private static string FormatVector4(Vector4 v) => $"{F(v.x)}, {F(v.y)}, {F(v.z)}, {F(v.w)}";
+        public static string FormatVector2(Vector2 v) => $"{F(v.x)}, {F(v.y)}";
+        public static string FormatVector3(Vector3 v) => $"{F(v.x)}, {F(v.y)}, {F(v.z)}";
+        public static string FormatVector4(Vector4 v) => $"{F(v.x)}, {F(v.y)}, {F(v.z)}, {F(v.w)}";
 
-        private static string F(float v)
+        public static string F(float v)
         {
             if (Mathf.Approximately(v, Mathf.Round(v)))
-                return ((int)Mathf.Round(v)).ToString(CultureInfo.InvariantCulture);
+            {
+                return ((int) Mathf.Round(v)).ToString(CultureInfo.InvariantCulture);
+            }
+
             return v.ToString(CultureInfo.InvariantCulture);
         }
 
-        private static string FormatColor(Color c)
+        public static string FormatColor(Color c)
         {
             if (Mathf.Approximately(c.a, 1f))
+            {
                 return $"#{ColorUtility.ToHtmlStringRGB(c)}";
+            }
+
             return $"#{ColorUtility.ToHtmlStringRGBA(c)}";
         }
 
-        private class ConvertContext
+        public class PrefabXmlSerializationContext
         {
             public GameObject Root;
             public Dictionary<GameObject, string> GoToId = new Dictionary<GameObject, string>();
@@ -550,6 +573,5 @@ namespace UnityPrefabXML
             public Dictionary<string, Object> UsedBindings = new Dictionary<string, Object>();
             public int RefCounter;
         }
-
     }
 }

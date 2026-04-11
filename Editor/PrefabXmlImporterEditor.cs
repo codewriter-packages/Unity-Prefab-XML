@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.AssetImporters;
 using UnityEngine;
+using UnityPrefabXML.Designer;
 using Object = UnityEngine.Object;
 
 namespace UnityPrefabXML
@@ -21,6 +22,8 @@ namespace UnityPrefabXML
                 DrawBindings(importer, result.discoveredBindings);
                 DrawDiagnostics(result.diagnostics);
             }
+
+            DrawDesignerSection(importer.assetPath);
 
             ApplyRevertGUI();
         }
@@ -59,6 +62,34 @@ namespace UnityPrefabXML
                 }
             }
 
+            EditorGUILayout.Space(8);
+        }
+
+        private static void DrawDesignerSection(string assetPath)
+        {
+            EditorGUILayout.Space(8);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("Designer");
+
+            var designerExists = DesignerFileManager.DesignerExists(assetPath);
+
+            using (new EditorGUI.DisabledScope(designerExists))
+            {
+                if (GUILayout.Button("Create", EditorStyles.miniButtonLeft))
+                {
+                    DesignerFileManager.CreateDesignerFile(assetPath, focusDesignerFile: true);
+                }
+            }
+
+            using (new EditorGUI.DisabledScope(!designerExists))
+            {
+                if (GUILayout.Button("Apply modifications", EditorStyles.miniButtonRight))
+                {
+                    DesignerFileManager.ApplyDesignerModifications(assetPath);
+                }
+            }
+
+            EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space(8);
         }
 
