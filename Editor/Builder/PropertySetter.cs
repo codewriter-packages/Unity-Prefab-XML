@@ -82,16 +82,18 @@ namespace UnityPrefabXML.Builder
                     var itemElement = items[i];
                     var arrayElement = fieldProp.GetArrayElementAtIndex(i);
 
-                    // ManagedReference array element — use rid or leave null
+                    var itemValue = itemElement.Attribute("v")?.Value;
+
+                    // ManagedReference array element — use v="@id" or leave null
                     if (arrayElement.propertyType == SerializedPropertyType.ManagedReference)
                     {
-                        var ridValue = itemElement.Attribute("rid")?.Value;
-                        if (ridValue == null)
+                        if (itemValue == null || !itemValue.StartsWith("@"))
                             continue; // null managed reference
 
+                        var ridValue = itemValue.Substring(1);
                         if (!managedRefInstances.TryGetValue(ridValue, out var instance))
                         {
-                            context.LogWarning($"Unresolved managed reference rid='{ridValue}'.", itemElement);
+                            context.LogWarning($"Unresolved managed reference v='{itemValue}'.", itemElement);
                             continue;
                         }
 
@@ -101,15 +103,10 @@ namespace UnityPrefabXML.Builder
                         continue;
                     }
 
-                    // ObjectReference array — Item value is the reference itself
-                    if (arrayElement.propertyType == SerializedPropertyType.ObjectReference)
+                    // Primitive or reference value via v="..."
+                    if (itemValue != null)
                     {
-                        var refValue = itemElement.Attribute("ref")?.Value;
-                        if (refValue != null)
-                        {
-                            SetPropertyValue(arrayElement, refValue, itemElement, context);
-                        }
-
+                        SetPropertyValue(arrayElement, itemValue, itemElement, context);
                         continue;
                     }
 

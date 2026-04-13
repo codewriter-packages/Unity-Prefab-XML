@@ -342,7 +342,7 @@ namespace UnityPrefabXML
                     var item = new XElement("Item");
                     if (refStr != null)
                     {
-                        item.Add(new XAttribute("ref", refStr));
+                        item.Add(new XAttribute("v", refStr));
                     }
 
                     fieldEl.Add(item);
@@ -366,7 +366,7 @@ namespace UnityPrefabXML
                     }
 
                     var refId = SerializeManagedReference(elProp, ctx, allRefs);
-                    fieldEl.Add(new XElement("Item", new XAttribute("rid", refId)));
+                    fieldEl.Add(new XElement("Item", new XAttribute("v", "@" + refId)));
                 }
 
                 return fieldEl;

@@ -134,20 +134,32 @@ For arrays and lists, use `<Field>` child elements with `<Item>` entries:
 </TMP_Dropdown>
 ```
 
-For arrays of object references, use `ref` attribute with `#id`:
+For arrays of object references, use `v` attribute with `#id`:
 
 ```xml
 <ViewContext>
     <Field name="listeners">
-        <Item ref="#Button1" />
-        <Item ref="#TextDisplay" />
+        <Item v="#Button1" />
+        <Item v="#TextDisplay" />
     </Field>
 </ViewContext>
 ```
 
+For arrays of primitive values (int, float, string, etc.), use `v` attribute:
+
+```xml
+<MyComponent>
+    <Field name="scores">
+        <Item v="100" />
+        <Item v="250" />
+        <Item v="50" />
+    </Field>
+</MyComponent>
+```
+
 ## Managed references (SerializeReference)
 
-For `[SerializeReference]` fields, define `<Ref>` elements inside the component tag, then reference them by `rid` from `<Item>`:
+For `[SerializeReference]` fields, define `<Ref>` elements inside the component tag, then reference them by `v="@id"` from `<Item>`:
 
 ```xml
 <MyComponent>
@@ -156,8 +168,8 @@ For `[SerializeReference]` fields, define `<Ref>` elements inside the component 
     <Ref id="myEvent" type="MyAssembly MyNamespace.MyEventType"
         name="click" />
     <Field name="items">
-        <Item rid="myVar" />
-        <Item rid="myEvent" />
+        <Item v="@myVar" />
+        <Item v="@myEvent" />
         <Item />  <!-- null reference -->
     </Field>
 </MyComponent>
@@ -167,10 +179,10 @@ For `[SerializeReference]` fields, define `<Ref>` elements inside the component 
   - `id` — unique identifier within the component (required)
   - `type` — fully qualified type in Unity YAML format: `"AssemblyName Namespace.ClassName"` (required)
   - Other attributes are set as properties on the created instance
-- `<Item rid="...">` — references a `<Ref>` by id
-- `<Item />` without `rid` in a `[SerializeReference]` array — null element
+- `<Item v="@...">` — references a `<Ref>` by id (the `@` prefix distinguishes managed references from object references)
+- `<Item />` without `v` in a `[SerializeReference]` array — null element
 
-The same `rid` can be used in multiple `<Item>` elements to share the same managed reference instance. Object reference properties inside `<Ref>` support `#id` syntax:
+The same `v` value can be used in multiple `<Item>` elements to share the same managed reference instance. Object reference properties inside `<Ref>` support `#id` syntax:
 
 ```xml
 <Ref id="counter" type="CodeWriter.ViewBinding CodeWriter.ViewBinding.ViewVariableInt"
@@ -196,7 +208,7 @@ When a `[SerializeReference]` object contains another `[SerializeReference]` fie
     <Ref id="cond1" type="MyAssembly MyGame.IsAlive" threshold="0.5" />
     <Ref id="action1" type="MyAssembly MyGame.PlaySound" clip="boom" condition="@cond1" />
     <Field name="actions">
-        <Item rid="action1" />
+        <Item v="@action1" />
     </Field>
 </MyComponent>
 ```
