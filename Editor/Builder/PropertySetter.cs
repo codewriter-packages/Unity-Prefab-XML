@@ -198,14 +198,33 @@ namespace UnityPrefabXML.Builder
         private static void SetPropertyValue(SerializedProperty prop, string value,
             XElement element, PrefabXmlBuildContext context)
         {
+            try
+            {
+                SetPropertyValueCore(prop, value, element, context);
+            }
+            catch (FormatException ex)
+            {
+                context.LogError($"Failed to parse value '{value}' for '{prop.name}': {ex.Message}", element);
+            }
+        }
+
+        private static void SetPropertyValueCore(SerializedProperty prop, string value,
+            XElement element, PrefabXmlBuildContext context)
+        {
             switch (prop.propertyType)
             {
                 case SerializedPropertyType.Integer:
-                    prop.intValue = int.Parse(value, CultureInfo.InvariantCulture);
+                    if (prop.type == "long")
+                        prop.longValue = long.Parse(value, CultureInfo.InvariantCulture);
+                    else
+                        prop.intValue = int.Parse(value, CultureInfo.InvariantCulture);
                     break;
 
                 case SerializedPropertyType.Float:
-                    prop.floatValue = float.Parse(value, CultureInfo.InvariantCulture);
+                    if (prop.type == "double")
+                        prop.doubleValue = double.Parse(value, CultureInfo.InvariantCulture);
+                    else
+                        prop.floatValue = float.Parse(value, CultureInfo.InvariantCulture);
                     break;
 
                 case SerializedPropertyType.Boolean:
@@ -243,6 +262,41 @@ namespace UnityPrefabXML.Builder
 
                 case SerializedPropertyType.Vector4:
                     prop.vector4Value = ParseVector4(value);
+                    break;
+
+                case SerializedPropertyType.Vector2Int:
+                    prop.vector2IntValue = ParseVector2Int(value);
+                    break;
+
+                case SerializedPropertyType.Vector3Int:
+                    prop.vector3IntValue = ParseVector3Int(value);
+                    break;
+
+                case SerializedPropertyType.Quaternion:
+                {
+                    var v = ParseVector4(value);
+                    prop.quaternionValue = new Quaternion(v.x, v.y, v.z, v.w);
+                    break;
+                }
+
+                case SerializedPropertyType.Rect:
+                    prop.rectValue = ParseRect(value);
+                    break;
+
+                case SerializedPropertyType.RectInt:
+                    prop.rectIntValue = ParseRectInt(value);
+                    break;
+
+                case SerializedPropertyType.Bounds:
+                    prop.boundsValue = ParseBounds(value);
+                    break;
+
+                case SerializedPropertyType.BoundsInt:
+                    prop.boundsIntValue = ParseBoundsInt(value);
+                    break;
+
+                case SerializedPropertyType.LayerMask:
+                    prop.intValue = int.Parse(value, CultureInfo.InvariantCulture);
                     break;
 
                 case SerializedPropertyType.ObjectReference:
@@ -339,6 +393,7 @@ namespace UnityPrefabXML.Builder
                             context.Ctx.DependsOnSourceAsset(value);
                         }
                     }
+
                     break;
 
                 default:
@@ -358,22 +413,22 @@ namespace UnityPrefabXML.Builder
 
         private static readonly Dictionary<string, System.Type> BuiltinAssetTypes = new Dictionary<string, System.Type>
         {
-            { "$Sprite", typeof(Sprite) },
-            { "$Texture2D", typeof(Texture2D) },
-            { "$Material", typeof(Material) },
-            { "$Font", typeof(Font) },
-            { "$Shader", typeof(Shader) },
-            { "$Mesh", typeof(Mesh) },
-            { "$AudioClip", typeof(AudioClip) },
-            { "$GameObject", typeof(GameObject) },
-            { "Sprite", typeof(Sprite) },
-            { "Texture2D", typeof(Texture2D) },
-            { "Material", typeof(Material) },
-            { "Font", typeof(Font) },
-            { "Shader", typeof(Shader) },
-            { "Mesh", typeof(Mesh) },
-            { "AudioClip", typeof(AudioClip) },
-            { "GameObject", typeof(GameObject) },
+            {"$Sprite", typeof(Sprite)},
+            {"$Texture2D", typeof(Texture2D)},
+            {"$Material", typeof(Material)},
+            {"$Font", typeof(Font)},
+            {"$Shader", typeof(Shader)},
+            {"$Mesh", typeof(Mesh)},
+            {"$AudioClip", typeof(AudioClip)},
+            {"$GameObject", typeof(GameObject)},
+            {"Sprite", typeof(Sprite)},
+            {"Texture2D", typeof(Texture2D)},
+            {"Material", typeof(Material)},
+            {"Font", typeof(Font)},
+            {"Shader", typeof(Shader)},
+            {"Mesh", typeof(Mesh)},
+            {"AudioClip", typeof(AudioClip)},
+            {"GameObject", typeof(GameObject)},
         };
 
         private static System.Type ResolveAssetType(string typeName)
@@ -429,35 +484,110 @@ namespace UnityPrefabXML.Builder
         private static Color ParseColor(string value)
         {
             if (ColorUtility.TryParseHtmlString(value, out var color))
+            {
                 return color;
+            }
+
             return Color.white;
+        }
+
+        private static float[] ParseFloats(string value, int expectedCount, out int actualCount)
+        {
+            var parts = value.Split(',');
+            actualCount = parts.Length;
+            if (parts.Length != expectedCount)
+            {
+                return null;
+            }
+
+            var result = new float[expectedCount];
+            for (var i = 0; i < expectedCount; i++)
+            {
+                result[i] = float.Parse(parts[i].Trim(), CultureInfo.InvariantCulture);
+            }
+
+            return result;
+        }
+
+        private static int[] ParseInts(string value, int expectedCount, out int actualCount)
+        {
+            var parts = value.Split(',');
+            actualCount = parts.Length;
+            if (parts.Length != expectedCount)
+            {
+                return null;
+            }
+
+            var result = new int[expectedCount];
+            for (var i = 0; i < expectedCount; i++)
+            {
+                result[i] = int.Parse(parts[i].Trim(), CultureInfo.InvariantCulture);
+            }
+
+            return result;
         }
 
         private static Vector2 ParseVector2(string value)
         {
-            var parts = value.Split(',');
-            return new Vector2(
-                float.Parse(parts[0].Trim(), CultureInfo.InvariantCulture),
-                float.Parse(parts[1].Trim(), CultureInfo.InvariantCulture));
+            return ParseFloats(value, 2, out var actualCount) is { } p
+                ? new Vector2(p[0], p[1])
+                : throw new FormatException($"Expected 2 components for Vector2, but got {actualCount} in '{value}'");
         }
 
         private static Vector3 ParseVector3(string value)
         {
-            var parts = value.Split(',');
-            return new Vector3(
-                float.Parse(parts[0].Trim(), CultureInfo.InvariantCulture),
-                float.Parse(parts[1].Trim(), CultureInfo.InvariantCulture),
-                float.Parse(parts[2].Trim(), CultureInfo.InvariantCulture));
+            return ParseFloats(value, 3, out var actualCount) is { } p
+                ? new Vector3(p[0], p[1], p[2])
+                : throw new FormatException($"Expected 3 components for Vector3, but got {actualCount} in '{value}'");
         }
 
         private static Vector4 ParseVector4(string value)
         {
-            var parts = value.Split(',');
-            return new Vector4(
-                float.Parse(parts[0].Trim(), CultureInfo.InvariantCulture),
-                float.Parse(parts[1].Trim(), CultureInfo.InvariantCulture),
-                float.Parse(parts[2].Trim(), CultureInfo.InvariantCulture),
-                float.Parse(parts[3].Trim(), CultureInfo.InvariantCulture));
+            return ParseFloats(value, 4, out var actualCount) is { } p
+                ? new Vector4(p[0], p[1], p[2], p[3])
+                : throw new FormatException($"Expected 4 components for Vector4, but got {actualCount} in '{value}'");
+        }
+
+        private static Vector2Int ParseVector2Int(string value)
+        {
+            return ParseInts(value, 2, out var actualCount) is { } p
+                ? new Vector2Int(p[0], p[1])
+                : throw new FormatException($"Expected 2 components for Vector2Int, but got {actualCount} in '{value}'");
+        }
+
+        private static Vector3Int ParseVector3Int(string value)
+        {
+            return ParseInts(value, 3, out var actualCount) is { } p
+                ? new Vector3Int(p[0], p[1], p[2])
+                : throw new FormatException($"Expected 3 components for Vector3Int, but got {actualCount} in '{value}'");
+        }
+
+        private static Rect ParseRect(string value)
+        {
+            return ParseFloats(value, 4, out var actualCount) is { } p
+                ? new Rect(p[0], p[1], p[2], p[3])
+                : throw new FormatException($"Expected 4 components for Rect, but got {actualCount} in '{value}'");
+        }
+
+        private static RectInt ParseRectInt(string value)
+        {
+            return ParseInts(value, 4, out var actualCount) is { } p
+                ? new RectInt(p[0], p[1], p[2], p[3])
+                : throw new FormatException($"Expected 4 components for RectInt, but got {actualCount} in '{value}'");
+        }
+
+        private static Bounds ParseBounds(string value)
+        {
+            return ParseFloats(value, 6, out var actualCount) is { } p
+                ? new Bounds(new Vector3(p[0], p[1], p[2]), new Vector3(p[3], p[4], p[5]))
+                : throw new FormatException($"Expected 6 components for Bounds, but got {actualCount} in '{value}'");
+        }
+
+        private static BoundsInt ParseBoundsInt(string value)
+        {
+            return ParseInts(value, 6, out var actualCount) is { } p
+                ? new BoundsInt(new Vector3Int(p[0], p[1], p[2]), new Vector3Int(p[3], p[4], p[5]))
+                : throw new FormatException($"Expected 6 components for BoundsInt, but got {actualCount} in '{value}'");
         }
     }
 }

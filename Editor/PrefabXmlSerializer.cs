@@ -165,7 +165,13 @@ namespace UnityPrefabXML
                 case SerializedPropertyType.Vector2:
                 case SerializedPropertyType.Vector3:
                 case SerializedPropertyType.Vector4:
+                case SerializedPropertyType.Vector2Int:
+                case SerializedPropertyType.Vector3Int:
                 case SerializedPropertyType.Quaternion:
+                case SerializedPropertyType.Rect:
+                case SerializedPropertyType.RectInt:
+                case SerializedPropertyType.Bounds:
+                case SerializedPropertyType.BoundsInt:
                 case SerializedPropertyType.ObjectReference:
                 case SerializedPropertyType.LayerMask:
                     return true;
@@ -464,9 +470,13 @@ namespace UnityPrefabXML
             switch (prop.propertyType)
             {
                 case SerializedPropertyType.Integer:
+                    if (prop.type == "long")
+                        return prop.longValue.ToString(CultureInfo.InvariantCulture);
                     return prop.intValue.ToString(CultureInfo.InvariantCulture);
 
                 case SerializedPropertyType.Float:
+                    if (prop.type == "double")
+                        return prop.doubleValue.ToString(CultureInfo.InvariantCulture);
                     return prop.floatValue.ToString(CultureInfo.InvariantCulture);
 
                 case SerializedPropertyType.Boolean:
@@ -491,9 +501,36 @@ namespace UnityPrefabXML
                 case SerializedPropertyType.Vector4:
                     return FormatVector4(prop.vector4Value);
 
+                case SerializedPropertyType.Vector2Int:
+                    var v2i = prop.vector2IntValue;
+                    return $"{v2i.x}, {v2i.y}";
+
+                case SerializedPropertyType.Vector3Int:
+                    var v3i = prop.vector3IntValue;
+                    return $"{v3i.x}, {v3i.y}, {v3i.z}";
+
                 case SerializedPropertyType.Quaternion:
                     var q = prop.quaternionValue;
                     return FormatVector4(new Vector4(q.x, q.y, q.z, q.w));
+
+                case SerializedPropertyType.Rect:
+                    var r = prop.rectValue;
+                    return $"{F(r.x)}, {F(r.y)}, {F(r.width)}, {F(r.height)}";
+
+                case SerializedPropertyType.RectInt:
+                    var ri = prop.rectIntValue;
+                    return $"{ri.x}, {ri.y}, {ri.width}, {ri.height}";
+
+                case SerializedPropertyType.Bounds:
+                    var b = prop.boundsValue;
+                    return $"{F(b.center.x)}, {F(b.center.y)}, {F(b.center.z)}, {F(b.size.x)}, {F(b.size.y)}, {F(b.size.z)}";
+
+                case SerializedPropertyType.BoundsInt:
+                    var bi = prop.boundsIntValue;
+                    return $"{bi.position.x}, {bi.position.y}, {bi.position.z}, {bi.size.x}, {bi.size.y}, {bi.size.z}";
+
+                case SerializedPropertyType.LayerMask:
+                    return prop.intValue.ToString(CultureInfo.InvariantCulture);
 
                 case SerializedPropertyType.ObjectReference:
                     return SerializeObjectReference(prop, ctx);

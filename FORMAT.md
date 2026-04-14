@@ -222,7 +222,9 @@ Values are written as strings and parsed by `SerializedPropertyType`:
 | Type | Example | Notes |
 |------|---------|-------|
 | Integer | `"100"` | |
+| Long | `"123456789012345"` | 64-bit integer |
 | Float | `"0.5"` | |
+| Double | `"0.123456789012345"` | 64-bit float |
 | Boolean | `"true"`, `"false"` | |
 | String | `"Hello World"` | |
 | Color | `"#FF0000"`, `"#FF000080"` | hex RRGGBB or RRGGBBAA |
@@ -231,6 +233,14 @@ Values are written as strings and parsed by `SerializedPropertyType`:
 | Vector2 | `"10, 20"` | |
 | Vector3 | `"1, 2, 3"` | |
 | Vector4 | `"1, 2, 3, 4"` | |
+| Vector2Int | `"10, 20"` | |
+| Vector3Int | `"1, 2, 3"` | |
+| Quaternion | `"0, 0, 0, 1"` | x, y, z, w |
+| Rect | `"0, 0, 100, 50"` | x, y, width, height |
+| RectInt | `"0, 0, 100, 50"` | x, y, width, height |
+| Bounds | `"0, 0, 0, 1, 1, 1"` | centerX, centerY, centerZ, sizeX, sizeY, sizeZ |
+| BoundsInt | `"0, 0, 0, 1, 1, 1"` | posX, posY, posZ, sizeX, sizeY, sizeZ |
+| LayerMask | `"256"` | bitmask as integer |
 | ObjectReference | `"#id"` | reference to GameObject by id |
 | ObjectReference | `"{name}"` | asset binding, assigned in Inspector |
 | ManagedReference | `"@refId"` | reference to a `<Ref>` by id |

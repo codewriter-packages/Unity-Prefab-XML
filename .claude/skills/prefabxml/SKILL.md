@@ -64,6 +64,12 @@ If no path is provided, ask where to save or suggest a reasonable path in the cu
 | Color | hex RRGGBB or RRGGBBAA | `"#FF0000"`, `"#FF000080"` |
 | Vector2 | `"x, y"` | `"200, 50"` |
 | Vector3 | `"x, y, z"` | `"1, 2, 3"` |
+| Vector2Int | `"x, y"` | `"10, 20"` |
+| Vector3Int | `"x, y, z"` | `"1, 2, 3"` |
+| Quaternion | `"x, y, z, w"` | `"0, 0, 0, 1"` |
+| Rect | `"x, y, w, h"` | `"0, 0, 100, 50"` |
+| Bounds | `"cx, cy, cz, sx, sy, sz"` | `"0, 0, 0, 1, 1, 1"` |
+| LayerMask | integer bitmask | `"256"` |
 | Boolean | `"true"` / `"false"` | |
 | Enum | value name | `"Center"`, `"Bold"` |
 | Flags Enum | comma-separated names | `"Bold, Italic"` |
