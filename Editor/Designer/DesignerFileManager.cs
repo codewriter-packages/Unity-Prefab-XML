@@ -358,32 +358,31 @@ namespace UnityPrefabXML.Designer
                 return propertyPath;
             }
 
-            // Walk up dots to find a matching attribute or a leaf SerializedProperty
-            var parts = propertyPath.Split('.');
-            for (var len = parts.Length - 1; len >= 1; len--)
+            // For dot-paths, check if the immediate parent is a leaf (Vector2, Color, etc.)
+            // If so, the parent is the XML attribute. If not (non-leaf struct like Navigation),
+            // the full path is the attribute (dot-notation).
+            var dotIndex = propertyPath.LastIndexOf('.');
+            if (dotIndex >= 0)
             {
-                var candidate = string.Join(".", parts.Take(len));
+                var parent = propertyPath.Substring(0, dotIndex);
 
-                // Check if it's an existing XML attribute
-                if (xmlElement.Attribute(candidate) != null)
+                if (xmlElement.Attribute(parent) != null)
                 {
-                    return candidate;
+                    return parent;
                 }
 
-                // Check if it's a leaf property (meaning it would be serialized as a single attribute)
-                var prop = so.FindProperty(candidate);
-                if (prop != null && PrefabXmlSerializer.IsLeafProperty(prop))
+                var parentProp = so.FindProperty(parent);
+                if (parentProp != null)
                 {
-                    return candidate;
+                    return PrefabXmlSerializer.IsLeafProperty(parentProp) ? parent : propertyPath;
                 }
             }
 
-            // Fallback: first segment
-            var root = parts[0];
-            var rootProp = so.FindProperty(root);
+            // No dots — check if it's a leaf property itself
+            var rootProp = so.FindProperty(propertyPath);
             if (rootProp != null && PrefabXmlSerializer.IsLeafProperty(rootProp))
             {
-                return root;
+                return propertyPath;
             }
 
             return null;
