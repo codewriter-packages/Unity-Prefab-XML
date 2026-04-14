@@ -285,12 +285,6 @@ namespace UnityPrefabXML
                     }
 
                     // Non-leaf struct — enter children for dot notation
-                    // (depth limit: only go 1 level deep)
-                    if (prop.depth >= 1)
-                    {
-                        enterChildren = false;
-                        continue;
-                    }
                 }
             }
             finally
