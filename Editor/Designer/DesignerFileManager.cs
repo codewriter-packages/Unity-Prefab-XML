@@ -17,7 +17,7 @@ namespace UnityPrefabXML.Designer
         {
             var dir = Path.GetDirectoryName(prefabXmlPath) ?? "";
             var name = Path.GetFileNameWithoutExtension(prefabXmlPath);
-            return Path.Combine(dir, name + "_Designer.prefab");
+            return Path.Combine(dir, name + ".prefab");
         }
 
         public static bool DesignerExists(string prefabXmlPath)
