@@ -57,6 +57,34 @@ namespace UnityPrefabXML.Designer
             return !string.IsNullOrEmpty(designerGuid);
         }
 
+        /// <summary>
+        /// True when the designer file holds overrides that were not written back to the XML yet.
+        /// Overrides of the root transform and of the root name are ignored: Unity records them on
+        /// every variant, <see cref="ResetDesignerOverrides"/> does not clear them, and they carry
+        /// no intent of the user.
+        /// </summary>
+        public static bool HasUnappliedModifications(string prefabXmlPath)
+        {
+            var designerPath = GetDesignerPath(prefabXmlPath);
+            var designerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(designerPath);
+
+            if (designerPrefab == null || !PrefabUtility.IsPartOfPrefabInstance(designerPrefab))
+            {
+                return false;
+            }
+
+            return NotEmpty(PrefabUtility.GetAddedGameObjects(designerPrefab))
+                   || NotEmpty(PrefabUtility.GetAddedComponents(designerPrefab))
+                   || NotEmpty(PrefabUtility.GetRemovedGameObjects(designerPrefab))
+                   || NotEmpty(PrefabUtility.GetRemovedComponents(designerPrefab))
+                   || PrefabUtility.HasPrefabInstanceAnyOverrides(designerPrefab, includeDefaultOverrides: false);
+        }
+
+        private static bool NotEmpty<T>(List<T> list)
+        {
+            return list != null && list.Count > 0;
+        }
+
         public static void CreateDesignerFile(string prefabXmlPath, bool focusDesignerFile = false)
         {
             var basePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabXmlPath);

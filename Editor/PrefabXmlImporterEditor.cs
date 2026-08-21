@@ -12,18 +12,23 @@ namespace UnityPrefabXML
     [CustomEditor(typeof(PrefabXmlImporter))]
     public class PrefabXmlImporterEditor : ScriptedImporterEditor
     {
+        private const double ModificationsCheckInterval = 0.5;
+
+        private double _nextModificationsCheck;
+        private bool _hasUnappliedModifications;
+
         public override void OnInspectorGUI()
         {
             var importer = (PrefabXmlImporter)target;
             var result = PrefabXmlImporter.GetResult(importer.assetPath);
+
+            DrawDesignerSection(importer.assetPath);
 
             if (result != null)
             {
                 DrawBindings(importer, result.discoveredBindings);
                 DrawDiagnostics(result.diagnostics);
             }
-
-            DrawDesignerSection(importer.assetPath);
 
             ApplyRevertGUI();
         }
@@ -37,7 +42,9 @@ namespace UnityPrefabXML
             EditorGUILayout.LabelField("Asset Bindings", EditorStyles.boldLabel);
 
             var remap = importer.GetExternalObjectMap();
-            var sorted = discoveredBindings.OrderBy(kvp => kvp.Key);
+            var sorted = discoveredBindings
+                .OrderBy(kvp => kvp.Value.Name, StringComparer.Ordinal)
+                .ThenBy(kvp => kvp.Key, StringComparer.Ordinal);
 
             foreach (var kvp in sorted)
             {
@@ -65,7 +72,7 @@ namespace UnityPrefabXML
             EditorGUILayout.Space(8);
         }
 
-        private static void DrawDesignerSection(string assetPath)
+        private void DrawDesignerSection(string assetPath)
         {
             EditorGUILayout.Space(8);
             EditorGUILayout.BeginHorizontal();
@@ -78,6 +85,7 @@ namespace UnityPrefabXML
                 if (GUILayout.Button("Create", EditorStyles.miniButtonLeft))
                 {
                     DesignerFileManager.CreateDesignerFile(assetPath, focusDesignerFile: true);
+                    _nextModificationsCheck = 0;
                 }
             }
 
@@ -86,11 +94,34 @@ namespace UnityPrefabXML
                 if (GUILayout.Button("Apply modifications", EditorStyles.miniButtonRight))
                 {
                     DesignerFileManager.ApplyDesignerModifications(assetPath);
+                    _nextModificationsCheck = 0;
                 }
             }
 
             EditorGUILayout.EndHorizontal();
+
+            if (designerExists && HasUnappliedModifications(assetPath))
+            {
+                EditorGUILayout.HelpBox(
+                    "The designer file has modifications that are not applied to the XML yet.",
+                    MessageType.Warning);
+            }
+
             EditorGUILayout.Space(8);
+        }
+
+        /// <summary>
+        /// The check walks the whole designer hierarchy, so the result is reused between repaints.
+        /// </summary>
+        private bool HasUnappliedModifications(string assetPath)
+        {
+            if (EditorApplication.timeSinceStartup >= _nextModificationsCheck)
+            {
+                _nextModificationsCheck = EditorApplication.timeSinceStartup + ModificationsCheckInterval;
+                _hasUnappliedModifications = DesignerFileManager.HasUnappliedModifications(assetPath);
+            }
+
+            return _hasUnappliedModifications;
         }
 
         private static void DrawDiagnostics(List<ImportDiagnostic> diagnostics)
