@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 using UnityPrefabXML.Builder;
@@ -23,7 +24,7 @@ namespace UnityPrefabXML
         public Dictionary<string, Type> discoveredBindings = new Dictionary<string, Type>();
     }
 
-    [ScriptedImporter(1, "prefabxml")]
+    [ScriptedImporter(2, "prefabxml")]
     public class PrefabXmlImporter : ScriptedImporter
     {
         private static readonly Dictionary<string, ImportResult> ResultCache =
@@ -31,8 +32,22 @@ namespace UnityPrefabXML
 
         public static ImportResult GetResult(string assetPath)
         {
-            ResultCache.TryGetValue(assetPath, out var result);
-            return result;
+            if (ResultCache.TryGetValue(assetPath, out var result))
+                return result;
+
+            // Unity reuses the cached artifact instead of calling OnImportAsset after an editor
+            // restart or a domain reload, so recover the result from the artifact itself.
+            foreach (var obj in AssetDatabase.LoadAllAssetsAtPath(assetPath))
+            {
+                if (obj is PrefabXmlImportResultAsset stored)
+                {
+                    result = stored.ToImportResult();
+                    ResultCache[assetPath] = result;
+                    return result;
+                }
+            }
+
+            return null;
         }
 
         public override void OnImportAsset(AssetImportContext ctx)
@@ -52,6 +67,8 @@ namespace UnityPrefabXML
 
             result.discoveredBindings = buildContext.DiscoveredBindings;
             ResultCache[ctx.assetPath] = result;
+
+            ctx.AddObjectToAsset("importResult", PrefabXmlImportResultAsset.Create(result));
         }
     }
 }
