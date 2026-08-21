@@ -46,19 +46,9 @@ namespace UnityPrefabXML.Converters
             }
 
             var doc = ConvertPrefab(go, out var bindings);
-            var settings = new System.Xml.XmlWriterSettings
-            {
-                Indent = true,
-                IndentChars = "    ",
-                OmitXmlDeclaration = true,
-                NewLineOnAttributes = false,
-            };
 
             var outputPath = Path.ChangeExtension(path, ".prefabxml");
-            using (var writer = System.Xml.XmlWriter.Create(outputPath, settings))
-            {
-                doc.Save(writer);
-            }
+            PrefabXmlUtils.SaveXml(doc, outputPath);
 
             // First import — discovers bindings and their expected types
             AssetDatabase.ImportAsset(outputPath, ImportAssetOptions.ForceUpdate);

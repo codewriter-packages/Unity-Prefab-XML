@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
 using System.Xml.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -154,8 +153,7 @@ namespace UnityPrefabXML.Designer
                 return;
             }
 
-            var xmlText = File.ReadAllText(prefabXmlPath);
-            var xmlDoc = XDocument.Parse(xmlText, LoadOptions.PreserveWhitespace);
+            var xmlDoc = PrefabXmlUtils.LoadXml(prefabXmlPath, out var xmlText);
 
             var rootXmlElement = xmlDoc.Root?.Elements("GameObject").FirstOrDefault();
             if (rootXmlElement == null)
@@ -213,30 +211,10 @@ namespace UnityPrefabXML.Designer
             // are already part of the XML.
             ApplyChildOrder(designerPrefab.transform, ctx);
 
-            // Write XML back
-            var settings = new XmlWriterSettings
-            {
-                Indent = true,
-                IndentChars = "    ",
-                OmitXmlDeclaration = true,
-                NewLineOnAttributes = false,
-            };
-
-            var stringWriter = new StringWriter();
-            using (var writer = XmlWriter.Create(stringWriter, settings))
-            {
-                xmlDoc.Save(writer);
-            }
-
             // Nothing was captured from the designer file — leave both files untouched
-            if (string.Equals(stringWriter.ToString(), xmlText, StringComparison.Ordinal))
+            if (!PrefabXmlUtils.SaveXmlIfChanged(xmlDoc, prefabXmlPath, xmlText))
             {
                 return;
-            }
-
-            using (var writer = XmlWriter.Create(prefabXmlPath, settings))
-            {
-                xmlDoc.Save(writer);
             }
 
             // Reimport prefabxml

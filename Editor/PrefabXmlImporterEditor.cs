@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
+using System.Xml.Linq;
 using UnityEditor;
 using UnityEditor.AssetImporters;
 using UnityEngine;
@@ -23,6 +25,7 @@ namespace UnityPrefabXML
             var result = PrefabXmlImporter.GetResult(importer.assetPath);
 
             DrawDesignerSection(importer.assetPath);
+            DrawFormattingSection(importer.assetPath);
 
             if (result != null)
             {
@@ -108,6 +111,45 @@ namespace UnityPrefabXML
             }
 
             EditorGUILayout.Space(8);
+        }
+
+        private static void DrawFormattingSection(string assetPath)
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("Formatting");
+
+            if (GUILayout.Button("Reformat codestyle", EditorStyles.miniButton))
+            {
+                ReformatCodestyle(assetPath);
+            }
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space(8);
+        }
+
+        /// <summary>
+        /// Reads the XML and writes it back the way the designer does, which normalizes everything
+        /// the writer controls. Whitespace is preserved, so hand-written layout survives.
+        /// </summary>
+        private static void ReformatCodestyle(string assetPath)
+        {
+            XDocument xmlDoc;
+            string originalText;
+
+            try
+            {
+                xmlDoc = PrefabXmlUtils.LoadXml(assetPath, out originalText);
+            }
+            catch (XmlException e)
+            {
+                Debug.LogError($"PrefabXml: Cannot reformat '{assetPath}': {e.Message}");
+                return;
+            }
+
+            if (PrefabXmlUtils.SaveXmlIfChanged(xmlDoc, assetPath, originalText))
+            {
+                AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+            }
         }
 
         /// <summary>
