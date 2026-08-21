@@ -102,7 +102,14 @@ namespace UnityPrefabXML
 
         public static string SanitizeId(string name, PrefabXmlSerializationContext ctx)
         {
-            var id = PrefabXmlUtils.MakeUnique(name.Replace(" ", ""), ctx.UsedIds.Contains);
+            var baseId = name.Replace(" ", "");
+
+            var id = baseId;
+            for (var i = 2; ctx.UsedIds.Contains(id); i++)
+            {
+                id = $"{baseId}_{i}";
+            }
+
             ctx.UsedIds.Add(id);
             return id;
         }
@@ -567,9 +574,32 @@ namespace UnityPrefabXML
             }
 
             // External asset — convert to binding
-            var bindingName = PrefabXmlUtils.MakeUnique(obj.name, ctx.UsedBindings.ContainsKey);
+            return $"{{{GetBindingName(obj, ctx)}}}";
+        }
+
+        /// <summary>
+        /// Reuses the binding name already assigned to the asset, so the same asset referenced
+        /// from several properties produces a single binding. A name taken by a different asset
+        /// gets a numeric suffix.
+        /// </summary>
+        private static string GetBindingName(Object obj, PrefabXmlSerializationContext ctx)
+        {
+            foreach (var kvp in ctx.UsedBindings)
+            {
+                if (kvp.Value == obj)
+                {
+                    return kvp.Key;
+                }
+            }
+
+            var bindingName = obj.name;
+            for (var i = 2; ctx.UsedBindings.ContainsKey(bindingName); i++)
+            {
+                bindingName = $"{obj.name}_{i}";
+            }
+
             ctx.UsedBindings[bindingName] = obj;
-            return $"{{{bindingName}}}";
+            return bindingName;
         }
 
         public static string FormatVector2(Vector2 v) => $"{F(v.x)}, {F(v.y)}";

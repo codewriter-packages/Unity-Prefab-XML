@@ -5,16 +5,6 @@ namespace UnityPrefabXML
 {
     public static class PrefabXmlUtils
     {
-        public static string MakeUnique(string name, Func<string, bool> exists)
-        {
-            while (exists(name))
-            {
-                name += "_";
-            }
-
-            return name;
-        }
-
         /// <summary>
         /// Returns true if the XML element represents a component tag
         /// (i.e. not a structural child like GameObject, Field, or Ref).
