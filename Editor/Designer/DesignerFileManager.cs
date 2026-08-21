@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -593,9 +594,16 @@ namespace UnityPrefabXML.Designer
                     continue;
                 }
 
-                // Group by root XML attribute name
                 var variantSo = new SerializedObject(variantComp);
-                var attrGroups = GroupByXmlAttributeName(validMods, xmlElement, variantSo);
+
+                // An array is stored in a Field element instead of an attribute, so it is written
+                // apart from everything else
+                ApplyArrayFields(validMods, xmlElement, variantSo, ctx);
+
+                // Group by root XML attribute name
+                var attrGroups = GroupByXmlAttributeName(
+                    validMods.Where(m => GetArrayPath(m.propertyPath) == null).ToList(),
+                    xmlElement, variantSo);
 
                 foreach (var attrGroup in attrGroups)
                 {
@@ -619,6 +627,81 @@ namespace UnityPrefabXML.Designer
                     {
                         xmlElement.Attribute(attrName)?.Remove();
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The array a modification points into, or null when it points at a plain property.
+        /// "m_Options.m_Options.Array.data[0].m_Text" belongs to "m_Options.m_Options". Of nested
+        /// arrays the outermost one is taken — writing it covers everything below it.
+        /// </summary>
+        private static string GetArrayPath(string propertyPath)
+        {
+            var index = propertyPath.IndexOf(".Array.", StringComparison.Ordinal);
+            return index < 0 ? null : propertyPath.Substring(0, index);
+        }
+
+        /// <summary>
+        /// Rewrites the Field element of every array a modification points into. An element of an
+        /// array has no name of its own in the XML, so the array is written as a whole, the way the
+        /// converter writes it.
+        /// </summary>
+        private static void ApplyArrayFields(List<PropertyModification> mods, XElement xmlElement,
+            SerializedObject variantSo, DesignerContext ctx)
+        {
+            var arrayPaths = new HashSet<string>();
+
+            foreach (var mod in mods)
+            {
+                var arrayPath = GetArrayPath(mod.propertyPath);
+                if (arrayPath != null)
+                {
+                    arrayPaths.Add(arrayPath);
+                }
+            }
+
+            foreach (var arrayPath in arrayPaths)
+            {
+                var prop = variantSo.FindProperty(arrayPath);
+                if (prop == null || !prop.isArray || prop.propertyType == SerializedPropertyType.String)
+                {
+                    continue;
+                }
+
+                var existing = xmlElement.Elements("Field")
+                    .FirstOrDefault(el => el.Attribute("name")?.Value == arrayPath);
+
+                var refs = new List<XElement>();
+                var convertCtx = ctx.CreateConvertContext();
+                var fieldElement = PrefabXmlSerializer.SerializeField(prop, convertCtx, refs);
+
+                // The array is empty now, and an empty Field has no representation
+                if (fieldElement == null)
+                {
+                    existing?.Remove();
+                    continue;
+                }
+
+                if (refs.Count > 0)
+                {
+                    // Every managed reference lives in a Ref element of its own. Writing them would
+                    // mean renumbering the ids the file already uses and dropping the ones the old
+                    // items left behind, so the array is left as it is.
+                    Debug.LogWarning($"DesignerFile: '{arrayPath}' of <{xmlElement.Name.LocalName}> holds " +
+                                     "managed references, the change was not applied to the XML.");
+                    continue;
+                }
+
+                ctx.CollectBindings(convertCtx);
+
+                if (existing != null)
+                {
+                    existing.ReplaceWith(fieldElement);
+                }
+                else
+                {
+                    xmlElement.Add(fieldElement);
                 }
             }
         }
@@ -649,6 +732,14 @@ namespace UnityPrefabXML.Designer
 
         private static string ResolveXmlAttributeName(string propertyPath, XElement xmlElement, SerializedObject so)
         {
+            // A path like "managedReferences[1234].value" names no attribute, and XName throws on it
+            if (!IsXmlName(propertyPath))
+            {
+                Debug.LogWarning($"DesignerFile: '{propertyPath}' of <{xmlElement.Name.LocalName}> is not a " +
+                                 "valid attribute name, the change was not applied to the XML.");
+                return null;
+            }
+
             // Try exact match
             if (xmlElement.Attribute(propertyPath) != null)
             {
@@ -683,6 +774,24 @@ namespace UnityPrefabXML.Designer
             }
 
             return null;
+        }
+
+        private static bool IsXmlName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+
+            try
+            {
+                XmlConvert.VerifyName(name);
+                return true;
+            }
+            catch (XmlException)
+            {
+                return false;
+            }
         }
 
         private static void ApplyAddedComponents(List<AddedComponent> addedComponents, DesignerContext ctx)
