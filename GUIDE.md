@@ -201,6 +201,25 @@ When present, `<RectTransform>` must be the first component tag inside `<GameObj
     m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
 ```
 
+## Don't set RectTransform under a LayoutGroup
+
+A layout drives the anchors and the position of its children, and their size when `m_ChildControlWidth` / `m_ChildControlHeight` is on. Writing those attributes changes nothing:
+
+```xml
+<!-- WRONG: the parent layout overwrites all of it -->
+<GameObject name="Row">
+    <RectTransform m_AnchorMin="0, 0" m_AnchorMax="0, 0" m_SizeDelta="0, 0" m_AnchoredPosition="0, 0" />
+</GameObject>
+
+<!-- CORRECT: ask the layout for the size instead -->
+<GameObject name="Row">
+    <RectTransform />
+    <LayoutElement m_PreferredHeight="140" />
+</GameObject>
+```
+
+The same goes for `ContentSizeFitter`: with `m_VerticalFit="PreferredSize"` the height in `m_SizeDelta` is ignored. Driven attributes are removed from the file by `Reformat codestyle` and by `Apply modifications`.
+
 ## Use only necessary attributes
 
 Do NOT set every possible attribute. Set only what differs from defaults. Compare:

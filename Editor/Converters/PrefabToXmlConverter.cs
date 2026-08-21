@@ -77,6 +77,10 @@ namespace UnityPrefabXML.Converters
                 }
             }
 
+            // The source prefab carries the values its layout produced. They are written out like
+            // any other property, so they are dropped once the layout can be run again.
+            DrivenPropertyCleaner.CleanFile(outputPath);
+
             Debug.Log($"PrefabToXml: Converted '{path}' → '{outputPath}'");
         }
 

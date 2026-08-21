@@ -57,6 +57,7 @@ If no path is provided, ask where to save or suggest a reasonable path in the cu
 - **id on GameObject**: `id` goes on `<GameObject>`, NOT on component
 - **Enum — names, not numbers**: `m_fontStyle="Bold"`, not `"1"`. For flags: `m_fontStyle="Bold, Italic"`
 - **LayoutGroup needs flags**: `m_ChildControlWidth`, `m_ChildControlHeight`
+- **Layout drives its children**: no anchors, position or controlled size on a child of a LayoutGroup — leave `<RectTransform />` empty and size it with `LayoutElement`
 
 ### Property value types
 | Type | Format | Example |

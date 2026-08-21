@@ -129,7 +129,8 @@ namespace UnityPrefabXML
 
         /// <summary>
         /// Reads the XML and writes it back the way the designer does, which normalizes everything
-        /// the writer controls. Whitespace is preserved, so hand-written layout survives.
+        /// the writer controls and drops the properties a layout drives. Whitespace is preserved,
+        /// so hand-written layout survives.
         /// </summary>
         private static void ReformatCodestyle(string assetPath)
         {
@@ -145,6 +146,8 @@ namespace UnityPrefabXML
                 Debug.LogError($"PrefabXml: Cannot reformat '{assetPath}': {e.Message}");
                 return;
             }
+
+            DrivenPropertyCleaner.Strip(xmlDoc, assetPath);
 
             if (PrefabXmlUtils.SaveXmlIfChanged(xmlDoc, assetPath, originalText))
             {

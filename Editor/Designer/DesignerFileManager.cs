@@ -220,6 +220,10 @@ namespace UnityPrefabXML.Designer
             // Reimport prefabxml
             AssetDatabase.ImportAsset(prefabXmlPath, ImportAssetOptions.ForceUpdate);
 
+            // The prefab now matches the XML, so a layout pass on it tells which of the values
+            // just written are driven and do not belong in the file
+            DrivenPropertyCleaner.CleanFile(prefabXmlPath);
+
             // Apply new bindings if any
             if (ctx.NewBindings.Count > 0)
             {
