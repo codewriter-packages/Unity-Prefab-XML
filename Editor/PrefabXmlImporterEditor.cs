@@ -14,10 +14,7 @@ namespace UnityPrefabXML
     [CustomEditor(typeof(PrefabXmlImporter))]
     public class PrefabXmlImporterEditor : ScriptedImporterEditor
     {
-        private const double ModificationsCheckInterval = 0.5;
-
-        private double _nextModificationsCheck;
-        private bool _hasUnappliedModifications;
+        private readonly DesignerChangesView _designerChanges = new DesignerChangesView();
 
         public override void OnInspectorGUI()
         {
@@ -88,26 +85,23 @@ namespace UnityPrefabXML
                 if (GUILayout.Button("Create", EditorStyles.miniButtonLeft))
                 {
                     DesignerFileManager.CreateDesignerFile(assetPath, focusDesignerFile: true);
-                    _nextModificationsCheck = 0;
+                    _designerChanges.Invalidate();
                 }
             }
 
             using (new EditorGUI.DisabledScope(!designerExists))
             {
-                if (GUILayout.Button("Apply modifications", EditorStyles.miniButtonRight))
+                if (GUILayout.Button("Apply selected", EditorStyles.miniButtonRight))
                 {
-                    DesignerFileManager.ApplyDesignerModifications(assetPath);
-                    _nextModificationsCheck = 0;
+                    _designerChanges.ApplySelected(assetPath);
                 }
             }
 
             EditorGUILayout.EndHorizontal();
 
-            if (designerExists && HasUnappliedModifications(assetPath))
+            if (designerExists)
             {
-                EditorGUILayout.HelpBox(
-                    "The designer file has modifications that are not applied to the XML yet.",
-                    MessageType.Warning);
+                _designerChanges.Draw(assetPath);
             }
 
             EditorGUILayout.Space(8);
@@ -153,20 +147,6 @@ namespace UnityPrefabXML
             {
                 AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
             }
-        }
-
-        /// <summary>
-        /// The check walks the whole designer hierarchy, so the result is reused between repaints.
-        /// </summary>
-        private bool HasUnappliedModifications(string assetPath)
-        {
-            if (EditorApplication.timeSinceStartup >= _nextModificationsCheck)
-            {
-                _nextModificationsCheck = EditorApplication.timeSinceStartup + ModificationsCheckInterval;
-                _hasUnappliedModifications = DesignerFileManager.HasUnappliedModifications(assetPath);
-            }
-
-            return _hasUnappliedModifications;
         }
 
         private static void DrawDiagnostics(List<ImportDiagnostic> diagnostics)

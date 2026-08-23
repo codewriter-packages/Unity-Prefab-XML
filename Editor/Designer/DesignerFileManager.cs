@@ -58,21 +58,41 @@ namespace UnityPrefabXML.Designer
         }
 
         /// <summary>
-        /// True when the designer file holds overrides that were not written back to the XML yet.
-        /// Overrides of the root transform and of the root name are ignored: Unity records them on
-        /// every variant, <see cref="ResetDesignerOverrides"/> does not clear them, and they carry
-        /// no intent of the user.
+        /// True when the designer file holds a change the applier can write and has not written yet.
+        ///
+        /// Unity records overrides the format never writes — properties it skips, values it derives
+        /// from another field, and the root transform of every variant. Counting those would leave
+        /// the warning on forever, because applying them changes nothing, so the answer comes from
+        /// the collected changes instead of from the raw override list.
         /// </summary>
         public static bool HasUnappliedModifications(string prefabXmlPath)
         {
-            var designerPath = GetDesignerPath(prefabXmlPath);
-            var designerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(designerPath);
-
-            if (designerPrefab == null || !PrefabUtility.IsPartOfPrefabInstance(designerPrefab))
+            // Cheap enough to run on every repaint, and false here means there is nothing to collect
+            if (!HasAnyOverride(prefabXmlPath))
             {
                 return false;
             }
 
+            var set = DesignerChangeCollector.Collect(prefabXmlPath);
+            return set != null && set.HasActionable;
+        }
+
+        /// <summary>
+        /// True when the designer file was touched at all, whether or not the format writes any of
+        /// it. Answering this costs a fraction of collecting the changes.
+        /// </summary>
+        internal static bool HasAnyOverride(string prefabXmlPath)
+        {
+            var designerPath = GetDesignerPath(prefabXmlPath);
+            var designerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(designerPath);
+
+            return designerPrefab != null
+                   && PrefabUtility.IsPartOfPrefabInstance(designerPrefab)
+                   && HasAnyOverride(designerPrefab);
+        }
+
+        private static bool HasAnyOverride(GameObject designerPrefab)
+        {
             return NotEmpty(PrefabUtility.GetAddedGameObjects(designerPrefab))
                    || NotEmpty(PrefabUtility.GetAddedComponents(designerPrefab))
                    || NotEmpty(PrefabUtility.GetRemovedGameObjects(designerPrefab))
@@ -123,12 +143,35 @@ namespace UnityPrefabXML.Designer
             }
         }
 
+        /// <summary>
+        /// Writes everything the applier is able to write back into the XML.
+        /// </summary>
         public static void ApplyDesignerModifications(string prefabXmlPath)
+        {
+            var set = DesignerChangeCollector.Collect(prefabXmlPath, logErrors: true);
+            if (set == null)
+            {
+                return;
+            }
+
+            foreach (var change in set.Changes)
+            {
+                change.Selected = change.IsApplicable;
+            }
+
+            ApplyDesignerModifications(set);
+        }
+
+        /// <summary>
+        /// Writes the changes marked as selected. What is left out stays an override of the designer
+        /// file, so it survives the run and shows up again the next time the changes are collected.
+        /// </summary>
+        public static void ApplyDesignerModifications(DesignerChangeSet set)
         {
             IsBusy = true;
             try
             {
-                ApplyDesignerModificationsInternal(prefabXmlPath);
+                ApplyDesignerModificationsInternal(set);
             }
             finally
             {
@@ -136,138 +179,109 @@ namespace UnityPrefabXML.Designer
             }
         }
 
-        private static void ApplyDesignerModificationsInternal(string prefabXmlPath)
+        private static void ApplyDesignerModificationsInternal(DesignerChangeSet set)
         {
-            var designerPath = GetDesignerPath(prefabXmlPath);
+            var applied = set.Changes.Where(c => c.Selected && c.IsApplicable).ToList();
 
-            var designerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(designerPath);
-            if (designerPrefab == null)
+            ApplyValueChanges(applied);
+            ApplyAddedComponents(applied);
+            ApplyAddedGameObjects(applied, set.Context);
+            ApplyRemovedElements(applied);
+
+            // Runs last so that objects added and removed above are already part of the XML
+            ApplyChildOrder(set, applied);
+
+            set.Context.CollectBindings(set.ConvertContext);
+
+            if (PrefabXmlUtils.SaveXmlIfChanged(set.Document, set.PrefabXmlPath, set.DocumentText))
             {
-                Debug.LogError($"DesignerFile: Designer file not found at '{designerPath}'.");
-                return;
+                AssetDatabase.ImportAsset(set.PrefabXmlPath, ImportAssetOptions.ForceUpdate);
+
+                // The prefab now matches the XML, so a layout pass on it tells which of the values
+                // just written are driven and do not belong in the file
+                DrivenPropertyCleaner.CleanFile(set.PrefabXmlPath);
+
+                ApplyNewBindings(set);
             }
 
-            var basePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabXmlPath);
-            if (basePrefab == null)
-            {
-                Debug.LogError($"DesignerFile: Cannot load base prefab from '{prefabXmlPath}'.");
-                return;
-            }
+            // The applied changes now live in the XML, so the base prefab contains them too.
+            // Overrides left on the designer file would duplicate every added object and would
+            // be written to the XML again on the next apply.
+            ResetDesignerOverrides(set, applied);
+        }
 
-            var xmlDoc = PrefabXmlUtils.LoadXml(prefabXmlPath, out var xmlText);
-
-            var rootXmlElement = xmlDoc.Root?.Elements("GameObject").FirstOrDefault();
-            if (rootXmlElement == null)
-            {
-                Debug.LogError("DesignerFile: Cannot find root <GameObject> in XML.");
-                return;
-            }
-
-            // Build context with parallel mapping and bindings
-            var ctx = new DesignerContext
-            {
-                BasePrefab = basePrefab,
-                DesignerPrefab = designerPrefab,
-            };
-            ctx.UsedBindingNames.UnionWith(PrefabXmlSerializer.CollectBindingNames(xmlDoc));
-
-            BuildParallelMapping(basePrefab.transform, designerPrefab.transform, rootXmlElement, ctx);
-
-            // Process property modifications
-            var modifications = PrefabUtility.GetPropertyModifications(designerPrefab);
-            if (modifications != null)
-            {
-                ApplyPropertyModifications(modifications, ctx);
-            }
-
-            // Handle added components
-            var addedComponents = PrefabUtility.GetAddedComponents(designerPrefab);
-            if (addedComponents != null)
-            {
-                ApplyAddedComponents(addedComponents, ctx);
-            }
-
-            // Handle added GameObjects
-            var addedGameObjects = PrefabUtility.GetAddedGameObjects(designerPrefab);
-            if (addedGameObjects != null)
-            {
-                ApplyAddedGameObjects(addedGameObjects, ctx);
-            }
-
-            // Handle removed components
-            var removedComponents = PrefabUtility.GetRemovedComponents(designerPrefab);
-            if (removedComponents != null)
-            {
-                ApplyRemovedComponents(removedComponents, ctx);
-            }
-
-            // Handle removed GameObjects
-            var removedGameObjects = PrefabUtility.GetRemovedGameObjects(designerPrefab);
-            if (removedGameObjects != null)
-            {
-                ApplyRemovedGameObjects(removedGameObjects, ctx);
-            }
-
-            // Handle reordered GameObjects. Runs last so that objects added and removed above
-            // are already part of the XML.
-            ApplyChildOrder(designerPrefab.transform, ctx);
-
-            // Nothing was captured from the designer file — leave both files untouched
-            if (!PrefabXmlUtils.SaveXmlIfChanged(xmlDoc, prefabXmlPath, xmlText))
+        private static void ApplyNewBindings(DesignerChangeSet set)
+        {
+            if (set.Context.NewBindings.Count == 0)
             {
                 return;
             }
 
-            // Reimport prefabxml
-            AssetDatabase.ImportAsset(prefabXmlPath, ImportAssetOptions.ForceUpdate);
+            var importer = (PrefabXmlImporter) AssetImporter.GetAtPath(set.PrefabXmlPath);
+            var result = PrefabXmlImporter.GetResult(set.PrefabXmlPath);
 
-            // The prefab now matches the XML, so a layout pass on it tells which of the values
-            // just written are driven and do not belong in the file
-            DrivenPropertyCleaner.CleanFile(prefabXmlPath);
-
-            // Apply new bindings if any
-            if (ctx.NewBindings.Count > 0)
+            if (importer == null || result == null)
             {
-                var importer = (PrefabXmlImporter) AssetImporter.GetAtPath(prefabXmlPath);
-                var result = PrefabXmlImporter.GetResult(prefabXmlPath);
+                return;
+            }
 
-                if (importer != null && result != null)
+            foreach (var kvp in set.Context.NewBindings)
+            {
+                var bindingName = kvp.Key;
+                var asset = kvp.Value;
+
+                if (result.discoveredBindings.TryGetValue(bindingName, out var expectedType))
                 {
-                    foreach (var kvp in ctx.NewBindings)
-                    {
-                        var bindingName = kvp.Key;
-                        var asset = kvp.Value;
-
-                        if (result.discoveredBindings.TryGetValue(bindingName, out var expectedType))
-                        {
-                            var identifier = new AssetImporter.SourceAssetIdentifier(expectedType, bindingName);
-                            importer.AddRemap(identifier, asset);
-                        }
-                    }
-
-                    AssetDatabase.WriteImportSettingsIfDirty(prefabXmlPath);
-                    AssetDatabase.ImportAsset(prefabXmlPath, ImportAssetOptions.ForceUpdate);
+                    var identifier = new AssetImporter.SourceAssetIdentifier(expectedType, bindingName);
+                    importer.AddRemap(identifier, asset);
                 }
             }
 
-            // The modifications now live in the XML, so the base prefab contains them too.
-            // Overrides left on the designer file would duplicate every added object and would
-            // be written to the XML again on the next apply.
-            ResetDesignerOverrides(designerPath);
+            AssetDatabase.WriteImportSettingsIfDirty(set.PrefabXmlPath);
+            AssetDatabase.ImportAsset(set.PrefabXmlPath, ImportAssetOptions.ForceUpdate);
         }
 
         /// <summary>
-        /// Reverts every override of the designer file so it becomes a clean variant
-        /// of the freshly reimported base prefab.
+        /// Clears the overrides that were written to the XML, so the designer file becomes a variant
+        /// of the freshly reimported base prefab again. What was left out of the run is kept.
+        /// </summary>
+        private static void ResetDesignerOverrides(DesignerChangeSet set, List<DesignerChange> applied)
+        {
+            // The designer file holds nothing worth clearing, and rewriting it would only touch its
+            // timestamp
+            if (set.Changes.Count == 0)
+            {
+                return;
+            }
+
+            // Nothing was held back, so the whole file can go at once — the same single call the
+            // applier always made
+            var revertAll = set.Changes.All(c => c.Selected);
+
+            EditDesignerFile(set.DesignerPath, root => RevertRoot(root, applied, revertAll));
+        }
+
+        /// <summary>
+        /// Drops every override of the designer file. A file that was just created holds the ones
+        /// Unity records while instantiating, and they describe nothing the user did.
         /// </summary>
         private static void ResetDesignerOverrides(string designerPath)
+        {
+            EditDesignerFile(designerPath,
+                root => RevertRoot(root, new List<DesignerChange>(), revertAll: true));
+        }
+
+        /// <summary>
+        /// Runs an edit on the designer file and saves it when the edit changed anything.
+        /// </summary>
+        private static void EditDesignerFile(string designerPath, Func<GameObject, bool> edit)
         {
             var stage = PrefabStageUtility.GetCurrentPrefabStage();
             if (stage != null && stage.assetPath == designerPath)
             {
                 // The stage holds its own copy of the contents. Overwriting the asset behind its
                 // back would leave the stage stale and it would save the old overrides again.
-                if (RevertRoot(stage.prefabContentsRoot))
+                if (edit(stage.prefabContentsRoot))
                 {
                     PrefabUtility.SaveAsPrefabAsset(stage.prefabContentsRoot, designerPath);
                 }
@@ -278,7 +292,7 @@ namespace UnityPrefabXML.Designer
             var contents = PrefabUtility.LoadPrefabContents(designerPath);
             try
             {
-                if (RevertRoot(contents))
+                if (edit(contents))
                 {
                     PrefabUtility.SaveAsPrefabAsset(contents, designerPath);
                 }
@@ -289,18 +303,164 @@ namespace UnityPrefabXML.Designer
             }
         }
 
-        private static bool RevertRoot(GameObject root)
+        private static bool RevertRoot(GameObject root, List<DesignerChange> applied, bool revertAll)
         {
             if (root == null || !PrefabUtility.IsPartOfPrefabInstance(root))
             {
                 return false;
             }
 
-            PrefabUtility.RevertPrefabInstance(root, InteractionMode.AutomatedAction);
+            if (revertAll)
+            {
+                PrefabUtility.RevertPrefabInstance(root, InteractionMode.AutomatedAction);
+                return true;
+            }
+
+            // The objects of this copy are not the ones the changes were collected from, so added
+            // objects are found by their path. It runs before the property overrides are dropped,
+            // because dropping a rename would move the path out from under the lookup.
+            var changed = RevertAddedObjects(root, applied);
+
+            return RevertAppliedModifications(root, applied) || changed;
+        }
+
+        /// <summary>
+        /// Drops the objects and components the run wrote into the XML.
+        ///
+        /// The copy being edited is not the one the changes were collected from, so instead of
+        /// looking objects up in it, Unity is asked what it considers added there and the answer is
+        /// matched against the changes by the address they both name.
+        /// </summary>
+        private static bool RevertAddedObjects(GameObject root, List<DesignerChange> applied)
+        {
+            var wanted = applied
+                .Where(c => c.Kind == DesignerChangeKind.AddedGameObject ||
+                            c.Kind == DesignerChangeKind.AddedComponent)
+                .ToList();
+
+            if (wanted.Count == 0)
+            {
+                return false;
+            }
+
+            var changed = false;
+            var reverted = new HashSet<DesignerChange>();
+
+            var addedGameObjects = PrefabUtility.GetAddedGameObjects(root);
+            if (addedGameObjects != null)
+            {
+                foreach (var entry in addedGameObjects)
+                {
+                    var go = entry.instanceGameObject;
+                    if (go == null)
+                    {
+                        continue;
+                    }
+
+                    var path = DesignerChange.GetPath(go.transform, root.transform);
+                    var change = wanted.FirstOrDefault(c =>
+                        c.Kind == DesignerChangeKind.AddedGameObject && c.ObjectPath == path);
+
+                    if (change == null)
+                    {
+                        continue;
+                    }
+
+                    PrefabUtility.RevertAddedGameObject(go, InteractionMode.AutomatedAction);
+                    reverted.Add(change);
+                    changed = true;
+                }
+            }
+
+            var addedComponents = PrefabUtility.GetAddedComponents(root);
+            if (addedComponents != null)
+            {
+                foreach (var entry in addedComponents)
+                {
+                    var comp = entry.instanceComponent;
+                    if (comp == null)
+                    {
+                        continue;
+                    }
+
+                    var path = DesignerChange.GetPath(comp.transform, root.transform);
+                    var typeName = comp.GetType().Name;
+                    var index = DesignerChange.IndexOfComponent(comp);
+
+                    var change = wanted.FirstOrDefault(c =>
+                        c.Kind == DesignerChangeKind.AddedComponent &&
+                        c.ObjectPath == path && c.ComponentType == typeName && c.ComponentIndex == index);
+
+                    if (change == null)
+                    {
+                        continue;
+                    }
+
+                    PrefabUtility.RevertAddedComponent(comp, InteractionMode.AutomatedAction);
+                    reverted.Add(change);
+                    changed = true;
+                }
+            }
+
+            foreach (var change in wanted)
+            {
+                // Written to the XML but still an override of the designer file. Leaving it silently
+                // would show up later as the object appearing twice.
+                if (!reverted.Contains(change))
+                {
+                    Debug.LogWarning($"DesignerFile: '{change.NewValue}' on '{change.ObjectLabel}' was " +
+                                     "written to the XML, but it could not be cleared from the designer " +
+                                     "file. Revert it by hand to avoid a duplicate.");
+                }
+            }
+
+            return changed;
+        }
+
+        /// <summary>
+        /// Drops the modifications that were written and keeps the rest. Removals are not in the
+        /// list: once the base prefab loses the object a removal points at, Unity drops the override
+        /// on its own.
+        /// </summary>
+        private static bool RevertAppliedModifications(GameObject root, List<DesignerChange> applied)
+        {
+            var current = PrefabUtility.GetPropertyModifications(root);
+            if (current == null || current.Length == 0)
+            {
+                return false;
+            }
+
+            var written = new HashSet<string>();
+            foreach (var change in applied)
+            {
+                foreach (var mod in change.Sources)
+                {
+                    if (mod.target != null)
+                    {
+                        written.Add(ModificationKey(mod));
+                    }
+                }
+            }
+
+            var kept = current
+                .Where(m => m.target == null || !written.Contains(ModificationKey(m)))
+                .ToArray();
+
+            if (kept.Length == current.Length)
+            {
+                return false;
+            }
+
+            PrefabUtility.SetPropertyModifications(root, kept);
             return true;
         }
 
-        private static void BuildParallelMapping(Transform baseTf, Transform variantTf, XElement goElement,
+        private static string ModificationKey(PropertyModification mod)
+        {
+            return mod.target.GetInstanceID() + "|" + mod.propertyPath;
+        }
+
+        internal static void BuildParallelMapping(Transform baseTf, Transform variantTf, XElement goElement,
             DesignerContext ctx)
         {
             MapBaseToXml(baseTf, goElement, ctx);
@@ -428,11 +588,24 @@ namespace UnityPrefabXML.Designer
         }
 
         /// <summary>
-        /// Rewrites the order of the child elements in the XML to match the designer file.
+        /// Rewrites the order of the child elements in the XML to match the designer file. Objects
+        /// added by this run are already in the document, so they are placed here as well — only a
+        /// parent whose reorder the user left out is passed over.
         /// </summary>
-        private static void ApplyChildOrder(Transform variantTf, DesignerContext ctx)
+        private static void ApplyChildOrder(DesignerChangeSet set, List<DesignerChange> applied)
         {
-            if (ctx.VariantToXml.TryGetValue(variantTf.GetInstanceID(), out var goElement))
+            var skipped = new HashSet<XElement>(set.Changes
+                .Where(c => c.Kind == DesignerChangeKind.ChildOrder && !applied.Contains(c))
+                .Select(c => c.TargetElement)
+                .Where(el => el != null));
+
+            ApplyChildOrder(set.DesignerPrefab.transform, set.Context, skipped);
+        }
+
+        private static void ApplyChildOrder(Transform variantTf, DesignerContext ctx, HashSet<XElement> skipped)
+        {
+            if (ctx.VariantToXml.TryGetValue(variantTf.GetInstanceID(), out var goElement) &&
+                !skipped.Contains(goElement))
             {
                 var desired = new List<XElement>();
 
@@ -449,11 +622,16 @@ namespace UnityPrefabXML.Designer
 
             for (var i = 0; i < variantTf.childCount; i++)
             {
-                ApplyChildOrder(variantTf.GetChild(i), ctx);
+                ApplyChildOrder(variantTf.GetChild(i), ctx, skipped);
             }
         }
 
-        private static void ReorderXmlChildren(XElement parent, List<XElement> desired)
+        /// <summary>
+        /// True when the children of the element sit in a different order than the designer file
+        /// describes and moving them is safe. Answers the same question <see cref="ReorderXmlChildren"/>
+        /// answers before it starts moving anything.
+        /// </summary>
+        internal static bool WouldReorder(XElement parent, List<XElement> desired)
         {
             var current = parent.Elements("GameObject").ToList();
 
@@ -461,7 +639,7 @@ namespace UnityPrefabXML.Designer
             // means the mapping is incomplete and moving elements around would drop them.
             if (current.Count == 0 || current.Count != desired.Count)
             {
-                return;
+                return false;
             }
 
             var known = new HashSet<XElement>();
@@ -471,16 +649,23 @@ namespace UnityPrefabXML.Designer
             {
                 if (desired[i].Parent != parent || !known.Add(desired[i]))
                 {
-                    return;
+                    return false;
                 }
 
                 changed |= current[i] != desired[i];
             }
 
-            if (!changed)
+            return changed;
+        }
+
+        private static void ReorderXmlChildren(XElement parent, List<XElement> desired)
+        {
+            if (!WouldReorder(parent, desired))
             {
                 return;
             }
+
+            var current = parent.Elements("GameObject").ToList();
 
             // Only the elements move, the whitespace between them is rebuilt from the existing
             // indentation, so the formatting of the file survives
@@ -534,100 +719,75 @@ namespace UnityPrefabXML.Designer
             return node is XText text && string.IsNullOrWhiteSpace(text.Value) ? text.Value : null;
         }
 
-        private static void ApplyPropertyModifications(PropertyModification[] modifications, DesignerContext ctx)
+        /// <summary>
+        /// Writes the value changes: an attribute of a component, a rebuilt Field of an array, and
+        /// the name and the active state of an object. What to write was worked out while the
+        /// changes were collected, so nothing is decided here.
+        /// </summary>
+        private static void ApplyValueChanges(List<DesignerChange> applied)
         {
-            // Group modifications by target object
-            var modsByTarget = modifications
-                .Where(m => m.target != null)
-                .GroupBy(m => m.target.GetInstanceID());
-
-            foreach (var group in modsByTarget)
+            foreach (var change in applied)
             {
-                var target = group.First().target;
-                var mods = group.ToList();
-
-                // Handle GameObject-level modifications (name, active)
-                if (target is GameObject targetGo)
+                var element = change.TargetElement;
+                if (element == null)
                 {
-                    if (!ctx.GoToXml.TryGetValue(targetGo.GetInstanceID(), out var goXml))
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    foreach (var mod in mods)
-                    {
-                        switch (mod.propertyPath)
+                switch (change.Kind)
+                {
+                    case DesignerChangeKind.GameObjectName:
+                        element.SetAttributeValue("name", change.NewValue);
+                        break;
+
+                    case DesignerChangeKind.GameObjectActive:
+                        element.SetAttributeValue("active", change.NewValue);
+                        break;
+
+                    case DesignerChangeKind.Property:
+                        // No text for a leaf is an empty reference, and the format writes that by
+                        // leaving the attribute out
+                        if (change.NewValue != null)
                         {
-                            case "m_Name":
-                                goXml.SetAttributeValue("name", mod.value);
-                                break;
-
-                            case "m_IsActive":
-                                goXml.SetAttributeValue("active", mod.value == "1" ? "true" : "false");
-                                break;
+                            element.SetAttributeValue(change.PropertyPath, change.NewValue);
                         }
-                    }
+                        else
+                        {
+                            element.Attribute(change.PropertyPath)?.Remove();
+                        }
 
-                    continue;
+                        break;
+
+                    case DesignerChangeKind.ArrayField:
+                        ApplyArrayField(change, element);
+                        break;
                 }
+            }
+        }
 
-                // Handle Component modifications
-                if (target is not Component targetComp)
-                {
-                    continue;
-                }
+        /// <summary>
+        /// An element of an array has no name of its own in the XML, so the array is written as a
+        /// whole, the way the converter writes it.
+        /// </summary>
+        private static void ApplyArrayField(DesignerChange change, XElement element)
+        {
+            var existing = element.Elements("Field")
+                .FirstOrDefault(el => el.Attribute("name")?.Value == change.PropertyPath);
 
-                if (!ctx.CompToXml.TryGetValue(targetComp.GetInstanceID(), out var xmlElement))
-                {
-                    continue;
-                }
+            // The array is empty now, and an empty Field has no representation
+            if (change.PayloadElement == null)
+            {
+                existing?.Remove();
+                return;
+            }
 
-                if (!ctx.CompToVariant.TryGetValue(targetComp.GetInstanceID(), out var variantComp))
-                {
-                    continue;
-                }
-
-                // Filter out skip properties
-                var validMods = mods.Where(m => !PrefabXmlSerializer.IsSkipProperty(m.propertyPath)).ToList();
-                if (validMods.Count == 0)
-                {
-                    continue;
-                }
-
-                var variantSo = new SerializedObject(variantComp);
-
-                // An array is stored in a Field element instead of an attribute, so it is written
-                // apart from everything else
-                ApplyArrayFields(validMods, xmlElement, variantSo, ctx);
-
-                // Group by root XML attribute name
-                var attrGroups = GroupByXmlAttributeName(
-                    validMods.Where(m => GetArrayPath(m.propertyPath) == null).ToList(),
-                    xmlElement, variantSo);
-
-                foreach (var attrGroup in attrGroups)
-                {
-                    var attrName = attrGroup.Key;
-
-                    // Read final value from variant's SerializedProperty
-                    var prop = variantSo.FindProperty(attrName);
-                    if (prop == null)
-                    {
-                        continue;
-                    }
-
-                    var convertCtx = ctx.CreateConvertContext();
-                    var value = PrefabXmlSerializer.SerializeValue(prop, convertCtx);
-                    ctx.CollectBindings(convertCtx);
-                    if (value != null)
-                    {
-                        xmlElement.SetAttributeValue(attrName, value);
-                    }
-                    else
-                    {
-                        xmlElement.Attribute(attrName)?.Remove();
-                    }
-                }
+            if (existing != null)
+            {
+                PrefabXmlUtils.Replace(existing, change.PayloadElement);
+            }
+            else
+            {
+                PrefabXmlUtils.AddChild(element, change.PayloadElement);
             }
         }
 
@@ -636,117 +796,19 @@ namespace UnityPrefabXML.Designer
         /// "m_Options.m_Options.Array.data[0].m_Text" belongs to "m_Options.m_Options". Of nested
         /// arrays the outermost one is taken — writing it covers everything below it.
         /// </summary>
-        private static string GetArrayPath(string propertyPath)
+        internal static string GetArrayPath(string propertyPath)
         {
             var index = propertyPath.IndexOf(".Array.", StringComparison.Ordinal);
             return index < 0 ? null : propertyPath.Substring(0, index);
         }
 
         /// <summary>
-        /// Rewrites the Field element of every array a modification points into. An element of an
-        /// array has no name of its own in the XML, so the array is written as a whole, the way the
-        /// converter writes it.
+        /// The attribute of the XML a modification belongs to, or null when the format has no
+        /// attribute for it. The x of a Vector2 belongs to the attribute of the whole vector, a
+        /// field of a struct the format does not write as one value belongs to a dot-path of its own.
         /// </summary>
-        private static void ApplyArrayFields(List<PropertyModification> mods, XElement xmlElement,
-            SerializedObject variantSo, DesignerContext ctx)
+        internal static string ResolveXmlAttributeName(string propertyPath, XElement xmlElement, SerializedObject so)
         {
-            var arrayPaths = new HashSet<string>();
-
-            foreach (var mod in mods)
-            {
-                var arrayPath = GetArrayPath(mod.propertyPath);
-                if (arrayPath != null)
-                {
-                    arrayPaths.Add(arrayPath);
-                }
-            }
-
-            foreach (var arrayPath in arrayPaths)
-            {
-                var prop = variantSo.FindProperty(arrayPath);
-                if (prop == null || !prop.isArray || prop.propertyType == SerializedPropertyType.String)
-                {
-                    continue;
-                }
-
-                var existing = xmlElement.Elements("Field")
-                    .FirstOrDefault(el => el.Attribute("name")?.Value == arrayPath);
-
-                // TMP derives this one from m_enableKerning, the file keeps that single switch
-                if (TmpFontFeatures.IsDerivedFromKerningField(prop))
-                {
-                    existing?.Remove();
-                    continue;
-                }
-
-                var refs = new List<XElement>();
-                var convertCtx = ctx.CreateConvertContext();
-                var fieldElement = PrefabXmlSerializer.SerializeField(prop, convertCtx, refs);
-
-                // The array is empty now, and an empty Field has no representation
-                if (fieldElement == null)
-                {
-                    existing?.Remove();
-                    continue;
-                }
-
-                if (refs.Count > 0)
-                {
-                    // Every managed reference lives in a Ref element of its own. Writing them would
-                    // mean renumbering the ids the file already uses and dropping the ones the old
-                    // items left behind, so the array is left as it is.
-                    Debug.LogWarning($"DesignerFile: '{arrayPath}' of <{xmlElement.Name.LocalName}> holds " +
-                                     "managed references, the change was not applied to the XML.");
-                    continue;
-                }
-
-                ctx.CollectBindings(convertCtx);
-
-                if (existing != null)
-                {
-                    PrefabXmlUtils.Replace(existing, fieldElement);
-                }
-                else
-                {
-                    PrefabXmlUtils.AddChild(xmlElement, fieldElement);
-                }
-            }
-        }
-
-        private static Dictionary<string, List<PropertyModification>> GroupByXmlAttributeName(
-            List<PropertyModification> mods, XElement xmlElement, SerializedObject so)
-        {
-            var groups = new Dictionary<string, List<PropertyModification>>();
-
-            foreach (var mod in mods)
-            {
-                var attrName = ResolveXmlAttributeName(mod.propertyPath, xmlElement, so);
-                if (attrName == null)
-                {
-                    continue;
-                }
-
-                if (!groups.ContainsKey(attrName))
-                {
-                    groups[attrName] = new List<PropertyModification>();
-                }
-
-                groups[attrName].Add(mod);
-            }
-
-            return groups;
-        }
-
-        private static string ResolveXmlAttributeName(string propertyPath, XElement xmlElement, SerializedObject so)
-        {
-            // A path like "managedReferences[1234].value" names no attribute, and XName throws on it
-            if (!IsXmlName(propertyPath))
-            {
-                Debug.LogWarning($"DesignerFile: '{propertyPath}' of <{xmlElement.Name.LocalName}> is not a " +
-                                 "valid attribute name, the change was not applied to the XML.");
-                return null;
-            }
-
             // Try exact match
             if (xmlElement.Attribute(propertyPath) != null)
             {
@@ -783,7 +845,10 @@ namespace UnityPrefabXML.Designer
             return null;
         }
 
-        private static bool IsXmlName(string name)
+        /// <summary>
+        /// A path like "managedReferences[1234].value" names no attribute, and XName throws on it.
+        /// </summary>
+        internal static bool IsXmlName(string name)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -801,120 +866,64 @@ namespace UnityPrefabXML.Designer
             }
         }
 
-        private static void ApplyAddedComponents(List<AddedComponent> addedComponents, DesignerContext ctx)
+        /// <summary>
+        /// Inserts an added component behind the components the object already has, in front of its
+        /// child objects.
+        /// </summary>
+        private static void ApplyAddedComponents(List<DesignerChange> applied)
         {
-            foreach (var added in addedComponents)
+            foreach (var change in applied)
             {
-                var comp = added.instanceComponent;
-                if (comp == null)
+                if (change.Kind != DesignerChangeKind.AddedComponent ||
+                    change.TargetElement == null || change.PayloadElement == null)
                 {
                     continue;
                 }
 
-                // Find the parent GO in the base prefab
-                // The added component is on the variant, we need to find the corresponding base GO
-                var variantGo = comp.gameObject;
-                var baseGoId = ctx.FindBaseGoIdForVariantGo(variantGo);
-                if (baseGoId == -1)
-                {
-                    continue;
-                }
-
-                if (!ctx.GoToXml.TryGetValue(baseGoId, out var goXml))
-                {
-                    continue;
-                }
-
-                // Serialize the component using PrefabToXmlConverter
-                var convertCtx = ctx.CreateConvertContext();
-                var compElement = PrefabXmlSerializer.SerializeComponent(comp, convertCtx);
-                ctx.CollectBindings(convertCtx);
-
-                // Insert before child GameObjects (after existing components)
-                var lastComp = goXml.Elements().LastOrDefault(PrefabXmlUtils.IsComponentElement);
+                var lastComp = change.TargetElement.Elements().LastOrDefault(PrefabXmlUtils.IsComponentElement);
                 if (lastComp != null)
                 {
-                    PrefabXmlUtils.AddAfter(lastComp, compElement);
+                    PrefabXmlUtils.AddAfter(lastComp, change.PayloadElement);
                 }
                 else
                 {
-                    PrefabXmlUtils.AddFirstChild(goXml, compElement);
+                    PrefabXmlUtils.AddFirstChild(change.TargetElement, change.PayloadElement);
                 }
             }
         }
 
-        private static void ApplyAddedGameObjects(List<AddedGameObject> addedGameObjects, DesignerContext ctx)
+        private static void ApplyAddedGameObjects(List<DesignerChange> applied, DesignerContext ctx)
         {
-            foreach (var added in addedGameObjects)
+            foreach (var change in applied)
             {
-                var go = added.instanceGameObject;
-                if (go == null)
+                if (change.Kind != DesignerChangeKind.AddedGameObject ||
+                    change.TargetElement == null || change.PayloadElement == null)
                 {
                     continue;
                 }
 
-                // Find parent in base
-                var parentVariantTf = go.transform.parent;
-                if (parentVariantTf == null)
-                {
-                    continue;
-                }
-
-                var baseGoId = ctx.FindBaseGoIdForVariantTf(parentVariantTf);
-                if (baseGoId == -1)
-                {
-                    continue;
-                }
-
-                if (!ctx.GoToXml.TryGetValue(baseGoId, out var parentXml))
-                {
-                    continue;
-                }
-
-                // Serialize the subtree
-                var convertCtx = ctx.CreateConvertContext();
-                var goElement = PrefabXmlSerializer.SerializeGameObject(go, convertCtx);
-                ctx.CollectBindings(convertCtx);
-
-                PrefabXmlUtils.AddChild(parentXml, goElement);
+                PrefabXmlUtils.AddChild(change.TargetElement, change.PayloadElement);
 
                 // The element is appended at the end, the reorder pass moves it
                 // to the position it has in the designer file
-                ctx.VariantToXml[go.transform.GetInstanceID()] = goElement;
-            }
-        }
-
-        private static void ApplyRemovedComponents(List<RemovedComponent> removedComponents, DesignerContext ctx)
-        {
-            foreach (var removed in removedComponents)
-            {
-                var comp = removed.assetComponent;
-                if (comp == null)
+                if (change.VariantTransform != null)
                 {
-                    continue;
-                }
-
-                if (ctx.CompToXml.TryGetValue(comp.GetInstanceID(), out var xmlElement))
-                {
-                    xmlElement.Remove();
+                    ctx.VariantToXml[change.VariantTransform.GetInstanceID()] = change.PayloadElement;
                 }
             }
         }
 
-        private static void ApplyRemovedGameObjects(List<RemovedGameObject> removedGameObjects, DesignerContext ctx)
+        private static void ApplyRemovedElements(List<DesignerChange> applied)
         {
-            foreach (var removed in removedGameObjects)
+            foreach (var change in applied)
             {
-                var go = removed.assetGameObject;
-                if (go == null)
+                if (change.Kind != DesignerChangeKind.RemovedComponent &&
+                    change.Kind != DesignerChangeKind.RemovedGameObject)
                 {
                     continue;
                 }
 
-                if (ctx.GoToXml.TryGetValue(go.GetInstanceID(), out var xmlElement))
-                {
-                    xmlElement.Remove();
-                }
+                change.TargetElement?.Remove();
             }
         }
     }
