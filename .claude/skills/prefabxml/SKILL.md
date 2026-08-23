@@ -87,11 +87,13 @@ If no path is provided, ask where to save or suggest a reasonable path in the cu
 </TMP_Dropdown>
 ```
 
-### Padding on LayoutGroup — dot notation
+### Padding on LayoutGroup — CSS shorthand (top, right, bottom, left)
 ```xml
-<VerticalLayoutGroup m_Padding.m_Left="16" m_Padding.m_Right="16"
-    m_Padding.m_Top="12" m_Padding.m_Bottom="12" />
+<VerticalLayoutGroup m_Padding="16" />
+<VerticalLayoutGroup m_Padding="12, 16" />
+<VerticalLayoutGroup m_Padding="12, 16, 20, 8" />
 ```
+To set a single side, use dot notation: `m_Padding.m_Left="16"`.
 
 ## Style
 

@@ -240,6 +240,7 @@ Values are written as strings and parsed by `SerializedPropertyType`:
 | RectInt | `"0, 0, 100, 50"` | x, y, width, height |
 | Bounds | `"0, 0, 0, 1, 1, 1"` | centerX, centerY, centerZ, sizeX, sizeY, sizeZ |
 | BoundsInt | `"0, 0, 0, 1, 1, 1"` | posX, posY, posZ, sizeX, sizeY, sizeZ |
+| RectOffset | `"8"`, `"12, 16"`, `"12, 16, 20, 16"` | CSS shorthand: top, right, bottom, left |
 | LayerMask | `"256"` | bitmask as integer |
 | ObjectReference | `"#id"` | reference to GameObject by id |
 | ObjectReference | `"{name}"` | asset binding, assigned in Inspector |

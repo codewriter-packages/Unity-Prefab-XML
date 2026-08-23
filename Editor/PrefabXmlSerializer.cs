@@ -182,6 +182,8 @@ namespace UnityPrefabXML
                 case SerializedPropertyType.ObjectReference:
                 case SerializedPropertyType.LayerMask:
                     return true;
+                case SerializedPropertyType.Generic:
+                    return prop.type == "RectOffset";
                 default:
                     return false;
             }
@@ -542,6 +544,9 @@ namespace UnityPrefabXML
                 case SerializedPropertyType.ObjectReference:
                     return SerializeObjectReference(prop, ctx);
 
+                case SerializedPropertyType.Generic when prop.type == "RectOffset":
+                    return FormatRectOffset(prop);
+
                 default:
                     return null;
             }
@@ -600,6 +605,31 @@ namespace UnityPrefabXML
 
             ctx.UsedBindings[bindingName] = obj;
             return bindingName;
+        }
+
+        /// <summary>
+        /// CSS shorthand (top, right, bottom, left), collapsed to the shortest equivalent form.
+        /// </summary>
+        public static string FormatRectOffset(SerializedProperty prop)
+        {
+            var left = prop.FindPropertyRelative("m_Left").intValue;
+            var right = prop.FindPropertyRelative("m_Right").intValue;
+            var top = prop.FindPropertyRelative("m_Top").intValue;
+            var bottom = prop.FindPropertyRelative("m_Bottom").intValue;
+
+            if (left != right)
+            {
+                return $"{top}, {right}, {bottom}, {left}";
+            }
+
+            if (top != bottom)
+            {
+                return $"{top}, {right}, {bottom}";
+            }
+
+            return top == right
+                ? top.ToString(CultureInfo.InvariantCulture)
+                : $"{top}, {right}";
         }
 
         public static string FormatVector2(Vector2 v) => $"{F(v.x)}, {F(v.y)}";

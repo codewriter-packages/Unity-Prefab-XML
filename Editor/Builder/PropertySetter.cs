@@ -299,6 +299,10 @@ namespace UnityPrefabXML.Builder
                     prop.intValue = int.Parse(value, CultureInfo.InvariantCulture);
                     break;
 
+                case SerializedPropertyType.Generic when prop.type == "RectOffset":
+                    SetRectOffset(prop, value);
+                    break;
+
                 case SerializedPropertyType.ObjectReference:
                     if (PrefabXmlUtils.IsBinding(value))
                     {
@@ -588,6 +592,31 @@ namespace UnityPrefabXML.Builder
             return ParseInts(value, 6, out var actualCount) is { } p
                 ? new BoundsInt(new Vector3Int(p[0], p[1], p[2]), new Vector3Int(p[3], p[4], p[5]))
                 : throw new FormatException($"Expected 6 components for BoundsInt, but got {actualCount} in '{value}'");
+        }
+
+        /// <summary>
+        /// CSS shorthand for RectOffset: top, right, bottom, left with the usual 1/2/3 value
+        /// fallbacks. Dot notation (m_Padding.m_Left) keeps working.
+        /// </summary>
+        private static void SetRectOffset(SerializedProperty prop, string value)
+        {
+            // Probe the count first — ParseInts validates against a count known up front.
+            ParseInts(value, 0, out var count);
+            var sides = count >= 1 && count <= 4
+                ? ParseInts(value, count, out _)
+                : throw new FormatException(
+                    $"Expected 1 to 4 components (top, right, bottom, left) for RectOffset, " +
+                    $"but got {count} in '{value}'");
+
+            var top = sides[0];
+            var right = sides.Length > 1 ? sides[1] : top;
+            var bottom = sides.Length > 2 ? sides[2] : top;
+            var left = sides.Length > 3 ? sides[3] : right;
+
+            prop.FindPropertyRelative("m_Left").intValue = left;
+            prop.FindPropertyRelative("m_Right").intValue = right;
+            prop.FindPropertyRelative("m_Top").intValue = top;
+            prop.FindPropertyRelative("m_Bottom").intValue = bottom;
         }
     }
 }

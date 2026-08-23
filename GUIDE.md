@@ -238,14 +238,23 @@ Do NOT set every possible attribute. Set only what differs from defaults. Compar
 
 ## Padding on LayoutGroups
 
-`m_Padding` is a `RectOffset` (nested struct). Use dot notation to set individual sides:
+`m_Padding` is a `RectOffset`, written as the **CSS shorthand** — same rules as CSS `padding`:
 
 ```xml
-<VerticalLayoutGroup m_Spacing="8"
-    m_Padding.m_Left="16" m_Padding.m_Right="16"
-    m_Padding.m_Top="12" m_Padding.m_Bottom="12"
+<VerticalLayoutGroup m_Padding="16" />              <!-- all sides -->
+<VerticalLayoutGroup m_Padding="12, 16" />          <!-- vertical, horizontal -->
+<VerticalLayoutGroup m_Padding="12, 16, 20" />      <!-- top, horizontal, bottom -->
+<VerticalLayoutGroup m_Padding="12, 16, 20, 8" />   <!-- top, right, bottom, left -->
+
+<VerticalLayoutGroup m_Spacing="8" m_Padding="50, 40, 55"
     m_ChildControlWidth="true" m_ChildControlHeight="true"
     m_ChildForceExpandWidth="true" m_ChildForceExpandHeight="false" />
+```
+
+To set a single side without touching the others, use dot notation with Unity's field names:
+
+```xml
+<VerticalLayoutGroup m_Padding.m_Left="16" />
 ```
 
 ## Image with Sprite inside LayoutGroup
