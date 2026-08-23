@@ -21,6 +21,23 @@ namespace UnityPrefabXML
             };
         }
 
+        /// <summary>
+        /// The enum a property holds, or null when the type cannot be resolved. Read from the
+        /// static type of the property rather than from the field: inside an array the field is
+        /// the List, and only the static type is the element itself.
+        /// </summary>
+        public static System.Type GetEnumType(SerializedProperty property)
+        {
+            var fieldInfo = GetFieldInfoAndStaticTypeFromProperty(property, out var type);
+
+            if (type != null && type.IsEnum)
+            {
+                return type;
+            }
+
+            return fieldInfo != null && fieldInfo.FieldType.IsEnum ? fieldInfo.FieldType : null;
+        }
+
         public static FieldInfo GetFieldInfoAndStaticTypeFromProperty(SerializedProperty property, out System.Type type)
         {
             var proxy = GetFieldInfoAndStaticTypeFromPropertyMethod;

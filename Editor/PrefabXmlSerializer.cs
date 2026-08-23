@@ -341,25 +341,6 @@ namespace UnityPrefabXML
 
             var firstElement = prop.GetArrayElementAtIndex(0);
 
-            // ObjectReference array
-            if (firstElement.propertyType == SerializedPropertyType.ObjectReference)
-            {
-                var fieldEl = new XElement("Field", new XAttribute("name", prop.propertyPath));
-                for (int i = 0; i < prop.arraySize; i++)
-                {
-                    var refStr = SerializeObjectReference(prop.GetArrayElementAtIndex(i), ctx);
-                    var item = new XElement("Item");
-                    if (refStr != null)
-                    {
-                        item.Add(new XAttribute("v", refStr));
-                    }
-
-                    fieldEl.Add(item);
-                }
-
-                return fieldEl;
-            }
-
             // ManagedReference array
             if (firstElement.propertyType == SerializedPropertyType.ManagedReference)
             {
@@ -376,6 +357,22 @@ namespace UnityPrefabXML
 
                     var refId = SerializeManagedReference(elProp, ctx, allRefs);
                     fieldEl.Add(new XElement("Item", new XAttribute("v", "@" + refId)));
+                }
+
+                return fieldEl;
+            }
+
+            // Array of values — an item has no sub-properties to write attributes from, the value
+            // itself goes into v, the way the reader expects it
+            if (IsLeafProperty(firstElement))
+            {
+                var fieldEl = new XElement("Field", new XAttribute("name", prop.propertyPath));
+                for (int i = 0; i < prop.arraySize; i++)
+                {
+                    var val = SerializeValue(prop.GetArrayElementAtIndex(i), ctx);
+                    fieldEl.Add(val != null
+                        ? new XElement("Item", new XAttribute("v", val))
+                        : new XElement("Item"));
                 }
 
                 return fieldEl;
@@ -498,8 +495,11 @@ namespace UnityPrefabXML
                     return FormatColor(prop.colorValue);
 
                 case SerializedPropertyType.Enum:
-                    var fieldInfo = ScriptAttributeUtilityProxy.GetFieldInfoAndStaticTypeFromProperty(prop, out _);
-                    return Enum.ToObject(fieldInfo.FieldType, prop.intValue).ToString();
+                    // No type to name the value with — the raw number reads back just as well
+                    var enumType = ScriptAttributeUtilityProxy.GetEnumType(prop);
+                    return enumType != null
+                        ? Enum.ToObject(enumType, prop.intValue).ToString()
+                        : prop.intValue.ToString(CultureInfo.InvariantCulture);
 
                 case SerializedPropertyType.Vector2:
                     return FormatVector2(prop.vector2Value);

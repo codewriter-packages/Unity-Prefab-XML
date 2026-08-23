@@ -246,8 +246,16 @@ namespace UnityPrefabXML.Builder
                     }
                     else
                     {
-                        var fieldInfo = ScriptAttributeUtilityProxy.GetFieldInfoAndStaticTypeFromProperty(prop, out _);
-                        prop.intValue = (int) Enum.Parse(fieldInfo.FieldType, value, true);
+                        var enumType = ScriptAttributeUtilityProxy.GetEnumType(prop);
+                        if (enumType == null)
+                        {
+                            throw new FormatException($"Cannot resolve the enum type of '{prop.propertyPath}'");
+                        }
+
+                        // An enum can be backed by any integral type, and a boxed one unboxes to
+                        // that type alone — casting straight to int works for int enums only
+                        var parsed = Enum.Parse(enumType, value, true);
+                        prop.intValue = unchecked((int) Convert.ToInt64(parsed));
                     }
 
                     break;
