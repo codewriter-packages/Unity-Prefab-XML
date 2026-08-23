@@ -251,7 +251,7 @@ namespace UnityPrefabXML
                     // Arrays → Field elements
                     if (prop.isArray && prop.propertyType != SerializedPropertyType.String)
                     {
-                        if (IsDefaultValue(prop, defaultSo))
+                        if (IsDefaultValue(prop, defaultSo) || TmpFontFeatures.IsDerivedFromKerningField(prop))
                         {
                             enterChildren = false;
                             continue;

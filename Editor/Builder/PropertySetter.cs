@@ -122,6 +122,11 @@ namespace UnityPrefabXML.Builder
                 }
             }
 
+            // TMP migrates its feature list from m_enableKerning when the object loads. Doing it
+            // here already leaves the built prefab equal to what the designer sees, so the value
+            // never shows up as an override of the file.
+            TmpFontFeatures.MigrateSentinel(so);
+
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 

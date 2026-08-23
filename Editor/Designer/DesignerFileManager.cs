@@ -672,6 +672,13 @@ namespace UnityPrefabXML.Designer
                 var existing = xmlElement.Elements("Field")
                     .FirstOrDefault(el => el.Attribute("name")?.Value == arrayPath);
 
+                // TMP derives this one from m_enableKerning, the file keeps that single switch
+                if (TmpFontFeatures.IsDerivedFromKerningField(prop))
+                {
+                    existing?.Remove();
+                    continue;
+                }
+
                 var refs = new List<XElement>();
                 var convertCtx = ctx.CreateConvertContext();
                 var fieldElement = PrefabXmlSerializer.SerializeField(prop, convertCtx, refs);
