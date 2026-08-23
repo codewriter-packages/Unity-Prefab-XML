@@ -141,7 +141,7 @@ namespace UnityPrefabXML
                 return;
             }
 
-            DrivenPropertyCleaner.Strip(xmlDoc, assetPath);
+            DrivenProperties.StripDocument(xmlDoc, AssetDatabase.LoadAssetAtPath<GameObject>(assetPath));
 
             if (PrefabXmlUtils.SaveXmlIfChanged(xmlDoc, assetPath, originalText))
             {

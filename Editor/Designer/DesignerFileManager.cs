@@ -204,11 +204,6 @@ namespace UnityPrefabXML.Designer
             if (PrefabXmlUtils.SaveXmlIfChanged(set.Document, set.PrefabXmlPath, set.DocumentText))
             {
                 AssetDatabase.ImportAsset(set.PrefabXmlPath, ImportAssetOptions.ForceUpdate);
-
-                // The prefab now matches the XML, so a layout pass on it tells which of the values
-                // just written are driven and do not belong in the file
-                DrivenPropertyCleaner.CleanFile(set.PrefabXmlPath);
-
                 ApplyNewBindings(set);
             }
 

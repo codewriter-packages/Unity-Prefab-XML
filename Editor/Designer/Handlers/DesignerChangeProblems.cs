@@ -15,6 +15,7 @@
         public const string GameObjectProperty = "only the name and the active state of an object are written";
         public const string Skipped = "the format never writes this property";
         public const string Derived = "the value is derived from another property of the file";
+        public const string Driven = "a layout component computes this value";
 
         /// <summary>
         /// A claimer described a change nothing can write. Not something a file can cause — it means

@@ -47,6 +47,11 @@ namespace UnityPrefabXML.Converters
 
             var doc = ConvertPrefab(go, out var bindings);
 
+            // The whole file is written from this prefab, and the prefab carries the values its
+            // layout produced. They are no more meaningful in the file than they are in the prefab,
+            // and this is the moment to leave them out — once written, they are the file's own.
+            DrivenProperties.StripDocument(doc, go);
+
             var outputPath = Path.ChangeExtension(path, ".prefabxml");
             PrefabXmlUtils.SaveXml(doc, outputPath);
 
@@ -76,10 +81,6 @@ namespace UnityPrefabXML.Converters
                     AssetDatabase.ImportAsset(outputPath, ImportAssetOptions.ForceUpdate);
                 }
             }
-
-            // The source prefab carries the values its layout produced. They are written out like
-            // any other property, so they are dropped once the layout can be run again.
-            DrivenPropertyCleaner.CleanFile(outputPath);
 
             Debug.Log($"PrefabToXml: Converted '{path}' → '{outputPath}'");
         }

@@ -25,6 +25,21 @@ namespace UnityPrefabXML.Designer
 
         public readonly List<DesignerChange> Changes = new List<DesignerChange>();
 
+        private Dictionary<int, DrivenTransformProperties> _driven;
+
+        /// <summary>
+        /// What a layout of the designer file takes over, by object. Measured on the first question
+        /// and kept for the rest of the run, because the answer costs a preview scene and a layout
+        /// pass — a run that asks about nothing but text never pays for it.
+        /// </summary>
+        public Dictionary<int, DrivenTransformProperties> Driven =>
+            _driven ?? (_driven = DrivenProperties.MeasureDriven(DesignerPrefab));
+
+        public DrivenTransformProperties GetDrivenProperties(Transform source)
+        {
+            return DrivenProperties.Lookup(Driven, source);
+        }
+
         /// <summary>Changes the user is asked about.</summary>
         public IEnumerable<DesignerChange> Actionable => Changes.Where(c => c.IsVisible);
 
@@ -362,6 +377,12 @@ namespace UnityPrefabXML.Designer
 
                 change.TargetElement = parentXml;
                 change.PayloadElement = PrefabXmlSerializer.SerializeGameObject(go, set.ConvertContext);
+
+                // The object is written whole, values and all, and under a layout part of those
+                // values is whatever the last rebuild computed. Nobody asked for those numbers, and
+                // this subtree is the one place in the file where they would be ours to begin with.
+                DrivenProperties.StripSubtree(change.PayloadElement, go.transform, set.Driven);
+
                 set.Changes.Add(change);
             }
         }

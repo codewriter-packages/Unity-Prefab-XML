@@ -17,6 +17,7 @@ namespace UnityPrefabXML.Designer
         public static readonly GameObjectPropertyHandler GameObjectProperty = new GameObjectPropertyHandler();
         public static readonly UnmappedComponentHandler UnmappedComponent = new UnmappedComponentHandler();
         public static readonly TmpFontFeaturesHandler TmpFontFeatures = new TmpFontFeaturesHandler();
+        public static readonly DrivenPropertyHandler DrivenProperty = new DrivenPropertyHandler();
         public static readonly ArrayFieldHandler ArrayField = new ArrayFieldHandler();
         public static readonly AttributeValueHandler AttributeValue = new AttributeValueHandler();
         public static readonly UnknownPropertyHandler UnknownProperty = new UnknownPropertyHandler();
@@ -46,6 +47,11 @@ namespace UnityPrefabXML.Designer
             UnmappedComponent,
 
             TmpFontFeatures,
+
+            // In front of the general value handler, because the value it turns down is a valid
+            // attribute in every other way — only the layout makes it meaningless
+            DrivenProperty,
+
             ArrayField,
             AttributeValue,
             UnknownProperty,
