@@ -183,10 +183,18 @@ namespace UnityPrefabXML.Designer
         {
             var applied = set.Changes.Where(c => c.Selected && c.IsApplicable).ToList();
 
-            ApplyValueChanges(applied);
-            ApplyAddedComponents(applied);
-            ApplyAddedGameObjects(applied, set.Context);
-            ApplyRemovedElements(applied);
+            // The document is edited in the order of the registry, not in the order the changes were
+            // collected in
+            foreach (var writer in DesignerChangeHandlers.ApplyRegistry)
+            {
+                foreach (var change in applied)
+                {
+                    if (change.Writer == writer)
+                    {
+                        writer.Apply(change, set);
+                    }
+                }
+            }
 
             // Runs last so that objects added and removed above are already part of the XML
             ApplyChildOrder(set, applied);
@@ -588,9 +596,13 @@ namespace UnityPrefabXML.Designer
         }
 
         /// <summary>
-        /// Rewrites the order of the child elements in the XML to match the designer file. Objects
-        /// added by this run are already in the document, so they are placed here as well — only a
-        /// parent whose reorder the user left out is passed over.
+        /// Rewrites the order of the child elements in the XML to match the designer file.
+        ///
+        /// This is the one edit no writer of the registry owns. An object added by the same run is
+        /// appended at the end of its parent and has to be moved into place as well, even when the
+        /// order of that parent was not a change of its own — so the order of every parent is
+        /// rewritten in one pass once every insertion is done, and a change of the order only says
+        /// whether its parent takes part.
         /// </summary>
         private static void ApplyChildOrder(DesignerChangeSet set, List<DesignerChange> applied)
         {
@@ -720,78 +732,6 @@ namespace UnityPrefabXML.Designer
         }
 
         /// <summary>
-        /// Writes the value changes: an attribute of a component, a rebuilt Field of an array, and
-        /// the name and the active state of an object. What to write was worked out while the
-        /// changes were collected, so nothing is decided here.
-        /// </summary>
-        private static void ApplyValueChanges(List<DesignerChange> applied)
-        {
-            foreach (var change in applied)
-            {
-                var element = change.TargetElement;
-                if (element == null)
-                {
-                    continue;
-                }
-
-                switch (change.Kind)
-                {
-                    case DesignerChangeKind.GameObjectName:
-                        element.SetAttributeValue("name", change.NewValue);
-                        break;
-
-                    case DesignerChangeKind.GameObjectActive:
-                        element.SetAttributeValue("active", change.NewValue);
-                        break;
-
-                    case DesignerChangeKind.Property:
-                        // No text for a leaf is an empty reference, and the format writes that by
-                        // leaving the attribute out
-                        if (change.NewValue != null)
-                        {
-                            element.SetAttributeValue(change.PropertyPath, change.NewValue);
-                        }
-                        else
-                        {
-                            element.Attribute(change.PropertyPath)?.Remove();
-                        }
-
-                        break;
-
-                    case DesignerChangeKind.ArrayField:
-                        ApplyArrayField(change, element);
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// An element of an array has no name of its own in the XML, so the array is written as a
-        /// whole, the way the converter writes it.
-        /// </summary>
-        private static void ApplyArrayField(DesignerChange change, XElement element)
-        {
-            var existing = element.Elements("Field")
-                .FirstOrDefault(el => el.Attribute("name")?.Value == change.PropertyPath);
-
-            // The array is empty now, and an empty Field has no representation
-            if (change.PayloadElement == null)
-            {
-                existing?.Remove();
-                return;
-            }
-
-            if (existing != null)
-            {
-                PrefabXmlUtils.Replace(existing, change.PayloadElement);
-            }
-            else
-            {
-                PrefabXmlUtils.AddChild(element, change.PayloadElement);
-            }
-        }
-
-        /// <summary>
         /// The array a modification points into, or null when it points at a plain property.
         /// "m_Options.m_Options.Array.data[0].m_Text" belongs to "m_Options.m_Options". Of nested
         /// arrays the outermost one is taken — writing it covers everything below it.
@@ -866,66 +806,6 @@ namespace UnityPrefabXML.Designer
             }
         }
 
-        /// <summary>
-        /// Inserts an added component behind the components the object already has, in front of its
-        /// child objects.
-        /// </summary>
-        private static void ApplyAddedComponents(List<DesignerChange> applied)
-        {
-            foreach (var change in applied)
-            {
-                if (change.Kind != DesignerChangeKind.AddedComponent ||
-                    change.TargetElement == null || change.PayloadElement == null)
-                {
-                    continue;
-                }
-
-                var lastComp = change.TargetElement.Elements().LastOrDefault(PrefabXmlUtils.IsComponentElement);
-                if (lastComp != null)
-                {
-                    PrefabXmlUtils.AddAfter(lastComp, change.PayloadElement);
-                }
-                else
-                {
-                    PrefabXmlUtils.AddFirstChild(change.TargetElement, change.PayloadElement);
-                }
-            }
-        }
-
-        private static void ApplyAddedGameObjects(List<DesignerChange> applied, DesignerContext ctx)
-        {
-            foreach (var change in applied)
-            {
-                if (change.Kind != DesignerChangeKind.AddedGameObject ||
-                    change.TargetElement == null || change.PayloadElement == null)
-                {
-                    continue;
-                }
-
-                PrefabXmlUtils.AddChild(change.TargetElement, change.PayloadElement);
-
-                // The element is appended at the end, the reorder pass moves it
-                // to the position it has in the designer file
-                if (change.VariantTransform != null)
-                {
-                    ctx.VariantToXml[change.VariantTransform.GetInstanceID()] = change.PayloadElement;
-                }
-            }
-        }
-
-        private static void ApplyRemovedElements(List<DesignerChange> applied)
-        {
-            foreach (var change in applied)
-            {
-                if (change.Kind != DesignerChangeKind.RemovedComponent &&
-                    change.Kind != DesignerChangeKind.RemovedGameObject)
-                {
-                    continue;
-                }
-
-                change.TargetElement?.Remove();
-            }
-        }
     }
 
     public class DesignerContext

@@ -77,6 +77,13 @@ namespace UnityPrefabXML.Designer
         /// </summary>
         public Transform VariantTransform;
 
+        /// <summary>
+        /// Puts the change into the document. Null for a change nothing writes: one the format
+        /// leaves out, and the order of the children of an object, which is rewritten by a pass over
+        /// the whole tree instead — see DesignerFileManager.ApplyChildOrder.
+        /// </summary>
+        public IDesignerChangeWriter Writer;
+
         public bool IsApplicable => Problem == null;
 
         /// <summary>Shown in the table, and the only thing the user acts on.</summary>
