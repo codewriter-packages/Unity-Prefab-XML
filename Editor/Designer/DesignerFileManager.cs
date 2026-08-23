@@ -697,11 +697,11 @@ namespace UnityPrefabXML.Designer
 
                 if (existing != null)
                 {
-                    existing.ReplaceWith(fieldElement);
+                    PrefabXmlUtils.Replace(existing, fieldElement);
                 }
                 else
                 {
-                    xmlElement.Add(fieldElement);
+                    PrefabXmlUtils.AddChild(xmlElement, fieldElement);
                 }
             }
         }
@@ -827,11 +827,11 @@ namespace UnityPrefabXML.Designer
                 var lastComp = goXml.Elements().LastOrDefault(PrefabXmlUtils.IsComponentElement);
                 if (lastComp != null)
                 {
-                    lastComp.AddAfterSelf(compElement);
+                    PrefabXmlUtils.AddAfter(lastComp, compElement);
                 }
                 else
                 {
-                    goXml.AddFirst(compElement);
+                    PrefabXmlUtils.AddFirstChild(goXml, compElement);
                 }
             }
         }
@@ -869,7 +869,7 @@ namespace UnityPrefabXML.Designer
                 var goElement = PrefabXmlSerializer.SerializeGameObject(go, convertCtx);
                 ctx.CollectBindings(convertCtx);
 
-                parentXml.Add(goElement);
+                PrefabXmlUtils.AddChild(parentXml, goElement);
 
                 // The element is appended at the end, the reorder pass moves it
                 // to the position it has in the designer file
