@@ -69,7 +69,7 @@ namespace UnityPrefabXML.Designer
             Unsupported("the format cannot write this value type");
 
         public static readonly DesignerChangeProblem ManagedReferences =
-            Unsupported("arrays of managed references are not written");
+            Unsupported("managed references are not supported yet");
 
         /// <summary>
         /// A claimer described a change nothing can write. Not something a file can cause — it means

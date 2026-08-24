@@ -37,9 +37,10 @@ namespace UnityPrefabXML.Designer
 
             if (refs.Count > 0)
             {
-                // Every managed reference lives in a Ref element of its own. Writing them would mean
-                // renumbering the ids the file already uses and dropping the ones the old items left
-                // behind, so the array is left as it is.
+                // An array of managed references belongs to ManagedReferenceHandler, which claims it
+                // before this one is asked. Getting here means the registry no longer routes it
+                // there, and writing the Ref elements would renumber the ids the file already uses
+                // and drop the ones the old items left behind.
                 change.Problem = DesignerChangeProblems.ManagedReferences;
                 change.PayloadElement = null;
                 return change;

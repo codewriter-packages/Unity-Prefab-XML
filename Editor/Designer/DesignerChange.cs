@@ -9,6 +9,7 @@ namespace UnityPrefabXML.Designer
     {
         Property,
         ArrayField,
+        ManagedReference,
         GameObjectName,
         GameObjectActive,
         AddedComponent,

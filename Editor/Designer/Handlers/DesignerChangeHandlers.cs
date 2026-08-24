@@ -16,6 +16,7 @@ namespace UnityPrefabXML.Designer
         public static readonly SkippedPropertyHandler SkippedProperty = new SkippedPropertyHandler();
         public static readonly GameObjectPropertyHandler GameObjectProperty = new GameObjectPropertyHandler();
         public static readonly UnmappedComponentHandler UnmappedComponent = new UnmappedComponentHandler();
+        public static readonly ManagedReferenceHandler ManagedReference = new ManagedReferenceHandler();
         public static readonly TmpFontFeaturesHandler TmpFontFeatures = new TmpFontFeaturesHandler();
         public static readonly DrivenPropertyHandler DrivenProperty = new DrivenPropertyHandler();
         public static readonly ArrayFieldHandler ArrayField = new ArrayFieldHandler();
@@ -45,6 +46,11 @@ namespace UnityPrefabXML.Designer
             // Nothing can be written about a component the mapping does not cover, and writing to
             // the wrong element would be worse than saying so
             UnmappedComponent,
+
+            // In front of the handlers of values and of arrays, because a managed reference is
+            // neither: the ids Unity records them against belong to one serialized object, and the
+            // whole set of them on a component is one row saying the format has no answer yet
+            ManagedReference,
 
             TmpFontFeatures,
 
