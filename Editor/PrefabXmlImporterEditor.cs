@@ -89,7 +89,9 @@ namespace UnityPrefabXML
                 }
             }
 
-            using (new EditorGUI.DisabledScope(!designerExists))
+            // Nothing checked, or nothing the applier can write — pressing it then would run a whole
+            // collect pass to write not one attribute
+            using (new EditorGUI.DisabledScope(!_designerChanges.HasSelection(assetPath)))
             {
                 if (GUILayout.Button("Apply selected", EditorStyles.miniButtonRight))
                 {

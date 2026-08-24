@@ -179,6 +179,30 @@ namespace UnityPrefabXML.Designer
             }
         }
 
+        /// <summary>
+        /// Drops one change off the designer file and writes nothing to the XML — the user saying
+        /// this change was not meant after all. A change the revert pass cannot reach is left where
+        /// it is; see <see cref="DesignerChange.CanRevert"/>.
+        /// </summary>
+        public static void RevertChange(DesignerChangeSet set, DesignerChange change)
+        {
+            if (!change.CanRevert)
+            {
+                return;
+            }
+
+            IsBusy = true;
+            try
+            {
+                EditDesignerFile(set.DesignerPath,
+                    root => RevertRoot(root, new List<DesignerChange> {change}, revertAll: false));
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
         private static void ApplyDesignerModificationsInternal(DesignerChangeSet set)
         {
             var applied = set.Changes.Where(c => c.Selected && c.IsApplicable).ToList();
@@ -407,13 +431,13 @@ namespace UnityPrefabXML.Designer
 
             foreach (var change in wanted)
             {
-                // Written to the XML but still an override of the designer file. Leaving it silently
-                // would show up later as the object appearing twice.
+                // Still an override of the designer file. Leaving it silently would show up later as
+                // the object appearing twice, once from the XML and once from the override.
                 if (!reverted.Contains(change))
                 {
-                    Debug.LogWarning($"DesignerFile: '{change.NewValue}' on '{change.ObjectLabel}' was " +
-                                     "written to the XML, but it could not be cleared from the designer " +
-                                     "file. Revert it by hand to avoid a duplicate.");
+                    Debug.LogWarning($"DesignerFile: '{change.NewValue}' on '{change.ObjectLabel}' could " +
+                                     "not be cleared from the designer file. Revert it by hand — left " +
+                                     "there, it is written to the XML again on the next apply.");
                 }
             }
 

@@ -15,9 +15,11 @@ namespace UnityPrefabXML.Designer
         private const double RefreshInterval = 1.0;
 
         private const float ToggleWidth = 16;
-        private const float ObjectWidth = 130;
+        private const float ObjectWidth = 200;
         private const float ComponentWidth = 120;
-        private const float PropertyWidth = 150;
+        private const float PropertyWidth = 120;
+        private const float ValueWidth = 100;
+        private const float RowButtonWidth = 52;
         private const float MaxTableHeight = 260;
 
         /// <summary>
@@ -28,14 +30,34 @@ namespace UnityPrefabXML.Designer
 
         private DesignerChangeSet _set;
         private double _nextRefresh;
-        private bool _expanded;
-        private bool _showRejected;
+        private bool _showSkipped;
+
+        // Open from the start: these are the ones that mean something is missing from the applier
+        private bool _showUnsupported = true;
+
         private Vector2 _scroll;
+        private GUIStyle _unsupportedFoldout;
+
+        /// <summary>What a row button asked for, run at the start of the next pass by RunPending.</summary>
+        private DesignerChange _pending;
+
+        private bool _pendingIsRevert;
 
         public void Invalidate()
         {
             _set = null;
             _nextRefresh = 0;
+        }
+
+        /// <summary>
+        /// Whether applying would write anything: the file holds a change the applier can write and
+        /// the user left it checked. Collects first, because the button is drawn above the table and
+        /// would otherwise answer from the list of the frame before.
+        /// </summary>
+        public bool HasSelection(string assetPath)
+        {
+            Refresh(assetPath);
+            return _set != null && _set.Actionable.Any(c => !_deselected.Contains(c.Key));
         }
 
         /// <summary>
@@ -63,6 +85,7 @@ namespace UnityPrefabXML.Designer
 
         public void Draw(string assetPath)
         {
+            RunPending(assetPath);
             Refresh(assetPath);
 
             if (_set == null || _set.Changes.Count == 0)
@@ -71,14 +94,8 @@ namespace UnityPrefabXML.Designer
             }
 
             var actionable = _set.Actionable.ToList();
-            var rejected = _set.Rejected.ToList();
 
-            _expanded = EditorGUILayout.Foldout(_expanded, $"Modifications ({actionable.Count})", true);
-
-            if (_expanded)
-            {
-                DrawTable(actionable, rejected);
-            }
+            GUILayout.Label($"Modifications ({actionable.Count})");
 
             if (actionable.Count > 0 && actionable.All(c => _deselected.Contains(c.Key)))
             {
@@ -91,60 +108,137 @@ namespace UnityPrefabXML.Designer
                     "The designer file has modifications that are not applied to the XML yet.",
                     MessageType.Warning);
             }
+
+            DrawTable(actionable);
+
+            // Two reasons a change is left out, and only one of them is news. What the format never
+            // writes is folded away; what nothing knew how to write is opened and marked.
+            DrawRejected(_set.Unsupported.ToList(), ref _showUnsupported, "Unsupported modifications",
+                UnsupportedFoldout);
+            DrawRejected(_set.Skipped.ToList(), ref _showSkipped, "Skipped modifications", EditorStyles.foldout);
         }
 
-        private void DrawTable(List<DesignerChange> actionable, List<DesignerChange> rejected)
+        private void DrawTable(List<DesignerChange> actionable)
         {
             if (actionable.Count == 0)
             {
                 EditorGUILayout.LabelField("Nothing to apply.", EditorStyles.miniLabel);
+                GUILayout.Space(8);
+                return;
             }
-            else
+
+            GUILayout.BeginVertical(GUI.skin.box);
+            
+            DrawHeader();
+
+            var scroll = actionable.Count * EditorGUIUtility.singleLineHeight > MaxTableHeight;
+            if (scroll)
             {
-                DrawHeader();
-
-                var scroll = actionable.Count * EditorGUIUtility.singleLineHeight > MaxTableHeight;
-                if (scroll)
-                {
-                    _scroll = EditorGUILayout.BeginScrollView(_scroll, GUILayout.MaxHeight(MaxTableHeight));
-                }
-
-                foreach (var change in actionable)
-                {
-                    DrawRow(change);
-                }
-
-                if (scroll)
-                {
-                    EditorGUILayout.EndScrollView();
-                }
-
-                DrawSelectionButtons(actionable);
+                _scroll = EditorGUILayout.BeginScrollView(_scroll, GUILayout.MaxHeight(MaxTableHeight));
             }
 
-            if (rejected.Count == 0)
+            for (var i = 0; i < actionable.Count; i++)
+            {
+                DrawRow(actionable[i], i);
+            }
+
+            if (scroll)
+            {
+                EditorGUILayout.EndScrollView();
+            }
+            
+            GUILayout.EndVertical();
+
+            DrawSelectionButtons(actionable);
+
+            GUILayout.Space(8);
+        }
+
+        /// <summary>
+        /// One group of changes that are shown and never written, behind a foldout of its own. The
+        /// value column gives way to the reason, because for these that is the whole story.
+        /// </summary>
+        private static void DrawRejected(List<DesignerChange> changes, ref bool shown, string title,
+            GUIStyle titleStyle)
+        {
+            if (changes.Count == 0)
             {
                 return;
             }
 
-            _showRejected = EditorGUILayout.Foldout(_showRejected, $"Not written ({rejected.Count})", true);
-            if (!_showRejected)
+            shown = EditorGUILayout.Foldout(shown, $"{title} ({changes.Count})", true, titleStyle);
+            if (!shown)
             {
+                GUILayout.Space(8);
                 return;
             }
 
             using (new EditorGUI.DisabledScope(true))
             {
-                foreach (var change in rejected)
+                for (var i = 0; i < changes.Count; i++)
                 {
-                    EditorGUILayout.BeginHorizontal();
+                    var change = changes[i];
+
+                    DrawRowBackground(EditorGUILayout.BeginHorizontal(), i);
                     GUILayout.Space(ToggleWidth + 4);
-                    EditorGUILayout.LabelField(Truncate(change.ObjectLabel), GUILayout.Width(ObjectWidth));
-                    EditorGUILayout.LabelField(Truncate(change.ComponentType), GUILayout.Width(ComponentWidth));
-                    EditorGUILayout.LabelField(Truncate(change.Label), GUILayout.Width(PropertyWidth));
-                    EditorGUILayout.LabelField(change.Problem, EditorStyles.miniLabel);
+                    DrawIdentity(change);
+                    EditorGUILayout.LabelField(new GUIContent(change.Problem.Text, change.Problem.Text),
+                        EditorStyles.miniLabel);
                     EditorGUILayout.EndHorizontal();
                 }
+            }
+
+            GUILayout.Space(8);
+        }
+
+        /// <summary>
+        /// Shades every other row, so the eye carries one change across the width of the table
+        /// without losing the line. A translucent wash rather than a color of its own: it sits over
+        /// whatever the skin paints behind the table and reads the same in both of them.
+        ///
+        /// The rect comes from the layout group of the row, which is why this is drawn before the
+        /// row is filled — during layout it is empty and nothing is painted, and by the time a
+        /// repaint runs it is the rect the row had.
+        /// </summary>
+        private static void DrawRowBackground(Rect row, int index)
+        {
+            if (index % 2 != 0)
+            {
+                return;
+            }
+
+            EditorGUI.DrawRect(row, EditorGUIUtility.isProSkin
+                ? new Color(1f, 1f, 1f, 0.04f)
+                : new Color(0f, 0f, 0f, 0.04f));
+        }
+
+        /// <summary>
+        /// The heading of the unsupported group, in the red the editor uses for what went wrong. It
+        /// is built from the current foldout style, so it keeps the arrow and the skin of the rest
+        /// of the inspector and changes nothing but the color of the text.
+        /// </summary>
+        private GUIStyle UnsupportedFoldout
+        {
+            get
+            {
+                if (_unsupportedFoldout == null)
+                {
+                    var color = EditorGUIUtility.isProSkin
+                        ? new Color(1f, 0.44f, 0.4f)
+                        : new Color(0.66f, 0.1f, 0.06f);
+
+                    _unsupportedFoldout = new GUIStyle(EditorStyles.foldout);
+                    _unsupportedFoldout.normal.textColor = color;
+                    _unsupportedFoldout.onNormal.textColor = color;
+                    _unsupportedFoldout.hover.textColor = color;
+                    _unsupportedFoldout.onHover.textColor = color;
+                    _unsupportedFoldout.active.textColor = color;
+                    _unsupportedFoldout.onActive.textColor = color;
+                    _unsupportedFoldout.focused.textColor = color;
+                    _unsupportedFoldout.onFocused.textColor = color;
+                }
+
+                return _unsupportedFoldout;
             }
         }
 
@@ -155,13 +249,14 @@ namespace UnityPrefabXML.Designer
             EditorGUILayout.LabelField("Object", EditorStyles.miniBoldLabel, GUILayout.Width(ObjectWidth));
             EditorGUILayout.LabelField("Component", EditorStyles.miniBoldLabel, GUILayout.Width(ComponentWidth));
             EditorGUILayout.LabelField("Property", EditorStyles.miniBoldLabel, GUILayout.Width(PropertyWidth));
-            EditorGUILayout.LabelField("New value", EditorStyles.miniBoldLabel);
+            EditorGUILayout.LabelField("Old value", EditorStyles.miniBoldLabel, GUILayout.Width(ValueWidth));
+            EditorGUILayout.LabelField("New value", EditorStyles.miniBoldLabel, GUILayout.Width(ValueWidth));
             EditorGUILayout.EndHorizontal();
         }
 
-        private void DrawRow(DesignerChange change)
+        private void DrawRow(DesignerChange change, int index)
         {
-            EditorGUILayout.BeginHorizontal();
+            DrawRowBackground(EditorGUILayout.BeginHorizontal(), index);
 
             var selected = !_deselected.Contains(change.Key);
             var toggled = EditorGUILayout.Toggle(selected, GUILayout.Width(ToggleWidth));
@@ -179,20 +274,111 @@ namespace UnityPrefabXML.Designer
 
             GUILayout.Space(4);
 
-            EditorGUILayout.LabelField(new GUIContent(Truncate(change.ObjectLabel), change.ObjectLabel),
-                GUILayout.Width(ObjectWidth));
-            EditorGUILayout.LabelField(new GUIContent(Truncate(change.ComponentType), change.ComponentType ?? ""),
-                GUILayout.Width(ComponentWidth));
-            EditorGUILayout.LabelField(new GUIContent(Truncate(change.Label), change.PropertyPath),
-                GUILayout.Width(PropertyWidth));
+            DrawIdentity(change);
 
-            var value = change.NewValue ?? "<not set>";
-            var tooltip = change.OldValue == null
-                ? value
-                : $"{change.OldValue}  →  {value}";
-            EditorGUILayout.LabelField(new GUIContent(Truncate(value, 60), tooltip));
+            // The old value is what the file says now, so nothing there means the file says nothing
+            // yet. The new one is what the applier writes, and there nothing is a value of its own:
+            // the attribute goes away.
+            DrawValue(change.OldValue);
+            DrawValue(change.NewValue);
+
+            GUILayout.FlexibleSpace();
+            DrawRowButtons(change);
 
             EditorGUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// The two ways one row can be dealt with on its own: write it to the XML, or drop it off the
+        /// designer file and leave the XML alone. Neither runs where it is pressed — the table is
+        /// still being drawn around it — so the press is only remembered here.
+        /// </summary>
+        private void DrawRowButtons(DesignerChange change)
+        {
+            if (GUILayout.Button(new GUIContent("Apply", "Write this change to the XML"),
+                    EditorStyles.miniButtonLeft, GUILayout.Width(RowButtonWidth)))
+            {
+                _pending = change;
+                _pendingIsRevert = false;
+            }
+
+            using (new EditorGUI.DisabledScope(!change.CanRevert))
+            {
+                var label = change.CanRevert
+                    ? "Drop this change off the designer file, leaving the XML as it is"
+                    : "Putting back what was removed is not something the revert pass can do";
+
+                if (GUILayout.Button(new GUIContent("Revert", label),
+                        EditorStyles.miniButtonRight, GUILayout.Width(RowButtonWidth)))
+                {
+                    _pending = change;
+                    _pendingIsRevert = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Does what a row button asked for, before anything of this pass is laid out. Not where the
+        /// button is drawn: the work saves the designer file and reimports the XML, and the list the
+        /// table is being drawn from is thrown away in the middle of drawing it.
+        /// </summary>
+        private void RunPending(string assetPath)
+        {
+            var change = _pending;
+            if (change == null)
+            {
+                return;
+            }
+
+            _pending = null;
+
+            // The list the button was drawn from may be a second old, so the change is looked up
+            // again in a freshly collected one and only the key carries over
+            var set = DesignerChangeCollector.Collect(assetPath, logErrors: true);
+            var fresh = set?.Changes.FirstOrDefault(c => c.Key == change.Key);
+            if (fresh == null)
+            {
+                Invalidate();
+                return;
+            }
+
+            if (_pendingIsRevert)
+            {
+                DesignerFileManager.RevertChange(set, fresh);
+            }
+            else
+            {
+                foreach (var other in set.Changes)
+                {
+                    other.Selected = other == fresh && other.IsApplicable;
+                }
+
+                DesignerFileManager.ApplyDesignerModifications(set);
+            }
+
+            Invalidate();
+        }
+
+        /// <summary>
+        /// The columns that name the change, drawn the same for a change that is written and one
+        /// that is not, so the two tables line up.
+        /// </summary>
+        private static void DrawIdentity(DesignerChange change)
+        {
+            EditorGUILayout.LabelField(new GUIContent(change.ObjectLabel, change.ObjectLabel),
+                GUILayout.Width(ObjectWidth));
+            EditorGUILayout.LabelField(
+                new GUIContent(change.ComponentType, change.ComponentType ?? ""),
+                GUILayout.Width(ComponentWidth));
+            EditorGUILayout.LabelField(
+                new GUIContent(change.Label, change.PropertyPath),
+                GUILayout.Width(PropertyWidth));
+        }
+
+        private static void DrawValue(string value)
+        {
+            var shown = value ?? "-";
+            EditorGUILayout.LabelField(new GUIContent(shown, shown), GUILayout.Width(ValueWidth));
         }
 
         private void DrawSelectionButtons(List<DesignerChange> actionable)
@@ -235,16 +421,6 @@ namespace UnityPrefabXML.Designer
             _set = DesignerFileManager.HasAnyOverride(assetPath)
                 ? DesignerChangeCollector.Collect(assetPath)
                 : null;
-        }
-
-        private static string Truncate(string value, int max = 24)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return "";
-            }
-
-            return value.Length <= max ? value : value.Substring(0, max - 1) + "…";
         }
     }
 }

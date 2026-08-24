@@ -49,7 +49,7 @@ namespace UnityPrefabXML.Designer
         public string OldValue;
 
         /// <summary>Null while the change can be applied, otherwise the reason it cannot.</summary>
-        public string Problem;
+        public DesignerChangeProblem Problem;
 
         /// <summary>
         /// The file already says exactly this. Unity keeps recording such overrides, and applying
@@ -85,6 +85,17 @@ namespace UnityPrefabXML.Designer
         public IDesignerChangeWriter Writer;
 
         public bool IsApplicable => Problem == null;
+
+        /// <summary>
+        /// Whether the change can be dropped off the designer file on its own. The revert pass takes
+        /// overrides away — an added object by its address, a value by the modification behind it —
+        /// so a change that names neither is out of its reach. That is every removal: clearing one
+        /// means putting the object back, which is the opposite of what the pass does.
+        /// </summary>
+        public bool CanRevert =>
+            Kind == DesignerChangeKind.AddedGameObject ||
+            Kind == DesignerChangeKind.AddedComponent ||
+            Sources.Count > 0;
 
         /// <summary>Shown in the table, and the only thing the user acts on.</summary>
         public bool IsVisible => Problem == null && !Redundant;

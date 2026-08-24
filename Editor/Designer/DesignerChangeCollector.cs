@@ -43,8 +43,13 @@ namespace UnityPrefabXML.Designer
         /// <summary>Changes the user is asked about.</summary>
         public IEnumerable<DesignerChange> Actionable => Changes.Where(c => c.IsVisible);
 
-        /// <summary>Changes that carry a reason why they are not written.</summary>
-        public IEnumerable<DesignerChange> Rejected => Changes.Where(c => c.Problem != null);
+        /// <summary>Changes the format leaves out on purpose.</summary>
+        public IEnumerable<DesignerChange> Skipped =>
+            Changes.Where(c => c.Problem != null && c.Problem.ByDesign);
+
+        /// <summary>Changes nothing in the applier knew how to write.</summary>
+        public IEnumerable<DesignerChange> Unsupported =>
+            Changes.Where(c => c.Problem != null && !c.Problem.ByDesign);
 
         public bool HasActionable => Changes.Any(c => c.IsVisible);
     }
