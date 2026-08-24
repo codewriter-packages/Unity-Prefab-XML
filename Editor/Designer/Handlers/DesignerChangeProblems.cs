@@ -71,6 +71,11 @@ namespace UnityPrefabXML.Designer
         public static readonly DesignerChangeProblem ManagedReferences =
             Unsupported("managed references are not supported yet");
 
+        public static DesignerChangeProblem UnsupportedComponent(string reason)
+        {
+            return Unsupported(reason);
+        }
+
         /// <summary>
         /// A claimer described a change nothing can write. Not something a file can cause — it means
         /// the claimer implements no <see cref="IDesignerChangeWriter"/>, or its writer is missing

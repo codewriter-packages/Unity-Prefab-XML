@@ -331,6 +331,13 @@ namespace UnityPrefabXML.Designer
                     NewValue = comp.GetType().Name,
                 };
 
+                if (UnsupportedComponents.IsUnsupported(comp.GetType(), out var reason))
+                {
+                    change.Problem = DesignerChangeProblems.UnsupportedComponent(reason);
+                    set.Changes.Add(change);
+                    continue;
+                }
+
                 var baseGoId = set.Context.FindBaseGoIdForVariantGo(comp.gameObject);
                 if (baseGoId == -1 || !set.Context.GoToXml.TryGetValue(baseGoId, out var goXml))
                 {
@@ -371,6 +378,18 @@ namespace UnityPrefabXML.Designer
                     NewValue = go.name,
                     VariantTransform = go.transform,
                 };
+
+                // The object is written whole, so one component the project took out of the format
+                // takes the object with it: writing it would produce a file the importer refuses to
+                // build, and dropping the component on the way would write something nobody asked
+                // for.
+                if (UnsupportedComponents.IsUnsupportedSubtree(go, out var unsupported, out var reason))
+                {
+                    change.Problem = DesignerChangeProblems.UnsupportedComponent(
+                        $"{unsupported.GetType().Name}: {reason}");
+                    set.Changes.Add(change);
+                    continue;
+                }
 
                 var baseGoId = set.Context.FindBaseGoIdForVariantTf(go.transform.parent);
                 if (baseGoId == -1 || !set.Context.GoToXml.TryGetValue(baseGoId, out var parentXml))
