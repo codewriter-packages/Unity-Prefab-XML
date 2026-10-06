@@ -339,7 +339,7 @@ namespace UnityPrefabXML.Builder
 
                             var assetPath = AssetDatabase.GetAssetPath(boundAsset);
                             if (assetPath.StartsWith("Assets/") || assetPath.StartsWith("Packages/"))
-                                context.Ctx.DependsOnSourceAsset(assetPath);
+                                context.Ctx.DependsOnArtifact(assetPath);
                         }
                     }
                     else if (value.StartsWith("#"))
@@ -407,7 +407,8 @@ namespace UnityPrefabXML.Builder
                         if (asset != null)
                         {
                             prop.objectReferenceValue = asset;
-                            context.Ctx.DependsOnSourceAsset(value);
+                            if (value.StartsWith("Assets/") || value.StartsWith("Packages/"))
+                                context.Ctx.DependsOnArtifact(value);
                         }
                     }
 
